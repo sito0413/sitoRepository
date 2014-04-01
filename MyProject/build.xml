@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project default="createInfo" basedir=".">
+<target name="createInfo" >
+	<mkdir dir="./src"/>
+	<echo file="./src/info.xml" message="&lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; standalone=&quot;no&quot;?&gt;&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;Path&quot;&gt;C:/newwave/_system&lt;/entry&gt;&lt;/properties&gt;" encoding="Shift_JIS"/>
+</target>
+	<target name="compile" >
+<mkdir dir="war"/>
+<mkdir dir="WebContent/WEB-INF/classes"/>
+<path id="classpath">
+	<fileset dir="lib" includes="servlet-api-3.0.jar"/>
+	<fileset dir="lib" includes="framework.jar"/>
+	<fileset dir="lib" includes="hamcrest-core-1.3.jar"/>
+	<fileset dir="lib" includes="jcommon-1.0.21.jar"/>
+	<fileset dir="lib" includes="jfreechart-1.0.17-experimental.jar"/>
+	<fileset dir="lib" includes="jfreechart-1.0.17-swt.jar"/>
+	<fileset dir="lib" includes="jfreechart-1.0.17.jar"/>
+	<fileset dir="lib" includes="jfreesvg-1.4.jar"/>
+	<fileset dir="lib" includes="junit-4.11.jar"/>
+	<fileset dir="lib" includes="orsoncharts-1.0-eval.jar"/>
+	<fileset dir="lib" includes="orsonpdf-1.3-eval.jar"/>
+	<fileset dir="lib" includes="servlet.jar"/>
+	<fileset dir="lib" includes="sqlite-jdbc-3.7.2.jar"/>
+	<fileset dir="lib" includes="swtgraphics2d.jar"/>
+</path>
+<javac destdir="WebContent/WEB-INF/classes" encoding="utf-8">
+	<classpath refid="classpath" />
+	<src path="./src" />
+</javac>
+<war destfile="war/monitoring.war" needxmlfile='false' >
+	<fileset dir="WebContent" excludes="**/web.xml" />
+</war>
+</target>
+</project>
+
