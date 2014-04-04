@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 
 import frameWork.core.authority.AuthorityChecker;
 import frameWork.core.fileSystem.FileSystem;
-import frameWork.core.filter.TargetFilter;
+import frameWork.core.targetFilter.TargetFilter;
 import frameWork.core.viewCompiler.ViewCompiler;
 import frameWork.databaseConnector.DatabaseConnector;
 import frameWork.databaseConnector.pool.ConnectorPool;
@@ -51,13 +51,25 @@ public class CoreHandler {
 				try (DatabaseConnector connector = connectorPool.getConnector()) {
 					state.setConnector(connector);
 					state.setPage(targetFilter.view);
-					state.setResultType(null);
+					state.setViewCompiler(true);
 					m.invoke(c.newInstance(), state);
-					if (state.getResultType() == null) {
+					if (state.isViewCompiler()) {
 						ViewCompiler.compile(respons, state, charsetName, outputStream);
 					}
 					else {
-						response(FileSystem.Resource.getResource(state.getResultType()), outputStream);
+						response(FileSystem.Resource.getResource(state.getPage()), outputStream);
+					}
+				}
+				catch (final NullPointerException e) {
+					state.setConnector(null);
+					state.setPage(targetFilter.view);
+					state.setViewCompiler(true);
+					m.invoke(c.newInstance(), state);
+					if (state.isViewCompiler()) {
+						ViewCompiler.compile(respons, state, charsetName, outputStream);
+					}
+					else {
+						response(FileSystem.Resource.getResource(state.getPage()), outputStream);
 					}
 				}
 			}

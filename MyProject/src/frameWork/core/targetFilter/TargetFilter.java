@@ -1,4 +1,4 @@
-package frameWork.core.filter;
+package frameWork.core.targetFilter;
 
 import frameWork.core.fileSystem.FileSystem;
 
@@ -57,7 +57,7 @@ public class TargetFilter {
 	TargetFilter(final String className, final String methodName) {
 		this.className = FileSystem.Config.getString("packageName", "controller") + "." + className;
 		this.methodName = methodName;
-		view = "/" + methodName.replace(".", "/") + "/" + methodName + ".jsp";
+		view = "/" + className.replace(".", "/") + "/" + methodName + ".jsp";
 	}
 	
 	@Override

@@ -144,12 +144,12 @@ public class WrapState implements State {
 	}
 	
 	@Override
-	public void setResultType(final String resultType) {
-		
+	public boolean isViewCompiler() {
+		return true;
 	}
 	
 	@Override
-	public String getResultType() {
-		return null;
+	public void setViewCompiler(final boolean isViewCompiler) {
+		
 	}
 }

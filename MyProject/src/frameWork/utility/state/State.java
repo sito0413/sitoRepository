@@ -30,7 +30,7 @@ public interface State {
 	
 	public void bind(final Object obj);
 	
-	public String getResultType();
+	public boolean isViewCompiler();
 	
-	public void setResultType(final String resultType);
+	public void setViewCompiler(final boolean isViewCompiler);
 }

@@ -1,4 +1,4 @@
-package frameWork.core.filter;
+package frameWork.core.targetFilter;
 
 import static org.junit.Assert.*;
 
@@ -46,6 +46,6 @@ public class TargetFilterTest {
 	
 	@Test
 	public void view() {
-		assertEquals(new TargetFilter("Index", "index").view, "/index/index.jsp");
+		assertEquals(new TargetFilter("Test", "index").view, "/test/index.jsp");
 	}
 }
