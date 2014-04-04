@@ -9,8 +9,7 @@ public class Resource extends FileElement {
 	}
 	
 	public File getResource(final String target) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return new File(this, target);
 	}
 	
 }
