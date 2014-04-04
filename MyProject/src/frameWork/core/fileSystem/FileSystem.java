@@ -1,15 +1,18 @@
-package frameWork.core.config;
+package frameWork.core.fileSystem;
 
 import java.io.File;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import frameWork.core.fileSystem.config.Config;
+
 public class FileSystem {
 	private static final File Root;
-	static FileElement Temp;
-	static FileElement Data;
-	static FileElement Viewer;
-	static FileElement Resource;
+	public static FileElement Temp;
+	public static FileElement Data;
+	public static FileElement Viewer;
+	public static Resource Resource;
+	public static Config Config;
 	static {
 		File dir;
 		try {
@@ -41,14 +44,9 @@ public class FileSystem {
 		Temp = new FileElement(Root, "temp");
 		Data = new FileElement(Root, "data");
 		Viewer = new FileElement(Root, "viewer");
-		Resource = new FileElement(Root, "resource");
+		Resource = new Resource(Root);
+		Config = new Config(Root);
 		
 	}
 	
-	static class FileElement {
-		
-		public FileElement(final File root, final String name) {
-			new File(root, name).mkdirs();
-		}
-	}
 }

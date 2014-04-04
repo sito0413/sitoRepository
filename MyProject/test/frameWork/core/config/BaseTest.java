@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import frameWork.core.fileSystem.Base;
+
 public class BaseTest {
 	static boolean flg;
 	

@@ -1,4 +1,4 @@
-package frameWork.core;
+package frameWork.core.viewCompiler;
 
 import java.io.IOException;
 import java.io.OutputStream;

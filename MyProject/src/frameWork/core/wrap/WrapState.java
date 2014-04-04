@@ -1,6 +1,7 @@
 package frameWork.core.wrap;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import frameWork.core.Authority;
+import frameWork.core.authority.Authority;
 import frameWork.databaseConnector.DatabaseConnector;
+import frameWork.utility.ThrowableUtil;
 import frameWork.utility.state.State;
 import frameWork.utility.state.attributeMap.AttributeMap;
 
@@ -104,4 +106,50 @@ public class WrapState implements State {
 		this.page = page;
 	}
 	
+	@Override
+	public void bind(final Object obj) {
+		try {
+			for (final Field field : obj.getClass().getFields()) {
+				Object value = null;
+				final String strValue = getParameter(field.getName());
+				if (strValue != null) {
+					try {
+						if (field.getType().equals(String.class)) {
+							value = strValue;
+						}
+						else if (field.getType().equals(int.class)) {
+							value = Integer.parseInt(strValue);
+						}
+						else if (field.getType().equals(double.class)) {
+							value = Double.parseDouble(strValue);
+						}
+						else if (field.getType().equals(Boolean.class)) {
+							value = Boolean.parseBoolean(strValue);
+						}
+					}
+					catch (final Exception e) {
+						ThrowableUtil.throwable(e);
+					}
+					if (value != null) {
+						field.setAccessible(true);
+						field.set(obj, value);
+					}
+				}
+				
+			}
+		}
+		catch (final Exception e) {
+			ThrowableUtil.throwable(e);
+		}
+	}
+	
+	@Override
+	public void setResultType(final String resultType) {
+		
+	}
+	
+	@Override
+	public String getResultType() {
+		return null;
+	}
 }

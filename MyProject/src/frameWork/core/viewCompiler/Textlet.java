@@ -1,4 +1,4 @@
-package frameWork.core;
+package frameWork.core.viewCompiler;
 
 class Textlet {
 	final String text;

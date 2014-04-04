@@ -1,4 +1,4 @@
-package frameWork.core.config;
+package frameWork.core.fileSystem;
 
 import java.io.File;
 import java.net.URLConnection;

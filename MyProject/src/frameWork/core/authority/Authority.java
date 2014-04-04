@@ -1,4 +1,4 @@
-package frameWork.core;
+package frameWork.core.authority;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

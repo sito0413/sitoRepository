@@ -27,4 +27,10 @@ public interface State {
 	public void setPage(final String page);
 	
 	public void setConnector(DatabaseConnector connector);
+	
+	public void bind(final Object obj);
+	
+	public String getResultType();
+	
+	public void setResultType(final String resultType);
 }
