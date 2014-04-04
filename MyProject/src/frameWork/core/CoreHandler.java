@@ -1,9 +1,9 @@
 package frameWork.core;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
@@ -36,55 +36,57 @@ public class CoreHandler {
 		final TargetFilter targetFilter = TargetFilter.parse(target);
 		if (targetFilter == null) {
 			response(FileSystem.Resource.getResource(target), outputStream);
-			return;
 		}
-		try {
-			final Class<?> c = Class.forName(targetFilter.className);
-			Method m = null;
+		else {
 			try {
-				m = c.getMethod(targetFilter.methodName + "_" + method.toLowerCase(), State.class);
-			}
-			catch (final NoSuchMethodException t) {
-				m = c.getMethod(targetFilter.methodName, State.class);
-			}
-			if (AuthorityChecker.check(c, m, state.auth())) {
-				try (DatabaseConnector connector = connectorPool.getConnector()) {
-					state.setConnector(connector);
-					state.setPage(targetFilter.view);
-					state.setViewCompiler(true);
-					m.invoke(c.newInstance(), state);
-					if (state.isViewCompiler()) {
-						ViewCompiler.compile(respons, state, charsetName, outputStream);
+				final Class<?> c = Class.forName(targetFilter.className);
+				Method m = null;
+				try {
+					m = c.getMethod(targetFilter.methodName + "_" + method.toLowerCase(), State.class);
+				}
+				catch (final NoSuchMethodException t) {
+					m = c.getMethod(targetFilter.methodName, State.class);
+				}
+				if (AuthorityChecker.check(c, m, state.auth())) {
+					try (DatabaseConnector connector = connectorPool.getConnector()) {
+						state.setConnector(connector);
+						state.setPage(targetFilter.view);
+						state.setViewCompiler(true);
+						m.invoke(c.newInstance(), state);
+						if (state.isViewCompiler()) {
+							ViewCompiler.compile(respons, state, charsetName, outputStream);
+						}
+						else {
+							response(FileSystem.Resource.getResource(state.getPage()), outputStream);
+						}
 					}
-					else {
-						response(FileSystem.Resource.getResource(state.getPage()), outputStream);
+					catch (final NullPointerException e) {
+						state.setConnector(null);
+						state.setPage(targetFilter.view);
+						state.setViewCompiler(true);
+						m.invoke(c.newInstance(), state);
+						if (state.isViewCompiler()) {
+							ViewCompiler.compile(respons, state, charsetName, outputStream);
+						}
+						else {
+							response(FileSystem.Resource.getResource(state.getPage()), outputStream);
+						}
 					}
 				}
-				catch (final NullPointerException e) {
-					state.setConnector(null);
-					state.setPage(targetFilter.view);
-					state.setViewCompiler(true);
-					m.invoke(c.newInstance(), state);
-					if (state.isViewCompiler()) {
-						ViewCompiler.compile(respons, state, charsetName, outputStream);
-					}
-					else {
-						response(FileSystem.Resource.getResource(state.getPage()), outputStream);
-					}
-				}
 			}
-		}
-		catch (final ClassNotFoundException | NoSuchMethodException e) {
-			//NOOP
+			catch (final ClassNotFoundException | NoSuchMethodException e) {
+				response(FileSystem.Resource.getResource(target), outputStream);
+			}
 		}
 	}
 	
 	private void response(final File resource, final OutputStream outputStream) {
 		if (resource != null) {
-			try (BufferedReader reader = new BufferedReader(new FileReader(resource))) {
+			try (InputStream inputStream = new FileInputStream(resource)) {
 				int i = -1;
-				while ((i = reader.read()) != -1) {
-					outputStream.write(i);
+				final byte[] b = new byte[256];
+				while ((i = inputStream.read(b)) != -1) {
+					outputStream.write(b, 0, i);
 				}
 				outputStream.flush();
 			}
