@@ -4,17 +4,16 @@ import java.lang.reflect.Method;
 
 public class AuthorityChecker {
 	
-	public static <T> boolean check(final Class<T> c, final Method method, final String... authStrings) {
+	public static <T> boolean check(final Class<T> c, final Method method, final Role... authStrings) {
 		return checkAuthority(c.getAnnotation(Authority.class), authStrings)
 		        && checkAuthority(method.getAnnotation(Authority.class), authStrings);
 	}
 	
-	static boolean checkAuthority(final Authority annotation, final String[] authStrings) {
+	static boolean checkAuthority(final Authority annotation, final Role[] authStrings) {
 		if (annotation != null) {
-			final String[] allowRoll = annotation.allowRoll();
-			for (final String roll : allowRoll) {
-				for (final String auth : authStrings) {
-					if (auth.equalsIgnoreCase(roll)) {
+			for (final Role roll : annotation.allowRoll()) {
+				for (final Role auth : authStrings) {
+					if (auth.equals(roll)) {
 						return true;
 					}
 				}

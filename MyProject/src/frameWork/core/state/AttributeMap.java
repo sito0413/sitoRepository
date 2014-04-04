@@ -1,4 +1,4 @@
-package frameWork.utility.state.attributeMap;
+package frameWork.core.state;
 
 import java.util.Enumeration;
 

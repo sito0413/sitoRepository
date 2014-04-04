@@ -1,4 +1,4 @@
-package frameWork.core.wrap;
+package frameWork.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,12 +16,11 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
-import frameWork.core.CoreHandler;
+import frameWork.core.state.Response;
+import frameWork.core.state.State;
 import frameWork.databaseConnector.DatabaseConnectorKey;
 import frameWork.databaseConnector.pool.ConnectorPool;
-import frameWork.utility.Response;
 import frameWork.utility.ThrowableUtil;
-import frameWork.utility.state.State;
 
 @WebFilter("/*")
 @WebListener
@@ -30,14 +29,13 @@ public class WrapFilter implements Filter, ServletContextListener {
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 	        throws IOException, ServletException {
 		final String target = ((HttpServletRequest) request).getRequestURI();
-		final Response respons = new WrapResponse(response);
-		final String charsetName = "utf8";
+		final Response respons = new Response(response);
 		final String method = ((HttpServletRequest) request).getMethod();
-		final State state = new WrapState((HttpServletRequest) request);
+		final State state = new State((HttpServletRequest) request);
 		final OutputStream outputStream = response.getOutputStream();
 		try {
-			((CoreHandler) request.getServletContext().getAttribute("FRAMEWORK")).handle(target, respons,
-			        charsetName, method, state, outputStream);
+			((CoreHandler) request.getServletContext().getAttribute("FRAMEWORK")).handle(target, respons, method,
+			        state, outputStream);
 		}
 		catch (final Exception e) {
 			ThrowableUtil.throwable(e);

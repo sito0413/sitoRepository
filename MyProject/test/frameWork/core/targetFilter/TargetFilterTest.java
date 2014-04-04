@@ -46,6 +46,6 @@ public class TargetFilterTest {
 	
 	@Test
 	public void view() {
-		assertEquals(new TargetFilter("Test", "index").view, "/test/index.jsp");
+		assertEquals(new TargetFilter("Test", "index").view, "/Test/index.jsp");
 	}
 }

@@ -1,16 +1,15 @@
-package frameWork.core.wrap;
+package frameWork.core.state;
 
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
 
-import frameWork.utility.state.attributeMap.AttributeMap;
 
-public class WrapSessionAttributeMap implements AttributeMap {
+public class SessionAttributeMap implements AttributeMap {
 	
 	private final HttpSession session;
 	
-	public WrapSessionAttributeMap(final HttpSession session) {
+	public SessionAttributeMap(final HttpSession session) {
 		this.session = session;
 	}
 	

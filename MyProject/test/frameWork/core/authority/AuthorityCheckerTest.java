@@ -13,7 +13,7 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest1() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass1.class, TestClass1.class.getMethod("test"), Authority.USER));
+			assertFalse(AuthorityChecker.check(TestClass1.class, TestClass1.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -29,7 +29,7 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest2() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass2.class, TestClass2.class.getMethod("test"), Authority.USER));
+			assertFalse(AuthorityChecker.check(TestClass2.class, TestClass2.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -45,7 +45,7 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest3() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass3.class, TestClass3.class.getMethod("test"), Authority.USER));
+			assertFalse(AuthorityChecker.check(TestClass3.class, TestClass3.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -62,7 +62,7 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest4() {
 		try {
-			assertTrue(AuthorityChecker.check(TestClass4.class, TestClass4.class.getMethod("test"), Authority.USER));
+			assertTrue(AuthorityChecker.check(TestClass4.class, TestClass4.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -71,7 +71,7 @@ public class AuthorityCheckerTest {
 	
 	@Authority
 	static class TestClass5 {
-		@Authority(allowRoll = Authority.ANONYMOUS)
+		@Authority(allowRoll = Role.ANONYMOUS)
 		public void test() {
 		}
 	}
@@ -79,14 +79,14 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest5() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass5.class, TestClass5.class.getMethod("test"), Authority.USER));
+			assertFalse(AuthorityChecker.check(TestClass5.class, TestClass5.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
 		}
 	}
 	
-	@Authority(allowRoll = Authority.ANONYMOUS)
+	@Authority(allowRoll = Role.ANONYMOUS)
 	static class TestClass6 {
 		@Authority
 		public void test() {
@@ -96,16 +96,16 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest6() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass6.class, TestClass6.class.getMethod("test"), Authority.USER));
+			assertFalse(AuthorityChecker.check(TestClass6.class, TestClass6.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
 		}
 	}
 	
-	@Authority(allowRoll = Authority.ANONYMOUS)
+	@Authority(allowRoll = Role.ANONYMOUS)
 	static class TestClass7 {
-		@Authority(allowRoll = Authority.ANONYMOUS)
+		@Authority(allowRoll = Role.ANONYMOUS)
 		public void test() {
 		}
 	}
@@ -113,16 +113,16 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest7() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass7.class, TestClass7.class.getMethod("test"), Authority.USER));
+			assertFalse(AuthorityChecker.check(TestClass7.class, TestClass7.class.getMethod("test"), Role.USER));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
 		}
 	}
 	
-	@Authority(allowRoll = Authority.ANONYMOUS)
+	@Authority(allowRoll = Role.ANONYMOUS)
 	static class TestClass8 {
-		@Authority(allowRoll = Authority.ANONYMOUS)
+		@Authority(allowRoll = Role.ANONYMOUS)
 		public void test() {
 		}
 	}
@@ -130,8 +130,7 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest() {
 		try {
-			assertTrue(AuthorityChecker
-			        .check(TestClass8.class, TestClass8.class.getMethod("test"), Authority.ANONYMOUS));
+			assertTrue(AuthorityChecker.check(TestClass8.class, TestClass8.class.getMethod("test"), Role.ANONYMOUS));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());

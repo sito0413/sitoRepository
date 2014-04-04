@@ -1,15 +1,14 @@
-package frameWork.core.wrap;
+package frameWork.core.state;
 
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
-import frameWork.utility.state.attributeMap.AttributeMap;
 
-public class WrapRequestAttributeMap implements AttributeMap {
+public class RequestAttributeMap implements AttributeMap {
 	private final HttpServletRequest request;
 	
-	public WrapRequestAttributeMap(final HttpServletRequest request) {
+	public RequestAttributeMap(final HttpServletRequest request) {
 		this.request = request;
 	}
 	

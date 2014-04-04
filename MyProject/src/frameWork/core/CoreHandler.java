@@ -9,30 +9,25 @@ import java.lang.reflect.Method;
 
 import frameWork.core.authority.AuthorityChecker;
 import frameWork.core.fileSystem.FileSystem;
+import frameWork.core.state.Response;
+import frameWork.core.state.State;
 import frameWork.core.targetFilter.TargetFilter;
 import frameWork.core.viewCompiler.ViewCompiler;
 import frameWork.databaseConnector.DatabaseConnector;
 import frameWork.databaseConnector.pool.ConnectorPool;
-import frameWork.utility.Response;
 import frameWork.utility.ThrowableUtil;
-import frameWork.utility.state.State;
 
 public class CoreHandler {
-	private final File tempDir;
-	private final File viewerDir;
 	private final ConnectorPool connectorPool;
 	
 	public CoreHandler(final File baseResource, final ConnectorPool connectorPool) {
 		super();
-		this.tempDir = new File(baseResource, "temp");
-		this.viewerDir = new File(baseResource, "viewer");
-		this.tempDir.mkdirs();
-		this.viewerDir.mkdirs();
 		this.connectorPool = connectorPool;
 	}
 	
-	public void handle(final String target, final Response respons, final String charsetName, final String method,
-	        final State state, final OutputStream outputStream) throws Exception {
+	public void handle(final String target, final Response respons, final String method, final State state,
+	        final OutputStream outputStream) throws Exception {
+		final String charsetName = "utf8";
 		final TargetFilter targetFilter = TargetFilter.parse(target);
 		if (targetFilter == null) {
 			response(FileSystem.Resource.getResource(target), outputStream);

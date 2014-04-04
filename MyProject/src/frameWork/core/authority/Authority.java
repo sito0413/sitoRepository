@@ -10,10 +10,7 @@ import java.lang.annotation.Target;
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authority {
-	public String ANONYMOUS = "_anonymous";
-	public String USER = "_user";
-	
-	String[] allowRoll() default {
-		USER
+	Role[] allowRoll() default {
+		Role.USER
 	};
 }

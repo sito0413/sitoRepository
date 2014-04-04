@@ -1,22 +1,18 @@
-package frameWork.core.wrap;
+package frameWork.core.state;
 
 import javax.servlet.ServletResponse;
 
-import frameWork.utility.Response;
-
-public class WrapResponse implements Response {
+public class Response {
 	private final ServletResponse response;
 	
-	public WrapResponse(final ServletResponse response) {
+	public Response(final ServletResponse response) {
 		this.response = response;
 	}
 	
-	@Override
 	public void setContentLength(final int i) {
 		response.setContentLength(i);
 	}
 	
-	@Override
 	public void setContentType(final String contentType) {
 		response.setContentType(contentType);
 	}

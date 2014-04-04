@@ -1,15 +1,14 @@
-package frameWork.core.wrap;
+package frameWork.core.state;
 
 import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 
-import frameWork.utility.state.attributeMap.AttributeMap;
 
-public class WrapContextAttributeMap implements AttributeMap {
+public class ContextAttributeMap implements AttributeMap {
 	private final ServletContext context;
 	
-	public WrapContextAttributeMap(final ServletContext context) {
+	public ContextAttributeMap(final ServletContext context) {
 		this.context = context;
 	}
 	

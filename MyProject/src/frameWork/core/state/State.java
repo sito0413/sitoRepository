@@ -1,4 +1,4 @@
-package frameWork.core.wrap;
+package frameWork.core.state;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -10,15 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import frameWork.core.authority.Authority;
+import frameWork.core.authority.Role;
 import frameWork.databaseConnector.DatabaseConnector;
 import frameWork.utility.ThrowableUtil;
-import frameWork.utility.state.State;
-import frameWork.utility.state.attributeMap.AttributeMap;
 
-public class WrapState implements State {
+public class State {
 	
-	private final String[] auth;
+	private final Role[] auth;
 	private final AttributeMap context;
 	private final AttributeMap session;
 	private final AttributeMap request;
@@ -26,14 +24,15 @@ public class WrapState implements State {
 	private final Map<String, List<String>> parameters;
 	private final Map<String, File> fileMap;
 	private String page;
+	private boolean isViewCompiler;
 	
-	WrapState(final HttpServletRequest request) {
-		this.auth = new String[] {
-			Authority.ANONYMOUS
+	public State(final HttpServletRequest request) {
+		this.auth = new Role[] {
+			Role.ANONYMOUS
 		};
-		this.context = new WrapContextAttributeMap(request.getServletContext());
-		this.session = new WrapSessionAttributeMap(request.getSession(true));
-		this.request = new WrapRequestAttributeMap(request);
+		this.context = new ContextAttributeMap(request.getServletContext());
+		this.session = new SessionAttributeMap(request.getSession(true));
+		this.request = new RequestAttributeMap(request);
 		this.parameters = new ConcurrentHashMap<>();
 		this.fileMap = new ConcurrentHashMap<>();
 		for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
@@ -43,42 +42,37 @@ public class WrapState implements State {
 				list.add(string);
 			}
 		}
-		//FIXME
-		//		try {
-		//			for (final Part part : request.getParts()) {
-		//			}
-		//		}
-		//		catch (IOException | ServletException e) {
-		//			e.printStackTrace();
-		//		}
+		try {
+			for (final javax.servlet.http.Part part : request.getParts()) {
+				// FIXME
+				//	part.
+			}
+		}
+		catch (final Exception e) {
+			ThrowableUtil.throwable(e);
+		}
 	}
 	
-	@Override
 	public void setConnector(final DatabaseConnector connector) {
 		this.connector = connector;
 	}
 	
-	@Override
-	public String[] auth() {
+	public Role[] auth() {
 		return auth;
 	}
 	
-	@Override
 	public AttributeMap getContext() {
 		return context;
 	}
 	
-	@Override
 	public AttributeMap getSession() {
 		return session;
 	}
 	
-	@Override
 	public AttributeMap getRequest() {
 		return request;
 	}
 	
-	@Override
 	public final String getParameter(final String name) {
 		if (parameters.get(name) == null) {
 			return null;
@@ -86,27 +80,22 @@ public class WrapState implements State {
 		return parameters.get(name).get(0);
 	}
 	
-	@Override
 	public final File getFile(final String name) {
 		return fileMap.get(name);
 	}
 	
-	@Override
 	public DatabaseConnector getConnector() {
 		return connector;
 	}
 	
-	@Override
 	public String getPage() {
 		return page;
 	}
 	
-	@Override
 	public void setPage(final String page) {
 		this.page = page;
 	}
 	
-	@Override
 	public void bind(final Object obj) {
 		try {
 			for (final Field field : obj.getClass().getFields()) {
@@ -143,13 +132,11 @@ public class WrapState implements State {
 		}
 	}
 	
-	@Override
 	public boolean isViewCompiler() {
-		return true;
+		return isViewCompiler;
 	}
 	
-	@Override
 	public void setViewCompiler(final boolean isViewCompiler) {
-		
+		this.isViewCompiler = isViewCompiler;
 	}
 }
