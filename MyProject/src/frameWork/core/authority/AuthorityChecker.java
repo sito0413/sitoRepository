@@ -11,7 +11,7 @@ public class AuthorityChecker {
 	
 	static boolean checkAuthority(final Authority annotation, final Role[] authStrings) {
 		if (annotation != null) {
-			for (final Role roll : annotation.allowRoll()) {
+			for (final Role roll : annotation.allowRole()) {
 				for (final Role auth : authStrings) {
 					if (auth.equals(roll)) {
 						return true;

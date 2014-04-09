@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authority {
-	Role[] allowRoll() default {
+	Role[] allowRole() default {
 		Role.USER
 	};
 }

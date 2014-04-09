@@ -14,7 +14,6 @@ import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-
 /**
  * CSVファイルの読書クラス
  * 
@@ -25,8 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 @SuppressWarnings("nls")
 public class CSVParser {
 	public static class Field {
-		public static Field create(final String string,
-				final boolean isQuotationBlock, final char quotation) {
+		public static Field create(final String string, final boolean isQuotationBlock, final char quotation) {
 			final StringBuilder buffer = new StringBuilder();
 			if (!string.isEmpty()) {
 				final int loopMaxCount = string.length() - 1;
@@ -39,23 +37,25 @@ public class CSVParser {
 							if (isQuotationBlockEscape) {
 								buffer.append(analyzedChar);
 							}
-						} else {
+						}
+						else {
 							buffer.append(analyzedChar);
 						}
 					}
-				} else {
+				}
+				else {
 					buffer.append(string);
 				}
 			}
 			return new Field(buffer.toString());
 		}
-
+		
 		private final String string;
-
+		
 		public Field(final String string) {
 			this.string = string;
 		}
-
+		
 		@Override
 		public String toString() {
 			return string;
@@ -63,8 +63,7 @@ public class CSVParser {
 	}
 	
 	public static class Record extends ArrayList<Field> {
-		public static Record create(final String lineString,
-				final char quotation, final char separator) {
+		public static Record create(final String lineString, final char quotation, final char separator) {
 			final int loopMaxCount = lineString.length();
 			final Record record = new Record();
 			for (int i = 0; i < loopMaxCount; i++) {
@@ -74,9 +73,9 @@ public class CSVParser {
 				char analyzedChar = lineString.charAt(i);
 				if (analyzedChar == quotation) {
 					isQuotationBlock = true;
-				} else if (analyzedChar == separator) {
-					record.add(Field.create(buffer.toString(),
-							isQuotationBlock, quotation));
+				}
+				else if (analyzedChar == separator) {
+					record.add(Field.create(buffer.toString(), isQuotationBlock, quotation));
 					continue;
 				}
 				buffer.append(analyzedChar);
@@ -85,53 +84,49 @@ public class CSVParser {
 					if (analyzedChar == separator) {
 						if (isQuotationBlock && !isQuotationBlockEscape) {
 							buffer.append(analyzedChar);
-						} else {
+						}
+						else {
 							break;
 						}
-					} else {
+					}
+					else {
 						buffer.append(analyzedChar);
-						if (analyzedChar == quotation && isQuotationBlock) {
+						if ((analyzedChar == quotation) && isQuotationBlock) {
 							isQuotationBlockEscape = !isQuotationBlockEscape;
 						}
 					}
 				}
-				record.add(Field.create(buffer.toString(),
-						isQuotationBlock, quotation));
+				record.add(Field.create(buffer.toString(), isQuotationBlock, quotation));
 			}
 			return record;
 		}
 	}
-
+	
 	public static class CSV extends ArrayList<Record> {
-
+		
 		public CharSequence toString(final Config config) {
 			final StringBuilder builder = new StringBuilder();
 			for (final Record record : this) {
 				for (final Field field : record) {
-					if (field.toString().contains(
-							String.valueOf(config.getQuotation()))
-							|| field.toString().contains(
-									String.valueOf(config.getSeparator()))
-							|| field.toString().contains(
-									config.getLineSeparator())) {
+					if (field.toString().contains(String.valueOf(config.getQuotation()))
+					        || field.toString().contains(String.valueOf(config.getSeparator()))
+					        || field.toString().contains(config.getLineSeparator())) {
 						builder.append(config.getQuotation())
-								.append(field.toString().replace(
-										String.valueOf(config.getQuotation()),
-										config.getEscape()))
-								.append(config.getQuotation())
-								.append(config.getSeparator());
-					} else {
-						builder.append(field.toString()).append(
-								config.getSeparator());
+						        .append(field.toString().replace(String.valueOf(config.getQuotation()),
+						                config.getEscape())).append(config.getQuotation())
+						        .append(config.getSeparator());
+					}
+					else {
+						builder.append(field.toString()).append(config.getSeparator());
 					}
 				}
 				builder.append(config.getLineSeparator());
 			}
 			return builder;
 		}
-
-		public boolean readLine(final Config config, final String readLine,
-				final StringBuilder buffer, final boolean isQuotationBlock) {
+		
+		public boolean readLine(final Config config, final String readLine, final StringBuilder buffer,
+		        final boolean isQuotationBlock) {
 			boolean result = isQuotationBlock;
 			int quotationCount = 0;
 			for (int i = 0; i < readLine.length(); i++) {
@@ -142,43 +137,42 @@ public class CSVParser {
 			if (isQuotationBlock) {
 				if ((quotationCount % 2) == 0) {
 					buffer.append(readLine).append(config.getLineSeparator());
-				} else {
-					add(Record.create(buffer.append(readLine).toString(),
-							config.getQuotation(), config.getSeparator()));
+				}
+				else {
+					add(Record.create(buffer.append(readLine).toString(), config.getQuotation(), config.getSeparator()));
 					buffer.delete(0, buffer.length());
 					result = false;
 				}
-			} else {
+			}
+			else {
 				if ((quotationCount % 2) == 0) {
-					add(Record.create(readLine, config.getQuotation(),
-							config.getSeparator()));
-				} else {
+					add(Record.create(readLine, config.getQuotation(), config.getSeparator()));
+				}
+				else {
 					buffer.append(readLine).append(config.getLineSeparator());
 					result = true;
 				}
 			}
 			return result;
 		}
-
-		public void read(final Config config, final BufferedReader reader)
-				throws IOException {
+		
+		public void read(final Config config, final BufferedReader reader) throws IOException {
 			boolean isQuotationBlock = false;
 			final StringBuilder buffer = new StringBuilder();
 			// 最終行まで読み込む
 			while (reader.ready()) {
-				isQuotationBlock = readLine(config, reader.readLine(), buffer,
-						isQuotationBlock);
+				isQuotationBlock = readLine(config, reader.readLine(), buffer, isQuotationBlock);
 			}
 		}
 	}
-
+	
 	public static class Config {
 		private char separator;
 		private char quotation;
 		private String encoding;
 		private String lineSeparator;
 		private String escape;
-
+		
 		public Config() {
 			this.quotation = '"';
 			this.separator = ',';
@@ -186,47 +180,47 @@ public class CSVParser {
 			this.lineSeparator = "\r\n";
 			this.escape = "\"\"";
 		}
-
+		
 		public char getSeparator() {
 			return separator;
 		}
-
+		
 		public synchronized void setSeparator(final char separator) {
 			this.separator = separator;
 		}
-
+		
 		public char getQuotation() {
 			return quotation;
 		}
-
+		
 		public synchronized void setQuotation(final char quotation) {
 			this.quotation = quotation;
 		}
-
+		
 		public String getEncoding() {
 			return encoding;
 		}
-
+		
 		public synchronized void setEncoding(final String encoding) {
 			this.encoding = encoding;
 		}
-
+		
 		public String getLineSeparator() {
 			return lineSeparator;
 		}
-
+		
 		public synchronized void setLineSeparator(final String lineSeparator) {
 			this.lineSeparator = lineSeparator;
 		}
-
+		
 		public String getEscape() {
 			return escape;
 		}
-
+		
 		public synchronized void setEscape(final String escape) {
 			this.escape = escape;
 		}
-
+		
 		@Override
 		public synchronized Config clone() {
 			final Config config = new Config();
@@ -237,49 +231,46 @@ public class CSVParser {
 			return config;
 		}
 	}
-
+	
 	/*- インスタンス -------------------------------------------------------------------------------------*/
 	public CSVParser() {
 		this.config = new Config();
 	}
-
+	
 	/*- フィールド ---------------------------------------------------------------------------------------*/
 	public final Config config;
-
+	
 	/*- 読込み -------------------------------------------------------------------------------------------*/
-	public final void readCSV(final File csvFile, final CSV csv)
-			throws IOException {
-		if (csvFile != null && csv != null) {
+	public final void readCSV(final File csvFile, final CSV csv) throws IOException {
+		if ((csvFile != null) && (csv != null)) {
 			final Config conf = this.config.clone();
-			try (BufferedReader r = new BufferedReader(new InputStreamReader(
-					new FileInputStream(csvFile), conf.getEncoding()));) {
+			try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile),
+			        conf.getEncoding()));) {
 				csv.read(conf, r);
 			}
 		}
 	}
-
+	
 	/*- 書込み -------------------------------------------------------------------------------------------*/
-	public final void writeCSV(final File csvFile, final CSV csv)
-			throws IOException {
-		if (csvFile != null && csv != null) {
+	public final void writeCSV(final File csvFile, final CSV csv) throws IOException {
+		if ((csvFile != null) && (csv != null)) {
 			final Config conf = this.config.clone();
-			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(csvFile), conf.getEncoding()));) {
+			try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile),
+			        conf.getEncoding()));) {
 				w.append(csv.toString(conf));
 			}
 		}
 	}
-
+	
 	/*----------------------------------------------------------------------------------------------------*/
 	private static CSV create() {
 		return new CSV();
 	}
-
+	
 	/*----------------------------------------------------------------------------------------------------*/
-
-	public static void main(final String[] args) throws ClassNotFoundException,
-			InstantiationException, IllegalAccessException,
-			UnsupportedLookAndFeelException, IOException {
+	
+	public static void main(final String[] args) throws ClassNotFoundException, InstantiationException,
+	        IllegalAccessException, UnsupportedLookAndFeelException, IOException {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		final JFileChooser chooser1 = new JFileChooser();
 		final CSVParser fileParser = new CSVParser();
@@ -299,5 +290,5 @@ public class CSVParser {
 		}
 		System.out.println("end");
 	}
-
+	
 }

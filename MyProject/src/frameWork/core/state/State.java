@@ -1,5 +1,6 @@
 package frameWork.core.state;
 
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -10,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import frameWork.ThrowableUtil;
 import frameWork.core.authority.Role;
 import frameWork.databaseConnector.DatabaseConnector;
-import frameWork.utility.ThrowableUtil;
 
 public class State {
 	
@@ -43,10 +44,17 @@ public class State {
 			}
 		}
 		try {
-			for (final javax.servlet.http.Part part : request.getParts()) {
-				// FIXME
-				//	part.
-			}
+			//			for (final javax.servlet.http.Part part : request.getParts()) {
+			// FIXME
+			//				final part.set
+			//				for (final String cd : part.getHeader("Content-Disposition").split(";")) {
+			//					if (cd.trim().startsWith("filename")) {
+			//						part.write(cd.substring(cd.indexOf('=') + 1).trim().replace("\"", ""));
+			//						break;
+			//					}
+			//				}
+			//	part.
+			//			}
 		}
 		catch (final Exception e) {
 			ThrowableUtil.throwable(e);

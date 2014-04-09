@@ -1,12 +1,13 @@
 package frameWork.databaseConnector.pool;
 
+
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import frameWork.ThrowableUtil;
 import frameWork.databaseConnector.DatabaseConnectorKey;
-import frameWork.utility.ThrowableUtil;
 
 class PooledConnection {
 	private final DatabaseConnectorKey key;

@@ -7,7 +7,8 @@ public class DatabaseConnectorKey {
 	private final String url;
 	private final String driverClassName;
 	
-	public DatabaseConnectorKey(final String username, final String password, final String url, final String driverClassName) {
+	public DatabaseConnectorKey(final String username, final String password, final String url,
+	        final String driverClassName) {
 		this.url = url;
 		this.driverClassName = driverClassName;
 		this.properties = new Properties();

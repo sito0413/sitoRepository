@@ -8,7 +8,6 @@ import java.io.InputStream;
 import sito.archive.Archive;
 import sito.archive.StoreException;
 
-
 public class Igniter {
 	public static void main(final String[] args) throws StoreException {
 		try {

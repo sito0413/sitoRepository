@@ -1,5 +1,6 @@
 package frameWork.core;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
+import frameWork.ThrowableUtil;
 import frameWork.core.authority.AuthorityChecker;
 import frameWork.core.fileSystem.FileSystem;
 import frameWork.core.state.Response;
@@ -15,22 +17,20 @@ import frameWork.core.targetFilter.TargetFilter;
 import frameWork.core.viewCompiler.ViewCompiler;
 import frameWork.databaseConnector.DatabaseConnector;
 import frameWork.databaseConnector.pool.ConnectorPool;
-import frameWork.utility.ThrowableUtil;
 
 public class CoreHandler {
 	private final ConnectorPool connectorPool;
 	
-	public CoreHandler(final File baseResource, final ConnectorPool connectorPool) {
+	public CoreHandler(final ConnectorPool connectorPool) {
 		super();
 		this.connectorPool = connectorPool;
 	}
 	
-	public void handle(final String target, final Response respons, final String method, final State state,
-	        final OutputStream outputStream) throws Exception {
-		final String charsetName = "utf8";
+	public void handle(final String target, final Response respons, final String method, final State state)
+	        throws Exception {
 		final TargetFilter targetFilter = TargetFilter.parse(target);
 		if (targetFilter == null) {
-			response(FileSystem.Resource.getResource(target), outputStream);
+			response(FileSystem.Resource.getResource(target), respons.getOutputStream());
 		}
 		else {
 			try {
@@ -49,10 +49,10 @@ public class CoreHandler {
 						state.setViewCompiler(true);
 						m.invoke(c.newInstance(), state);
 						if (state.isViewCompiler()) {
-							ViewCompiler.compile(respons, state, charsetName, outputStream);
+							ViewCompiler.compile(respons, state);
 						}
 						else {
-							response(FileSystem.Resource.getResource(state.getPage()), outputStream);
+							response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
 						}
 					}
 					catch (final NullPointerException e) {
@@ -61,16 +61,16 @@ public class CoreHandler {
 						state.setViewCompiler(true);
 						m.invoke(c.newInstance(), state);
 						if (state.isViewCompiler()) {
-							ViewCompiler.compile(respons, state, charsetName, outputStream);
+							ViewCompiler.compile(respons, state);
 						}
 						else {
-							response(FileSystem.Resource.getResource(state.getPage()), outputStream);
+							response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
 						}
 					}
 				}
 			}
 			catch (final ClassNotFoundException | NoSuchMethodException e) {
-				response(FileSystem.Resource.getResource(target), outputStream);
+				response(FileSystem.Resource.getResource(target), respons.getOutputStream());
 			}
 		}
 	}
@@ -84,6 +84,7 @@ public class CoreHandler {
 					outputStream.write(b, 0, i);
 				}
 				outputStream.flush();
+				outputStream.close();
 			}
 			catch (final IOException e) {
 				ThrowableUtil.throwable(e);

@@ -1,6 +1,6 @@
 package frameWork.event.queue;
 
-import frameWork.utility.ThrowableUtil;
+import frameWork.ThrowableUtil;
 
 class QueueThread extends Thread {
 	private final Queue eventQueue;

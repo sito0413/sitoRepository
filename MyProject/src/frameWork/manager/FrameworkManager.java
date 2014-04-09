@@ -3,24 +3,17 @@ package frameWork.manager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 import javax.swing.AbstractListModel;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -31,10 +24,8 @@ import javax.swing.event.ListSelectionListener;
 public class FrameworkManager {
 	
 	private JFrame frame;
-	private JTextField txtCnewwavesystem;
 	private final CardLayout cl_panel = new CardLayout(0, 0);
 	private JPanel panel;
-	private JTextField textField;
 	
 	public static void main(final String[] args) {
 		try {
@@ -67,7 +58,7 @@ public class FrameworkManager {
 		this.frame.setBounds(100, 100, 450, 300);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		{
-			final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			final JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 			this.frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 			{
 				final JPanel panel_1 = new JPanel();
@@ -85,59 +76,16 @@ public class FrameworkManager {
 						scrollPane.setViewportView(panel);
 						panel.setLayout(cl_panel);
 						{
-							final JPanel panel_1_1 = new JPanel();
-							final FlowLayout fl_panel_1_1 = (FlowLayout) panel_1_1.getLayout();
-							fl_panel_1_1.setAlignment(FlowLayout.LEFT);
-							panel.add(panel_1_1, "プロジェクト作成");
-							{
-								final JButton btnNewButton_1 = new JButton("作成");
-								btnNewButton_1.addActionListener(new ActionListener() {
-									@Override
-									public void actionPerformed(final ActionEvent e) {
-										new File("src").mkdirs();
-										new File("authority").mkdirs();
-									}
-								});
-								panel_1_1.add(btnNewButton_1);
-							}
+							final Project project = new Project();
+							this.panel.add(project, project.getListName());
 						}
 						{
-							final JPanel panel_1_1 = new JPanel();
-							panel.add(panel_1_1, "Info作成");
-							panel_1_1.setLayout(null);
-							{
-								this.txtCnewwavesystem = new JTextField();
-								this.txtCnewwavesystem.setBounds(5, 5, 150, 28);
-								this.txtCnewwavesystem.setText("C:/newwave/_system");
-								panel_1_1.add(this.txtCnewwavesystem);
-							}
-							{
-								this.textField = new JTextField();
-								this.textField.setBounds(5, 38, 150, 28);
-								panel_1_1.add(this.textField);
-								this.textField.setColumns(10);
-							}
-							{
-								final JButton btnNewButton = new JButton("作成");
-								btnNewButton.addActionListener(new ActionListener() {
-									@Override
-									public void actionPerformed(final ActionEvent e) {
-										final Properties properties = new Properties();
-										properties.setProperty("Path", txtCnewwavesystem.getText());
-										if (!textField.getText().isEmpty()) {
-											properties.setProperty("SystemID", textField.getText());
-										}
-										try (FileOutputStream os = new FileOutputStream("./src/info.xml")) {
-											properties.storeToXML(os, "");
-										}
-										catch (final IOException e1) {
-											e1.printStackTrace();
-										}
-									}
-								});
-								btnNewButton.setBounds(155, 38, 52, 28);
-								panel_1_1.add(btnNewButton);
-							}
+							final Info info = new Info();
+							this.panel.add(info, info.getListName());
+						}
+						{
+							final Authority authority = new Authority();
+							this.panel.add(authority, authority.getListName());
 						}
 					}
 				}
@@ -160,7 +108,7 @@ public class FrameworkManager {
 						});
 						list.setModel(new AbstractListModel() {
 							String[] values = new String[] {
-							        "プロジェクト作成", "Info作成"
+							        "プロジェクト作成", "Info作成", "権限作成"
 							};
 							
 							@Override

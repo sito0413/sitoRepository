@@ -4,7 +4,6 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 public class RequestAttributeMap implements AttributeMap {
 	private final HttpServletRequest request;
 	

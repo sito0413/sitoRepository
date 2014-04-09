@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import sito.archive.Archive;
 
-
 public abstract class AbstractPackager {
 	private static final String DELIMITA = "_";
 	private static final byte BYTE_OF_DELIMITA = DELIMITA.getBytes(Archive.CHARSET)[0];

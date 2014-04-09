@@ -2,14 +2,16 @@ package frameWork.core.viewCompiler;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 
-public class ViewerWriter extends Writer {
+import frameWork.core.fileSystem.FileSystem;
+
+public class ViewerWriter {
+	private static final int INIT_SIZE = 5120;
 	private byte[] _buf;
 	private int _size;
 	
 	ViewerWriter() {
-		_buf = new byte[2048];
+		_buf = new byte[INIT_SIZE];
 	}
 	
 	int size() {
@@ -23,7 +25,6 @@ public class ViewerWriter extends Writer {
 	public void write() {
 	}
 	
-	@Override
 	public void write(final int c) throws IOException {
 		write(Integer.toString(c));
 	}
@@ -36,9 +37,8 @@ public class ViewerWriter extends Writer {
 		write(Long.toString(c));
 	}
 	
-	@Override
-	public void write(final char[] cbuf, final int off, final int len) throws IOException {
-		final byte[] bs = new String(cbuf, off, len).getBytes("UTF-8");
+	public void write(final String str) throws IOException {
+		final byte[] bs = str.getBytes(FileSystem.Config.getString("ViewChareet", "UTF-8"));
 		if ((_size + bs.length) > _buf.length) {
 			final byte[] buf = new byte[((_buf.length + bs.length) * 4) / 3];
 			System.arraycopy(_buf, 0, buf, 0, _size);
@@ -47,13 +47,5 @@ public class ViewerWriter extends Writer {
 		for (final byte b : bs) {
 			_buf[_size++] = b;
 		}
-	}
-	
-	@Override
-	public void flush() {
-	}
-	
-	@Override
-	public void close() {
 	}
 }

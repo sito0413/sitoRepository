@@ -9,7 +9,6 @@ import sito.archive.Archive;
 import sito.archive.Value;
 import sito.archive.connection.valueManager.ValueManager;
 
-
 public class FileValueManager extends ValueManager {
 	private static final String TYPE = "F";
 	public static final byte TYPE_OF_BYTE = TYPE.getBytes(Archive.CHARSET)[0];

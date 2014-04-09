@@ -4,7 +4,6 @@ import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 
-
 public class ContextAttributeMap implements AttributeMap {
 	private final ServletContext context;
 	

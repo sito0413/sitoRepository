@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Population {
 	public static void main(final String[] args) {
-		Population population = new Population();
+		final Population population = new Population();
 		population.add(createGean(5));
 		population.add(createGean(122));
 		population.add(createGean(2));
@@ -15,40 +15,40 @@ public class Population {
 			population.genetic(2, 1);
 		}
 	}
-
+	
 	private static byte[] createGean(final int v) {
-		String string = Integer.toBinaryString(v);
-		int length = 4;
-		byte[] bs = new byte[length];
+		final String string = Integer.toBinaryString(v);
+		final int length = 4;
+		final byte[] bs = new byte[length];
 		for (int i = 0; i < length; i++) {
 			bs[i] = 0;
 		}
 		for (int i = length - string.length(); i < string.length(); i++) {
-			if (i >= 0 && i < length) {
+			if ((i >= 0) && (i < length)) {
 				bs[i] = Byte.parseByte(string.substring(i, i + 1));
 			}
 		}
 		return bs;
 	}
-
+	
 	private ArrayList<byte[]> list = new ArrayList<byte[]>();
 	private final Random random = new Random();
 	private int generation;
-
+	
 	public void add(final byte[] chromosome) {
 		list.add(chromosome);
 	}
-
+	
 	public void remove(final byte[] chromosome) {
 		list.remove(chromosome);
 	}
-
+	
 	@SuppressWarnings("nls")
 	public boolean evaluation(final int limit) {
-
-		StringBuilder builder = new StringBuilder();
+		
+		final StringBuilder builder = new StringBuilder();
 		builder.append((generation + 1)).append(" ");
-		for (byte[] bs : list) {
+		for (final byte[] bs : list) {
 			builder.append('[');
 			for (int i = 0; i < bs.length; i++) {
 				builder.append(bs[i]);
@@ -58,17 +58,17 @@ public class Population {
 		System.out.println(builder);
 		return generation++ < limit;
 	}
-
+	
 	public void genetic(final int crossoverNum, final int potential) {
 		selection();
 		crossover(crossoverNum);
 		mutation(crossoverNum, potential);
 	}
-
+	
 	private void selection() {
-		ArrayList<byte[]> tmpList = list;
+		final ArrayList<byte[]> tmpList = list;
 		byte[] lastChromosome = null;
-		int[] is = new int[tmpList.size()];
+		final int[] is = new int[tmpList.size()];
 		for (int i = 0; i < tmpList.size(); i++) {
 			int fitness = 0;
 			for (int j = 0; j < tmpList.get(i).length; j++) {
@@ -80,17 +80,17 @@ public class Population {
 		while (list.size() != tmpList.size()) {
 			int sumFitness = 0;
 			for (int i = 0; i < tmpList.size(); i++) {
-				byte[] chromosome = tmpList.get(i);
-				if (lastChromosome == null || !chromosome.equals(lastChromosome)) {
+				final byte[] chromosome = tmpList.get(i);
+				if ((lastChromosome == null) || !chromosome.equals(lastChromosome)) {
 					sumFitness += is[i];
 				}
 			}
-			if (sumFitness - 1 > 0) {
-				int r = random.nextInt(sumFitness - 1);
+			if ((sumFitness - 1) > 0) {
+				final int r = random.nextInt(sumFitness - 1);
 				int s = 0;
 				for (int i = 0; i < tmpList.size(); i++) {
-					byte[] chromosome = tmpList.get(i);
-					if (lastChromosome == null || !chromosome.equals(lastChromosome)) {
+					final byte[] chromosome = tmpList.get(i);
+					if ((lastChromosome == null) || !chromosome.equals(lastChromosome)) {
 						s += is[i];
 						if (s > r) {
 							if (lastChromosome == null) {
@@ -107,36 +107,36 @@ public class Population {
 			}
 		}
 	}
-
+	
 	private void crossover(final int num) {
-		int limit = list.size() - num;
+		final int limit = list.size() - num;
 		for (int i = 0; i < limit; i += num) {
-			byte[][] chromosomes = new byte[num][];
+			final byte[][] chromosomes = new byte[num][];
 			for (int j = 0; j < num; j++) {
 				chromosomes[j] = list.get(i + j);
 			}
-
-			int crossoverPoint = random.nextInt(Math.min(chromosomes[0].length, chromosomes[1].length));
-			byte[] gene1 = chromosomes[0];
-			byte[] gene2 = chromosomes[1];
+			
+			final int crossoverPoint = random.nextInt(Math.min(chromosomes[0].length, chromosomes[1].length));
+			final byte[] gene1 = chromosomes[0];
+			final byte[] gene2 = chromosomes[1];
 			for (int j = 0; j < crossoverPoint; j++) {
-				byte tmp = gene1[j];
+				final byte tmp = gene1[j];
 				gene1[j] = gene2[j];
 				gene2[j] = tmp;
 			}
 		}
 	}
-
+	
 	private void mutation(final int num, final double potential) {
-		int limit = list.size() - num;
+		final int limit = list.size() - num;
 		for (int i = 0; i < limit; i++) {
 			if (random.nextInt(100) <= potential) {
 				int max = 0;
 				for (int j = 0; j < list.get(i).length; j++) {
 					max += j;
 				}
-				int rdm = random.nextInt(max - 1);
-				int sum = 0;
+				final int rdm = random.nextInt(max - 1);
+				final int sum = 0;
 				for (int j = 0; j < list.get(i).length; j++) {
 					if (sum > rdm) {
 						list.get(i)[j] ^= 1;

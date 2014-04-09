@@ -4,7 +4,6 @@ import java.io.File;
 
 import sito.archive.Value;
 
-
 class TextValue extends Value {
 	protected final String value;
 	

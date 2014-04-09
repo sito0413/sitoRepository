@@ -71,7 +71,7 @@ public class AuthorityCheckerTest {
 	
 	@Authority
 	static class TestClass5 {
-		@Authority(allowRoll = Role.ANONYMOUS)
+		@Authority(allowRole = Role.ANONYMOUS)
 		public void test() {
 		}
 	}
@@ -86,7 +86,7 @@ public class AuthorityCheckerTest {
 		}
 	}
 	
-	@Authority(allowRoll = Role.ANONYMOUS)
+	@Authority(allowRole = Role.ANONYMOUS)
 	static class TestClass6 {
 		@Authority
 		public void test() {
@@ -103,9 +103,9 @@ public class AuthorityCheckerTest {
 		}
 	}
 	
-	@Authority(allowRoll = Role.ANONYMOUS)
+	@Authority(allowRole = Role.ANONYMOUS)
 	static class TestClass7 {
-		@Authority(allowRoll = Role.ANONYMOUS)
+		@Authority(allowRole = Role.ANONYMOUS)
 		public void test() {
 		}
 	}
@@ -120,9 +120,9 @@ public class AuthorityCheckerTest {
 		}
 	}
 	
-	@Authority(allowRoll = Role.ANONYMOUS)
+	@Authority(allowRole = Role.ANONYMOUS)
 	static class TestClass8 {
-		@Authority(allowRoll = Role.ANONYMOUS)
+		@Authority(allowRole = Role.ANONYMOUS)
 		public void test() {
 		}
 	}
