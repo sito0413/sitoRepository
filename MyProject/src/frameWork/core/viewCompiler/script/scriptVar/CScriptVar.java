@@ -1,9 +1,6 @@
 package frameWork.core.viewCompiler.script.scriptVar;
 
-import static frameWork.core.viewCompiler.script.Util.*;
-import frameWork.core.viewCompiler.script.CScriptVarLink;
-import frameWork.core.viewCompiler.script.functions.JsCallback;
-import frameWork.core.viewCompiler.script.lexicalAnalyzer.Lexical;
+import static frameWork.core.viewCompiler.script.scriptVar.Util.*;
 
 public class CScriptVar {
 	
@@ -15,7 +12,6 @@ public class CScriptVar {
 	public static final int SCRIPTVAR_INTEGER = 16;
 	public static final int SCRIPTVAR_STRING = 32;
 	public static final int SCRIPTVAR_NULL = 64;
-	public static final int SCRIPTVAR_NATIVE = 128;
 	public static final int SCRIPTVAR_NUMERICMASK = SCRIPTVAR_NULL | SCRIPTVAR_DOUBLE | SCRIPTVAR_INTEGER;
 	public static final int SCRIPTVAR_VARTYPEMASK = SCRIPTVAR_STRING | SCRIPTVAR_FUNCTION | SCRIPTVAR_OBJECT
 	        | SCRIPTVAR_ARRAY | SCRIPTVAR_NUMERICMASK;
@@ -23,18 +19,16 @@ public class CScriptVar {
 	public String data;
 	public CScriptVarLink firstChild;
 	CScriptVarLink lastChild;
-	public JsCallback jsCallback;
 	int refs;
 	int flags;
 	int intData;
 	double doubleData;
 	
-	CScriptVar() {
+	public CScriptVar() {
 		refs = 0;
 		firstChild = null;
 		lastChild = null;
 		flags = 0;
-		jsCallback = null;
 		data = TINYJS_BLANK_DATA;
 		intData = 0;
 		doubleData = 0;
@@ -81,31 +75,105 @@ public class CScriptVar {
 		return v;
 	}
 	
-	public CScriptVar mathsOp(final CScriptVar b, final Lexical op) throws Exception {
+	public CScriptVar mathsOp(final CScriptVar b, final String op) throws Exception {
 		// do maths...
 		if ((isUndefined()) && (b.isUndefined())) {
-			return op.mathsOp();
+			if (op.equals(LEX_NEQUAL)) {
+				return new ScriptInteger(0);
+			}
+			else if (op.equals(LEX_EQUALEQUAL)) {
+				return new ScriptInteger(1);
+			}
+			return new ScriptUndefined();
+			
 		}
 		else if (((isNumeric()) || (isUndefined())) && ((b.isNumeric()) || (b.isUndefined()))) {
 			if ((!isDouble()) && (!b.isDouble())) {
 				// use ints
 				final int da = getInt();
 				final int db = b.getInt();
-				return op.mathsOp(da, db);
+				return mathsOp(da, db, op);
 			}
 			// use doubles
 			final double da = getDouble();
 			final double db = b.getDouble();
-			return op.mathsOp(da, db);
+			return mathsOp(da, db, op);
 		}
 		else if (isArray() || isObject()) {
-			return op.mathsOp(this, b);
+			return mathsOp(this, b, op);
 		}
 		else {
 			final String da = getString();
 			final String db = b.getString();
-			return op.mathsOp(da, db);
+			return mathsOp(da, db, op);
 		}
+	}
+	
+	public CScriptVar mathsOp(final int da, final int db, final String op) throws Exception {
+		switch ( op ) {
+			case LEX_AND :
+				return new ScriptInteger(da & db);
+			case LEX_OR :
+				return new ScriptInteger(da | db);
+			case LEX_XOR :
+				return new ScriptInteger(da ^ db);
+			case LEX_PERCENT :
+				return new ScriptInteger(da % db);
+			case LEX_LEQUAL :
+				return new ScriptInteger(da <= db ? 1 : 0);
+			case LEX_GEQUAL :
+				return new ScriptInteger(da >= db ? 1 : 0);
+			case LEX_ANGLE_BRACKETS_LEFT :
+				return new ScriptInteger(da < db ? 1 : 0);
+			case LEX_ANGLE_BRACKETS_RIGHT :
+				return new ScriptInteger(da > db ? 1 : 0);
+			case LEX_ASTERISK :
+				return new ScriptInteger(da * db);
+			case LEX_SLASH :
+				return new ScriptInteger(da / db);
+			case LEX_PLUS :
+				return new ScriptInteger(da + db);
+			case LEX_MINUS :
+				return new ScriptInteger(da - db);
+			default :
+				throw new Exception("Operation " + op + " not supported on the Int datatype");
+		}
+	}
+	
+	public CScriptVar mathsOp(final double da, final double db, final String op) throws Exception {
+		switch ( op ) {
+			case LEX_LEQUAL :
+				return new ScriptInteger(da <= db ? 1 : 0);
+			case LEX_GEQUAL :
+				return new ScriptInteger(da >= db ? 1 : 0);
+			case LEX_ANGLE_BRACKETS_LEFT :
+				return new ScriptInteger(da < db ? 1 : 0);
+			case LEX_ANGLE_BRACKETS_RIGHT :
+				return new ScriptInteger(da > db ? 1 : 0);
+			case LEX_ASTERISK :
+				return new ScriptDouble(da * db);
+			case LEX_SLASH :
+				return new ScriptDouble(da / db);
+			case LEX_PLUS :
+				return new ScriptDouble(da + db);
+			case LEX_MINUS :
+				return new ScriptDouble(da - db);
+			default :
+				throw new Exception("Operation " + op + " not supported on the Double datatype");
+		}
+	}
+	
+	public CScriptVar mathsOp(final String da, final String db, final String op) throws Exception {
+		switch ( op ) {
+			case LEX_PLUS :
+				return new ScriptString(da + db);
+			default :
+				throw new Exception("Operation " + op + " not supported on the string datatype");
+		}
+	}
+	
+	public CScriptVar mathsOp(final CScriptVar da, final CScriptVar db, final String op) throws Exception {
+		throw new Exception("Operation " + op + " not supported on the Array datatype");
 	}
 	
 	public CScriptVarLink findChild(final String childName) {
@@ -145,10 +213,6 @@ public class CScriptVar {
 	
 	public boolean isArray() {
 		return (flags & SCRIPTVAR_ARRAY) != 0;
-	}
-	
-	public boolean isNative() {
-		return (flags & SCRIPTVAR_NATIVE) != 0;
 	}
 	
 	private boolean isUndefined() {
@@ -244,7 +308,7 @@ public class CScriptVar {
 		 *  Because we can't return a string that is generated on demand.
 		 * I should really just use char* :)
 		 */
-		final String s_null = "null";
+		final String s_null = LEX_R_NULL;
 		final String s_undefined = "undefined";
 		if (isInt()) {
 			data = String.valueOf(intData);

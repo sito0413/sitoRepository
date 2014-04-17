@@ -1,6 +1,5 @@
 package frameWork.core.viewCompiler.script.scriptVar;
 
-import frameWork.core.viewCompiler.script.CScriptVarLink;
 
 public class ScriptFunction extends CScriptVar {
 	public ScriptFunction() {
