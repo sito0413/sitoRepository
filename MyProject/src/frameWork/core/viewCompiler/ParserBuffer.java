@@ -6,7 +6,6 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import frameWork.core.fileSystem.FileSystem;
@@ -131,7 +130,7 @@ class ParserBuffer {
 		}
 	}
 	
-	public List<Textlet> toTextlets(final File targetFile, final Map<String, Class<?>> classMap, final Response response) {
+	public List<Textlet> toTextlets(final File targetFile, final Scope scope, final Response response) {
 		final Set<String> duplicateCheck = new HashSet<>();
 		final List<Textlet> textlets = new ArrayList<>();
 		Textlet oldTextlet = new Scriptlet("");
@@ -147,14 +146,14 @@ class ParserBuffer {
 						int s = 0;
 						int index = -1;
 						while ((index = value.indexOf(',', s)) != -1) {
-							add(classMap, value.substring(s, index).trim(), duplicateCheck);
+							add(scope, value.substring(s, index).trim(), duplicateCheck);
 							s = index + 1;
 						}
 						if (s == 0) {
-							add(classMap, value.trim(), duplicateCheck);
+							add(scope, value.trim(), duplicateCheck);
 						}
 						else {
-							add(classMap, value.substring(s).trim(), duplicateCheck);
+							add(scope, value.substring(s).trim(), duplicateCheck);
 						}
 					}
 					else if ("contentType".equals(qName)) {
@@ -220,16 +219,15 @@ class ParserBuffer {
 		return textlets;
 	}
 	
-	private static void add(final Map<String, Class<?>> classMap, final String importText,
-	        final Set<String> duplicateCheck) {
+	private static void add(final Scope scope, final String importText, final Set<String> duplicateCheck) {
 		try {
 			final Class<?> c = Class.forName(importText);
-			classMap.put(c.getCanonicalName(), c);
+			scope.putImport(c.getCanonicalName(), c);
 			if (duplicateCheck.add(c.getSimpleName())) {
-				classMap.put(c.getSimpleName(), c);
+				scope.putImport(c.getSimpleName(), c);
 			}
 			else {
-				classMap.remove(c.getSimpleName());
+				scope.removeImport(c.getSimpleName());
 			}
 		}
 		catch (final Exception exception) {

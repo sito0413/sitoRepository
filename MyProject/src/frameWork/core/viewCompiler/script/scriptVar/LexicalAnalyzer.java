@@ -4,7 +4,6 @@ import static frameWork.core.viewCompiler.script.scriptVar.Util.*;
 
 import java.util.Vector;
 
-
 public class LexicalAnalyzer {
 	private String tkStr;
 	public String tk;

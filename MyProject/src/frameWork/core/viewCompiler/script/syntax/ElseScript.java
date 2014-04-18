@@ -1,11 +1,11 @@
-package frameWork.core.viewCompiler.script;
+package frameWork.core.viewCompiler.script.syntax;
 
-import java.util.Map;
-
+import frameWork.core.viewCompiler.Scope;
 import frameWork.core.viewCompiler.Script;
 import frameWork.core.viewCompiler.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.bytecode.Bytecode;
 
-public class ElseScript extends Script {
+public class ElseScript extends SyntaxScript {
 	private IfScript ifScript;
 	
 	@Override
@@ -18,19 +18,22 @@ public class ElseScript extends Script {
 	}
 	
 	@Override
-	public String execute(final Map<String, Class<?>> classMap, final Map<String, Object> objectMap) throws Exception {
+	public Bytecode execute(final Scope scope) throws Exception {
 		if (ifScript == null) {
-			String value = "";
+			Bytecode value = null;
+			scope.startScope();
+			loop:
 			for (final Script script : block) {
-				value = script.execute(classMap, objectMap);
-				switch ( value ) {
+				value = script.execute(scope);
+				switch ( value.toString() ) {
 					case "break;" :
 					case "continue" :
-						return value;
+						break loop;
 				}
 			}
+			scope.endScope();
 			return value;
 		}
-		return ifScript.execute(classMap, objectMap);
+		return ifScript.execute(scope);
 	}
 }

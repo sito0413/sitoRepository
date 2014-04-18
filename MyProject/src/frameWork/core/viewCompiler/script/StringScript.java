@@ -1,9 +1,9 @@
 package frameWork.core.viewCompiler.script;
 
-import java.util.Map;
-
+import frameWork.core.viewCompiler.Scope;
 import frameWork.core.viewCompiler.Script;
-import frameWork.core.viewCompiler.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.bytecode.Bytecode;
+import frameWork.core.viewCompiler.script.bytecode.ObjectScript;
 
 public class StringScript extends Script {
 	final String token;
@@ -18,12 +18,7 @@ public class StringScript extends Script {
 	}
 	
 	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws Exception {
-		return scriptsBuffer.getChar();
-	}
-	
-	@Override
-	public String execute(final Map<String, Class<?>> classMap, final Map<String, Object> objectMap) throws Exception {
-		return token;
+	public Bytecode execute(final Scope scope) throws Exception {
+		return new ObjectScript(String.class, token.substring(1, token.length() - 1));
 	}
 }

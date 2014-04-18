@@ -1,9 +1,9 @@
 package frameWork.core.viewCompiler.script;
 
-import java.util.Map;
-
+import frameWork.core.viewCompiler.Scope;
 import frameWork.core.viewCompiler.Script;
-import frameWork.core.viewCompiler.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.bytecode.Bytecode;
+import frameWork.core.viewCompiler.script.bytecode.ObjectScript;
 
 public class NumericScript extends Script {
 	private final String expression;
@@ -18,12 +18,15 @@ public class NumericScript extends Script {
 	}
 	
 	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws Exception {
-		return scriptsBuffer.getChar();
+	public Bytecode execute(final Scope scope) throws Exception {
+		if (expression.contains(".")) {
+			return new ObjectScript(Double.class, Double.parseDouble(expression));
+		}
+		return new ObjectScript(Long.class, Long.parseLong(expression));
 	}
 	
 	@Override
-	public String execute(final Map<String, Class<?>> classMap, final Map<String, Object> objectMap) throws Exception {
-		return expression;
+	public boolean isNumeric() {
+		return true;
 	}
 }

@@ -1,9 +1,8 @@
 package frameWork.core.viewCompiler.script;
 
-import java.util.Map;
-
+import frameWork.core.viewCompiler.Scope;
 import frameWork.core.viewCompiler.Script;
-import frameWork.core.viewCompiler.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.bytecode.Bytecode;
 
 public class TokenScript extends Script {
 	private final String expression;
@@ -18,12 +17,32 @@ public class TokenScript extends Script {
 	}
 	
 	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws Exception {
-		return scriptsBuffer.getChar();
+	public Bytecode execute(final Scope scope) throws Exception {
+		return null;
 	}
 	
 	@Override
-	public String execute(final Map<String, Class<?>> classMap, final Map<String, Object> objectMap) throws Exception {
-		return expression;
+	public boolean isDefault() {
+		return "default".equals(expression);
+	}
+	
+	@Override
+	public boolean isCase() {
+		return "case".equals(expression);
+	}
+	
+	@Override
+	public boolean isSyntax() {
+		return "?".equals(expression);
+	}
+	
+	@Override
+	public boolean isToken() {
+		return true;
+	}
+	
+	@Override
+	public boolean isBoolean() {
+		return "true".equals(expression) || "false".equals(expression);
 	}
 }
