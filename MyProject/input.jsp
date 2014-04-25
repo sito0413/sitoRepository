@@ -1,7 +1,15 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html>
 <%
+var y =0;
+y++;
+y--;
+--y;
+++y;
+System.out.print("test");
+//var y = new ArrayList<String>();
 	var masterData = request.getAttribute("data");
 	var list1 = masterData.get(1);
 	var list1Size = list1.size();
@@ -393,9 +401,9 @@
 									<option value="-1">　</option>
 <%
 	for(var i = 0;i < 24; i++){
-		var s = ""+i;
+		var s = "" + i;
 		if(i < 10){
-			s= '0'+i;
+			s= '0' + i;
 		}
 %>									<option value="<%=s%>"<%if(s==data12) {%> selected="selected"<% }%>><%=s%>時</option>
 <%
@@ -406,9 +414,9 @@
 									<option value="-1">　</option>
 <%
 	for(var i = 0;i < 60; i++){
-		var s = ""+i;
+		var s = "" + i;
 		if(i < 10){
-			s= '0'+i;
+			s= '0' + i;
 		}
 %>									<option value="<%=s%>"<%if(s==data13) {%> selected="selected"<% }%>><%=s%>分</option>
 <%
@@ -475,10 +483,10 @@
 											<option value="0">　</option>
 <%
 	for(var i = 1; i <= 12; i++){
-		var s1 = ""+i;
-		var s2 = ""+i;
+		var s1 = "" + i;
+		var s2 = "" + i;
 		if(i < 10){
-			s2= '0'+i;
+			s2= '0' + i;
 		}
 %>											<option value="<%=s1%>"<%if(s1==data16) {%> selected="selected"<% }%>><%=s2%>月</option>
 <%
@@ -498,10 +506,10 @@
 											<option value="0">　</option>
 <%
 	for(var i = 1; i <= 31; i++){
-		var s1 = ""+i;
-		var s2 = ""+i;
+		var s1 = "" + i;
+		var s2 = "" + i;
 		if(i < 10){
-			s2= '0'+i;
+			s2= '0' + i;
 		}
 %>											<option value="<%=s1%>"<%if(s1==data17) {%> selected="selected"<% }%>><%=s2%>日</option>
 <%
@@ -542,9 +550,9 @@
 											<option value="-1">　</option>
 <%
 	for(var i = 0; i <= 23; i++){
-		var s = ""+i;
+		var s = "" + i;
 		if(i < 10){
-			s= '0'+i;
+			s= '0' + i;
 		}
 %>											<option value="<%=s%>"<%if(s==data19) {%> selected="selected"<% }%>><%=s%>時</option>
 <%
@@ -554,9 +562,9 @@
 											<option value="-1">　</option>
 <%
 	for(var i = 0; i <= 59; i++){
-		var s = ""+i;
+		var s = "" + i;
 		if(i < 10){
-			s= '0'+i;
+			s= '0' + i;
 		}
 %>											<option value="<%=s%>"<%if(s==data20) {%> selected="selected"<% }%>><%=s%>分</option>
 <%
@@ -1088,7 +1096,7 @@
 			</div>
 <%
  	for(var j = 0;j <= 7; j++){
- 		var s = j+"";
+ 		var s = j + "";
 %>			<div data-role="popup" id="popupHintC<%=s %>" data-overlay-theme="a" data-theme="d" data-corners="false" draggable="false">
 				<table class="table">
 <%

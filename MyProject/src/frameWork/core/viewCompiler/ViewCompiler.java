@@ -18,7 +18,7 @@ import frameWork.core.fileSystem.FileSystem;
 import frameWork.core.state.AttributeMap;
 import frameWork.core.state.Response;
 import frameWork.core.state.State;
-import frameWork.core.viewCompiler.script.bytecode.ObjectScript;
+import frameWork.core.viewCompiler.script.ScriptsBuffer;
 import frameWork.core.viewCompiler.script.syntax.SyntaxScript;
 
 public class ViewCompiler {
@@ -30,8 +30,8 @@ public class ViewCompiler {
 		final Scope scope = new Scope();
 		final ViewerWriter out = new ViewerWriter();
 		scope.startScope();
-		scope.put("out", new ObjectScript(ViewerWriter.class, out));
-		scope.put("session", new ObjectScript(AttributeMap.class, new AttributeMap() {
+		scope.put("out", out);
+		scope.put("session", new AttributeMap() {
 			
 			@Override
 			public void setAttribute(final String name, final Object value) {
@@ -47,8 +47,8 @@ public class ViewCompiler {
 				System.out.println("s@" + name);
 				return "";
 			}
-		}));
-		scope.put("application", new ObjectScript(AttributeMap.class, new AttributeMap() {
+		});
+		scope.put("application", new AttributeMap() {
 			
 			@Override
 			public void setAttribute(final String name, final Object value) {
@@ -63,8 +63,8 @@ public class ViewCompiler {
 			public Object getAttribute(final String name) {
 				return null;
 			}
-		}));
-		scope.put("request", new ObjectScript(AttributeMap.class, new AttributeMap() {
+		});
+		scope.put("request", new AttributeMap() {
 			
 			@Override
 			public void setAttribute(final String name, final Object value) {
@@ -83,7 +83,7 @@ public class ViewCompiler {
 				}
 				return "";
 			}
-		}));
+		});
 		parse(new File("input.jsp"), null, scope);
 		out.writeTo(System.out);
 	}
@@ -96,10 +96,10 @@ public class ViewCompiler {
 				//				final File scriptFile = File.createTempFile("view", ".js", FileSystem.Temp);
 				response.setContentType("text/html;charset=" + FileSystem.Config.getString("ViewChareet", "UTF-8"));
 				final Scope scope = new Scope();
-				scope.put("out", new ObjectScript(ViewerWriter.class, out));
-				scope.put("session", new ObjectScript(AttributeMap.class, state.getSession()));
-				scope.put("application", new ObjectScript(AttributeMap.class, state.getContext()));
-				scope.put("request", new ObjectScript(AttributeMap.class, state.getRequest()));
+				scope.put("out", out);
+				scope.put("session", state.getSession());
+				scope.put("application", state.getContext());
+				scope.put("request", state.getRequest());
 				parse(targetFile, response, scope);
 				response.setContentLength(out.size());
 				out.writeTo(responseOutputStream);
@@ -133,21 +133,20 @@ public class ViewCompiler {
 			        new ParserBuffer(CharBuffer.wrap(writer.toString())).toTextlets(targetFile, scope, response));
 			while (scriptsBuffer.hasRemaining()) {
 				scriptsBuffer.skip();
+				@SuppressWarnings("rawtypes")
 				final SyntaxScript subScript = scriptsBuffer.getSyntaxToken();
+				scriptsBuffer.skip();
 				switch ( subScript.create(scriptsBuffer) ) {
-					case ':' :
-					case ',' :
-					case ')' :
-						throw new Exception("Error " + scriptsBuffer.getChar() + " at " + scriptsBuffer.getPosition());
 					case ';' :
 					case '}' :
+						subScript.print();
 						scriptsBuffer.gotoNextChar();
 						break;
 					default :
-						scriptsBuffer.skip();
+						subScript.print();
 						break;
 				}
-				//				subScript.execute(scope);
+				//subScript.execute(scope);
 			}
 		}
 		JOptionPane.showMessageDialog(null, "");
