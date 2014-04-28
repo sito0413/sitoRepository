@@ -1,24 +1,19 @@
 package frameWork.core.viewCompiler.script.bytecode;
 
-import frameWork.core.viewCompiler.Scope;
-import frameWork.core.viewCompiler.script.expression.BooleanScript;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.expression.CharacterScript;
 import frameWork.core.viewCompiler.script.expression.StringScript;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
 public class ObjectBytecode implements InstanceBytecode {
 	@SuppressWarnings("rawtypes")
-	private final Class type;
-	private final Object value;
+	private Class type;
+	private Object value;
 	
 	public ObjectBytecode(@SuppressWarnings("rawtypes") final Class type, final Object value) {
 		this.type = type;
 		this.value = value;
-	}
-	
-	@Override
-	public String toString() {
-		return value.toString();
 	}
 	
 	@Override
@@ -27,54 +22,22 @@ public class ObjectBytecode implements InstanceBytecode {
 	}
 	
 	@Override
+	public InstanceBytecode set(final Scope scope, final InstanceBytecode execute) {
+		type = execute.type();
+		value = execute.get();
+		return this;
+	}
+	
+	@Override
 	public Class<?> type() {
-		return type;
+		if (value == null) {
+			return type;
+		}
+		return value.getClass();
 	}
 	
 	@Override
-	public InstanceBytecode prefixIncrement() {
-		if (value instanceof Long) {
-			return new LongBytecode((Long) value).prefixIncrement();
-		}
-		else if (value instanceof Integer) {
-			return new IntegerBytecode((Integer) value).prefixIncrement();
-		}
-		else if (value instanceof Short) {
-			return new ShortBytecode((Short) value).prefixIncrement();
-		}
-		else if (value instanceof Byte) {
-			return new ByteBytecode((Byte) value).prefixIncrement();
-		}
-		else if (value instanceof Character) {
-			return new CharacterScript((Character) value).prefixIncrement();
-		}
-		System.out.println(value);
-		throw new IllegalStateException();
-	}
-	
-	@Override
-	public InstanceBytecode prefixDecrement() {
-		if (value instanceof Long) {
-			return new LongBytecode((Long) value).prefixDecrement();
-		}
-		else if (value instanceof Integer) {
-			return new IntegerBytecode((Integer) value).prefixDecrement();
-		}
-		else if (value instanceof Short) {
-			return new ShortBytecode((Short) value).prefixDecrement();
-		}
-		else if (value instanceof Byte) {
-			return new ByteBytecode((Byte) value).prefixDecrement();
-		}
-		else if (value instanceof Character) {
-			return new CharacterScript((Character) value).prefixDecrement();
-		}
-		System.out.println(value);
-		throw new IllegalStateException();
-	}
-	
-	@Override
-	public InstanceBytecode postfixIncrement() {
+	public InstanceBytecode postfixIncrement() throws ScriptException {
 		if (value instanceof Long) {
 			return new LongBytecode((Long) value).postfixIncrement();
 		}
@@ -90,12 +53,11 @@ public class ObjectBytecode implements InstanceBytecode {
 		else if (value instanceof Character) {
 			return new CharacterScript((Character) value).postfixIncrement();
 		}
-		System.out.println(value);
-		throw new IllegalStateException();
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
-	public InstanceBytecode postfixDecrement() {
+	public InstanceBytecode postfixDecrement() throws ScriptException {
 		if (value instanceof Long) {
 			return new LongBytecode((Long) value).postfixDecrement();
 		}
@@ -111,29 +73,28 @@ public class ObjectBytecode implements InstanceBytecode {
 		else if (value instanceof Character) {
 			return new CharacterScript((Character) value).postfixDecrement();
 		}
-		System.out.println(value);
-		throw new IllegalStateException();
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
-	public InstanceBytecode not() {
+	public InstanceBytecode not() throws ScriptException {
 		if (value instanceof Boolean) {
-			return new BooleanScript((Boolean) value).not();
+			return new ObjectBytecode(boolean.class, !(Boolean) value);
 		}
-		throw new IllegalStateException();
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
 	public InstanceBytecode condition(final Scope scope, final ExpressionScript expressionScript1,
-	        final ExpressionScript expressionScript2) throws Exception {
+	        final ExpressionScript expressionScript2) throws ScriptException {
 		if (value instanceof Boolean) {
-			return new BooleanScript((Boolean) value).condition(scope, expressionScript1, expressionScript2);
+			return ((Boolean) value) ? expressionScript1.execute(scope) : expressionScript2.execute(scope);
 		}
-		throw new IllegalStateException();
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
-	public InstanceBytecode complement() {
+	public InstanceBytecode complement() throws ScriptException {
 		if (value instanceof Long) {
 			return new LongBytecode((Long) value).complement();
 		}
@@ -149,15 +110,12 @@ public class ObjectBytecode implements InstanceBytecode {
 		else if (value instanceof Character) {
 			return new CharacterScript((Character) value).complement();
 		}
-		else if (value instanceof Boolean) {
-			return new BooleanScript((Boolean) value).complement();
-		}
-		throw new IllegalStateException();
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
 	public InstanceBytecode operation(final String op, final ExpressionScript expressionScript2, final Scope scope)
-	        throws Exception {
+	        throws ScriptException {
 		if (value instanceof Long) {
 			return new LongBytecode((Long) value).operation(op, expressionScript2, scope);
 		}
@@ -180,35 +138,114 @@ public class ObjectBytecode implements InstanceBytecode {
 			return new FloatBytecode((Float) value).operation(op, expressionScript2, scope);
 		}
 		else if (value instanceof String) {
+			switch ( op ) {
+				case "+" :
+					return new StringScript(v + (String) value);
+				default :
+					throw ScriptException.IllegalStateException();
+			}
+			return new StringScript((String) value).logic(op, v);
 			return new StringScript((String) value).operation(op, expressionScript2, scope);
 		}
+		switch ( op ) {
+			case "||" :
+				if (value instanceof Boolean) {
+					if ((Boolean) value) {
+						return new ObjectBytecode(boolean.class, true);
+					}
+					return expressionScript2.execute(scope);
+				}
+			case "&&" :
+				if (value instanceof Boolean) {
+					if (!(Boolean) value) {
+						return new ObjectBytecode(boolean.class, false);
+					}
+					return expressionScript2.execute(scope);
+				}
+			case "|" :
+			case "&" :
+			case "^" :
+			case "==" :
+			case "!=" :
+				return new ObjectBytecode(boolean.class, expressionScript2.execute(scope).logic(op, value));
+			default :
+				throw ScriptException.IllegalStateException();
+		}
+	}
+	
+	@Override
+	public boolean logic(final String op, final Object v) throws ScriptException {
+		if (value instanceof Long) {
+			return new LongBytecode((Long) value).logic(op, v);
+		}
+		else if (value instanceof Integer) {
+			return new IntegerBytecode((Integer) value).logic(op, v);
+		}
+		else if (value instanceof Short) {
+			return new ShortBytecode((Short) value).logic(op, v);
+		}
+		else if (value instanceof Byte) {
+			return new ByteBytecode((Byte) value).logic(op, v);
+		}
+		else if (value instanceof Character) {
+			return new CharacterScript((Character) value).logic(op, v);
+		}
+		else if (value instanceof Double) {
+			return new DoubleBytecode((Double) value).logic(op, v);
+		}
+		else if (value instanceof Float) {
+			return new FloatBytecode((Float) value).logic(op, v);
+		}
+		else if (value instanceof String) {
+			return new StringScript((String) value).logic(op, v);
+		}
 		else if (value instanceof Boolean) {
-			return new BooleanScript((Boolean) value).operation(op, expressionScript2, scope);
+			if (v instanceof Boolean) {
+				final Boolean result = (Boolean) v;
+				switch ( op ) {
+					case "|" :
+						return result | ((Boolean) value);
+					case "&" :
+						return result & ((Boolean) value);
+					case "^" :
+						return result ^ ((Boolean) value);
+					case "==" :
+						return result == ((Boolean) value);
+					case "!=" :
+						return result != ((Boolean) value);
+					default :
+						break;
+				}
+			}
+			else {
+				final Boolean result = (Boolean) v;
+				switch ( op ) {
+					case "==" :
+						return false;
+					case "!=" :
+						return true;
+					default :
+						break;
+				}
+			}
 		}
-		switch ( op ) {
-			case "==" :
-			case "!=" :
-				return new BooleanScript(expressionScript2.execute(scope).logic(op, value));
-			default :
-				throw new IllegalStateException();
+		else {
+			switch ( op ) {
+				case "==" :
+					return value == v;
+				case "!=" :
+					return value != v;
+				default :
+					throw ScriptException.IllegalStateException();
+			}
 		}
+		throw ScriptException.IllegalStateException();
+		
 	}
 	
 	@Override
-	public boolean logic(final String op, final Object v) {
-		switch ( op ) {
-			case "==" :
-				return value == v;
-			case "!=" :
-				return value != v;
-			default :
-				throw new IllegalStateException();
-		}
-	}
-	
-	@Override
-	public InstanceBytecode operation(final String op, final Object v) {
-		throw new IllegalStateException();
+	public InstanceBytecode operation(final String op, final Object v) throws ScriptException {
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
@@ -219,5 +256,33 @@ public class ObjectBytecode implements InstanceBytecode {
 	@Override
 	public boolean isContinue() {
 		return false;
+	}
+	
+	@Override
+	public boolean getBoolean() throws ScriptException {
+		if (value instanceof Boolean) {
+			return ((Boolean) value);
+		}
+		throw ScriptException.IllegalStateException();
+	}
+	
+	@Override
+	public int getInteger() throws ScriptException {
+		if (value instanceof Long) {
+			return new LongBytecode((Long) value).getInteger();
+		}
+		else if (value instanceof Integer) {
+			return new IntegerBytecode((Integer) value).getInteger();
+		}
+		else if (value instanceof Short) {
+			return new ShortBytecode((Short) value).getInteger();
+		}
+		else if (value instanceof Byte) {
+			return new ByteBytecode((Byte) value).getInteger();
+		}
+		else if (value instanceof Character) {
+			return new CharacterScript((Character) value).getInteger();
+		}
+		throw ScriptException.IllegalStateException();
 	}
 }

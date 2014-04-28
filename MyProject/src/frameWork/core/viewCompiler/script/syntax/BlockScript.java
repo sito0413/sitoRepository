@@ -1,41 +1,37 @@
 package frameWork.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Bytecode;
+import frameWork.core.viewCompiler.script.Scope;
 import frameWork.core.viewCompiler.script.Script;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.bytecode.Bytecode;
 
+@SuppressWarnings("rawtypes")
 public class BlockScript extends SyntaxScript<Bytecode> {
+	public BlockScript(final String label) {
+		super(label);
+	}
+	
 	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws Exception {
+	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
 		return block(scriptsBuffer);
 	}
 	
 	@Override
-	public Bytecode execute(final Scope scope) throws Exception {
+	public Bytecode execute(final Scope scope) throws ScriptException {
 		scope.startScope();
-		Bytecode value = null;
+		Bytecode bytecode = null;
 		loop:
-		for (@SuppressWarnings("rawtypes")
-		final Script script : block) {
-			value = script.execute(scope);
-			switch ( value.toString() ) {
-				case "break" :
-				case "continue" :
-					break loop;
+		for (final Script script : block) {
+			bytecode = script.execute(scope);
+			if ((bytecode != null) && (bytecode.isBreak() || bytecode.isContinue())) {
+				if (!label.isEmpty() && bytecode.get().equals(label)) {
+					bytecode = null;
+				}
+				break loop;
 			}
 		}
 		scope.endScope();
-		return value;
-	}
-	
-	@Override
-	public void print(final int index) {
-		print(index, "{");
-		for (@SuppressWarnings("rawtypes")
-		final Script script : block) {
-			script.print(index + 1);
-		}
-		print(index, "}");
+		return bytecode;
 	}
 }

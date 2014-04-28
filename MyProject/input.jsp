@@ -8,7 +8,7 @@ y++;
 y--;
 --y;
 ++y;
-System.out.print("test");
+//System.out.print("test");
 //var y = new ArrayList<String>();
 	var masterData = request.getAttribute("data");
 	var list1 = masterData.get(1);
@@ -666,7 +666,7 @@ System.out.print("test");
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
 										<input id="c2-3-1" type="checkbox" <%if(data24 == -1) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-1" >自由</label>
-										<input id="c2-3-2" type="checkbox" <%if(data40 == -1) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-2" >手がかり</label>
+										<input id="c2-3-2" type="checkbox" <%if(data40 == -1) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-2" >手が かり</label>
 									</div>
 								</td>
 								<td id="c2-3-3" ></td>

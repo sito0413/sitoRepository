@@ -1,7 +1,7 @@
 package frameWork.core.viewCompiler.script.bytecode;
 
-import frameWork.core.viewCompiler.Scope;
-import frameWork.core.viewCompiler.script.expression.BooleanScript;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.expression.StringScript;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
@@ -15,18 +15,6 @@ public class IntegerBytecode implements InstanceBytecode {
 	@Override
 	public Object get() {
 		return value;
-	}
-	
-	@Override
-	public IntegerBytecode prefixIncrement() {
-		value++;
-		return this;
-	}
-	
-	@Override
-	public IntegerBytecode prefixDecrement() {
-		value--;
-		return this;
 	}
 	
 	@Override
@@ -44,14 +32,14 @@ public class IntegerBytecode implements InstanceBytecode {
 	}
 	
 	@Override
-	public InstanceBytecode not() {
-		throw new IllegalStateException();
+	public InstanceBytecode not() throws ScriptException {
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
 	public InstanceBytecode condition(final Scope scope, final ExpressionScript expressionScript1,
-	        final ExpressionScript expressionScript2) throws Exception {
-		throw new IllegalStateException();
+	        final ExpressionScript expressionScript2) throws ScriptException {
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
@@ -61,12 +49,12 @@ public class IntegerBytecode implements InstanceBytecode {
 	
 	@Override
 	public Class<?> type() {
-		return Integer.class;
+		return int.class;
 	}
 	
 	@Override
 	public InstanceBytecode operation(final String op, final ExpressionScript expressionScript2, final Scope scope)
-	        throws Exception {
+	        throws ScriptException {
 		switch ( op ) {
 			case "<" :
 			case ">" :
@@ -74,7 +62,7 @@ public class IntegerBytecode implements InstanceBytecode {
 			case ">=" :
 			case "==" :
 			case "!=" :
-				return new BooleanScript(expressionScript2.execute(scope).logic(op, value));
+				return new ObjectBytecode(boolean.class, expressionScript2.execute(scope).logic(op, value));
 			case "+" :
 			case "-" :
 			case "/" :
@@ -88,12 +76,12 @@ public class IntegerBytecode implements InstanceBytecode {
 			case ">>>" :
 				return expressionScript2.execute(scope).operation(op, value);
 			default :
-				throw new IllegalStateException();
+				throw ScriptException.IllegalStateException();
 		}
 	}
 	
 	@Override
-	public boolean logic(final String op, final Object obj) {
+	public boolean logic(final String op, final Object obj) throws ScriptException {
 		if (obj instanceof Long) {
 			final long v = (Long) obj;
 			switch ( op ) {
@@ -110,7 +98,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Integer) {
@@ -129,7 +117,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Short) {
@@ -148,7 +136,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Byte) {
@@ -167,7 +155,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Character) {
@@ -186,7 +174,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Double) {
@@ -205,7 +193,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Float) {
@@ -224,14 +212,23 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "!=" :
 					return value != v;
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
-		throw new IllegalStateException();
+		else {
+			switch ( op ) {
+				case "==" :
+					return false;
+				case "!=" :
+					return true;
+				default :
+					throw ScriptException.IllegalStateException();
+			}
+		}
 	}
 	
 	@Override
-	public InstanceBytecode operation(final String op, final Object obj) {
+	public InstanceBytecode operation(final String op, final Object obj) throws ScriptException {
 		if (obj instanceof Long) {
 			final long v = (Long) obj;
 			switch ( op ) {
@@ -258,7 +255,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case ">>>" :
 					return new LongBytecode(value >>> v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Integer) {
@@ -287,7 +284,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case ">>>" :
 					return new IntegerBytecode(value >>> v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Short) {
@@ -316,7 +313,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case ">>>" :
 					return new IntegerBytecode(value >>> v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Byte) {
@@ -345,7 +342,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case ">>>" :
 					return new IntegerBytecode(value >>> v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Character) {
@@ -374,7 +371,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case ">>>" :
 					return new IntegerBytecode(value >>> v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Double) {
@@ -389,7 +386,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "*" :
 					return new DoubleBytecode(value * v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof Float) {
@@ -404,7 +401,7 @@ public class IntegerBytecode implements InstanceBytecode {
 				case "*" :
 					return new FloatBytecode(value * v);
 				default :
-					throw new IllegalStateException();
+					throw ScriptException.IllegalStateException();
 			}
 		}
 		else if (obj instanceof String) {
@@ -412,9 +409,11 @@ public class IntegerBytecode implements InstanceBytecode {
 			switch ( op ) {
 				case "+" :
 					return new StringScript(value + v);
+				default :
+					throw ScriptException.IllegalStateException();
 			}
 		}
-		throw new IllegalStateException();
+		throw ScriptException.IllegalStateException();
 	}
 	
 	@Override
@@ -425,5 +424,20 @@ public class IntegerBytecode implements InstanceBytecode {
 	@Override
 	public boolean isContinue() {
 		return false;
+	}
+	
+	@Override
+	public InstanceBytecode set(final Scope scope, final InstanceBytecode execute) throws ScriptException {
+		throw ScriptException.IllegalStateException();
+	}
+	
+	@Override
+	public boolean getBoolean() throws ScriptException {
+		throw ScriptException.IllegalStateException();
+	}
+	
+	@Override
+	public int getInteger() throws ScriptException {
+		return value;
 	}
 }

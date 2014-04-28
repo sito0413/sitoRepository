@@ -1,11 +1,11 @@
-package frameWork.core.viewCompiler;
+package frameWork.core.viewCompiler.parser;
 
 import java.util.List;
 
 public class Textlet {
-	protected String text;
+	String text;
 	
-	public Textlet(final String text) {
+	Textlet(final String text) {
 		this.text = (text == null ? "" : text);
 	}
 	
@@ -14,17 +14,17 @@ public class Textlet {
 		return text;
 	}
 	
-	public final Textlet add(final List<Textlet> textlets, final Scriptlet scriptlet) {
+	final Textlet add(final List<Textlet> textlets, final Scriptlet scriptlet) {
 		textlets.add(scriptlet);
 		return scriptlet;
 	}
 	
-	public Textlet add(final List<Textlet> textlets, final String str) {
+	Textlet add(final List<Textlet> textlets, final String str) {
 		this.text += str;
 		return this;
 	}
 	
-	public Scriptlet toScriptlet() {
+	public String toScript() {
 		boolean isAllSpace = true;
 		final StringBuilder sb = new StringBuilder("out.write(\"");
 		final int initLength = sb.length();
@@ -53,7 +53,7 @@ public class Textlet {
 			}
 		}
 		if (!isAllSpace && (sb.length() > initLength)) {
-			return new Scriptlet(sb.append("\");\r\n").toString());
+			return sb.append("\");").toString();
 		}
 		return null;
 	}

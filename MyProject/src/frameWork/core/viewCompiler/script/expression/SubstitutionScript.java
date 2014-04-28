@@ -1,6 +1,7 @@
 package frameWork.core.viewCompiler.script.expression;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
@@ -14,12 +15,7 @@ public class SubstitutionScript extends ExpressionScript {
 	}
 	
 	@Override
-	public String printString() {
-		return expressionScript1.printString() + " = " + expressionScript2.printString();
-	}
-	
-	@Override
-	public InstanceBytecode execute(final Scope scope) throws Exception {
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
 		return expressionScript1.execute(scope).set(scope, expressionScript2.execute(scope));
 	}
 }

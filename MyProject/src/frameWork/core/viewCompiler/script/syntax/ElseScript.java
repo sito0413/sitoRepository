@@ -1,32 +1,40 @@
 package frameWork.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Bytecode;
+import frameWork.core.viewCompiler.script.Scope;
 import frameWork.core.viewCompiler.script.Script;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.bytecode.Bytecode;
 
+@SuppressWarnings("rawtypes")
 public class ElseScript extends SyntaxScript<Bytecode> {
 	private IfScript ifScript;
 	
+	public ElseScript(final String label) {
+		super(label);
+	}
+	
 	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws Exception {
+	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
 		if (scriptsBuffer.startToken("if")) {
-			ifScript = new IfScript();
+			ifScript = new IfScript(label);
 			return ifScript.create(scriptsBuffer);
 		}
 		return block(scriptsBuffer);
 	}
 	
 	@Override
-	public Bytecode execute(final Scope scope) throws Exception {
+	public Bytecode execute(final Scope scope) throws ScriptException {
 		if (ifScript == null) {
 			Bytecode bytecode = null;
 			scope.startScope();
 			loop:
-			for (@SuppressWarnings("rawtypes")
-			final Script script : block) {
+			for (final Script script : block) {
 				bytecode = script.execute(scope);
-				if (bytecode.isBreak() || bytecode.isContinue()) {
+				if ((bytecode != null) && (bytecode.isBreak() || bytecode.isContinue())) {
+					if (!label.isEmpty() && bytecode.get().equals(label)) {
+						bytecode = null;
+					}
 					break loop;
 				}
 			}
@@ -34,21 +42,5 @@ public class ElseScript extends SyntaxScript<Bytecode> {
 			return bytecode;
 		}
 		return ifScript.execute(scope);
-	}
-	
-	@Override
-	public void print(final int index) {
-		print(index, "else {");
-		if (ifScript == null) {
-			for (@SuppressWarnings("rawtypes")
-			final Script script : block) {
-				script.print(index + 1);
-			}
-		}
-		else {
-			ifScript.print(index);
-		}
-		print(index, "}");
-		
 	}
 }

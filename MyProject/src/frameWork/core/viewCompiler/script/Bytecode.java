@@ -1,7 +1,9 @@
-package frameWork.core.viewCompiler.script.bytecode;
+package frameWork.core.viewCompiler.script;
 
 public interface Bytecode {
 	boolean isBreak();
 	
 	boolean isContinue();
+	
+	Object get();
 }

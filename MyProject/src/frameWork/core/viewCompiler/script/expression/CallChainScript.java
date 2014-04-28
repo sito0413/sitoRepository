@@ -2,7 +2,8 @@ package frameWork.core.viewCompiler.script.expression;
 
 import java.util.Deque;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
 import frameWork.core.viewCompiler.script.expression.callChain.CallChain;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
@@ -15,7 +16,7 @@ public class CallChainScript extends ExpressionScript {
 	}
 	
 	@Override
-	public InstanceBytecode execute(final Scope scope) throws Exception {
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
 		InstanceBytecode bytecode = null;
 		for (final CallChain expressionScript : expressionScripts) {
 			if (bytecode == null) {
@@ -26,18 +27,6 @@ public class CallChainScript extends ExpressionScript {
 			}
 		}
 		return bytecode;
-	}
-	
-	@Override
-	public String printString() {
-		String s = "";
-		for (final CallChain callChain : expressionScripts) {
-			s += "." + callChain.printString();
-		}
-		if (!s.isEmpty()) {
-			s = s.substring(1);
-		}
-		return s;
 	}
 	
 	public String toNameString() {

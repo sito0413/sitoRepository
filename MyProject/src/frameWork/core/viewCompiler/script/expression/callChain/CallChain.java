@@ -1,9 +1,9 @@
 package frameWork.core.viewCompiler.script.expression.callChain;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
@@ -17,25 +17,12 @@ public abstract class CallChain extends ExpressionScript {
 	}
 	
 	@Override
-	public String printString() {
-		return expression;
-	}
-	
-	@Override
-	public InstanceBytecode execute(final Scope scope) throws Exception {
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
 		return null;
 	}
 	
-	protected List<InstanceBytecode> getBytecodes(final Scope scope) throws Exception {
-		final List<InstanceBytecode> objectScripts = new ArrayList<>();
-		for (final ExpressionScript script : expressionScripts) {
-			objectScripts.add(script.execute(scope));
-		}
-		return objectScripts;
-	}
-	
 	public abstract InstanceBytecode execute(final Class<?> type, final Object object, final Scope scope)
-	        throws Exception;
+	        throws ScriptException;
 	
 	public abstract String toNameString();
 }

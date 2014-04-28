@@ -4,8 +4,10 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.core.viewCompiler.script.bytecode.ObjectBytecode;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
 public class ConstructorScript extends ExpressionScript {
@@ -17,17 +19,12 @@ public class ConstructorScript extends ExpressionScript {
 		this.expressionScripts = expressionScripts;
 	}
 	
-	private List<InstanceBytecode> getBytecodes(final Scope scope) throws Exception {
-		final List<InstanceBytecode> objectScripts = new ArrayList<>();
-		for (final ExpressionScript script : expressionScripts) {
-			objectScripts.add(script.execute(scope));
-		}
-		return objectScripts;
-	}
-	
 	@Override
-	public InstanceBytecode execute(final Scope scope) throws Exception {
-		final List<InstanceBytecode> bytecodes = getBytecodes(scope);
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+		final List<InstanceBytecode> bytecodes = new ArrayList<>();
+		for (final ExpressionScript script : expressionScripts) {
+			bytecodes.add(script.execute(scope));
+		}
 		final Class<?>[] classes = new Class<?>[bytecodes.size()];
 		final Object[] objects = new Object[bytecodes.size()];
 		int index = 0;
@@ -37,13 +34,14 @@ public class ConstructorScript extends ExpressionScript {
 			index++;
 		}
 		final Class<?> class1 = scope.getImport(expression);
-		final Constructor<?> constructor = class1.getConstructor(classes);
-		constructor.setAccessible(true);
-		return scope.create(class1, constructor.newInstance(objects));
-	}
-	
-	@Override
-	public String printString() {
-		return "new " + expression + expressionScripts;
+		Constructor<?> constructor;
+		try {
+			constructor = class1.getConstructor(classes);
+			constructor.setAccessible(true);
+			return new ObjectBytecode(class1, constructor.newInstance(objects));
+		}
+		catch (final Exception e) {
+			throw ScriptException.IllegalStateException(e);
+		}
 	}
 }

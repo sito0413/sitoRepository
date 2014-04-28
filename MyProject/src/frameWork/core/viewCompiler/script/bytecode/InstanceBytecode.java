@@ -1,30 +1,34 @@
 package frameWork.core.viewCompiler.script.bytecode;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Bytecode;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
 public interface InstanceBytecode extends Bytecode {
 	
-	Object get();
+	InstanceBytecode postfixIncrement() throws ScriptException;
 	
-	InstanceBytecode postfixIncrement();
+	InstanceBytecode postfixDecrement() throws ScriptException;
 	
-	InstanceBytecode postfixDecrement();
-	
-	InstanceBytecode not();
+	InstanceBytecode not() throws ScriptException;
 	
 	InstanceBytecode condition(final Scope scope, ExpressionScript expressionScript1, ExpressionScript expressionScript2)
-	        throws Exception;
+	        throws ScriptException;
 	
-	InstanceBytecode complement();
+	InstanceBytecode complement() throws ScriptException;
 	
 	Class<?> type();
 	
-	InstanceBytecode operation(String op, ExpressionScript expressionScript2, Scope scope) throws Exception;
+	InstanceBytecode operation(String op, ExpressionScript expressionScript2, Scope scope) throws ScriptException;
 	
-	boolean logic(String op, Object value);
+	boolean logic(String op, Object value) throws ScriptException;
 	
-	InstanceBytecode operation(String op, Object value);
+	InstanceBytecode operation(String op, Object value) throws ScriptException;
 	
-	InstanceBytecode set(Scope scope, InstanceBytecode execute);
+	InstanceBytecode set(Scope scope, InstanceBytecode execute) throws ScriptException;
+	
+	boolean getBoolean() throws ScriptException;
+	
+	int getInteger() throws ScriptException;
 }

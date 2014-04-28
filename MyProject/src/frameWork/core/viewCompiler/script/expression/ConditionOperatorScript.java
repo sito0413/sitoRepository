@@ -1,6 +1,7 @@
 package frameWork.core.viewCompiler.script.expression;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
 import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
 
@@ -17,12 +18,7 @@ public class ConditionOperatorScript extends ExpressionScript {
 	}
 	
 	@Override
-	public InstanceBytecode execute(final Scope scope) throws Exception {
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
 		return logic.execute(scope).condition(scope, expressionScript1, expressionScript2);
-	}
-	
-	@Override
-	public String printString() {
-		return logic.printString() + " ? " + expressionScript1.printString() + " : " + expressionScript2.printString();
 	}
 }

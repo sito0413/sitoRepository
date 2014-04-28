@@ -1,29 +1,41 @@
 package frameWork.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Bytecode;
+import frameWork.core.viewCompiler.script.Scope;
 import frameWork.core.viewCompiler.script.Script;
-import frameWork.core.viewCompiler.script.bytecode.Bytecode;
+import frameWork.core.viewCompiler.script.ScriptException;
+import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.core.viewCompiler.script.bytecode.ObjectBytecode;
 
+@SuppressWarnings("rawtypes")
 public class ForScript extends SyntaxScript<Bytecode> {
+	public ForScript(final String label) {
+		super(label);
+	}
+	
 	@Override
-	public Bytecode execute(final Scope scope) throws Exception {
+	public Bytecode execute(final Scope scope) throws ScriptException {
 		Bytecode bytecode = null;
 		if (statement.size() == 3) {
 			scope.startScope();
 			statement.get(0).execute(scope);
-			while (Boolean.parseBoolean(statement.get(1).execute(scope).toString())) {
+			while (statement.get(1).execute(scope).getBoolean()) {
 				scope.startScope();
 				loop:
-				for (@SuppressWarnings("rawtypes")
-				final Script script : block) {
+				for (final Script script : block) {
 					bytecode = script.execute(scope);
 					if (bytecode.isBreak()) {
-						bytecode = null;
+						if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+							bytecode = null;
+						}
 						break loop;
 					}
 					if (bytecode.isContinue()) {
-						bytecode = null;
-						continue loop;
+						if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+							bytecode = null;
+							continue loop;
+						}
+						break loop;
 					}
 				}
 				scope.endScope();
@@ -33,25 +45,29 @@ public class ForScript extends SyntaxScript<Bytecode> {
 		}
 		else {
 			scope.startScope();
-			statement.get(0).execute(scope);
-			statement.get(1).execute(scope);
+			final InstanceBytecode instanceBytecode0 = statement.get(0).execute(scope);
+			final InstanceBytecode instanceBytecode1 = statement.get(1).execute(scope);
 			
-			@SuppressWarnings("rawtypes")
-			final Iterable iterable = (Iterable) scope.get(Iterable.class, statement.get(1).toString()).get();
+			final Iterable iterable = (Iterable) instanceBytecode1.get();
 			for (final Object object : iterable) {
 				scope.startScope();
-				scope.put(statement.get(0).toString(), object);
+				instanceBytecode0.set(scope, new ObjectBytecode(object.getClass(), object));
 				loop:
-				for (@SuppressWarnings("rawtypes")
-				final Script script : block) {
+				for (final Script script : block) {
 					bytecode = script.execute(scope);
 					if (bytecode.isBreak()) {
-						bytecode = null;
+						if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+							bytecode = null;
+						}
 						break loop;
 					}
 					if (bytecode.isContinue()) {
-						bytecode = null;
-						continue loop;
+						if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+							bytecode = null;
+							continue loop;
+						}
+						break loop;
+						
 					}
 				}
 				scope.endScope();
@@ -60,16 +76,4 @@ public class ForScript extends SyntaxScript<Bytecode> {
 		}
 		return bytecode;
 	}
-	
-	@Override
-	public void print(final int index) {
-		print(index, "for" + statement + "{");
-		for (@SuppressWarnings("rawtypes")
-		final Script script : block) {
-			script.print(index + 1);
-		}
-		print(index, "}");
-		
-	}
-	
 }

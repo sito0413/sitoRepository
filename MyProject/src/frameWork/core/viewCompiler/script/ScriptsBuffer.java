@@ -6,8 +6,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-import frameWork.core.viewCompiler.Scriptlet;
-import frameWork.core.viewCompiler.Textlet;
+import frameWork.core.viewCompiler.parser.Textlet;
 import frameWork.core.viewCompiler.script.expression.BooleanScript;
 import frameWork.core.viewCompiler.script.expression.CallChainScript;
 import frameWork.core.viewCompiler.script.expression.CharacterScript;
@@ -23,9 +22,10 @@ import frameWork.core.viewCompiler.script.expression.PostfixDecrementScript;
 import frameWork.core.viewCompiler.script.expression.PostfixIncrementScript;
 import frameWork.core.viewCompiler.script.expression.StringScript;
 import frameWork.core.viewCompiler.script.expression.SubstitutionScript;
+import frameWork.core.viewCompiler.script.expression.callChain.CallArrayScript;
 import frameWork.core.viewCompiler.script.expression.callChain.CallChain;
-import frameWork.core.viewCompiler.script.expression.callChain.CallObjectScript;
 import frameWork.core.viewCompiler.script.expression.callChain.CallMethodScript;
+import frameWork.core.viewCompiler.script.expression.callChain.CallObjectScript;
 import frameWork.core.viewCompiler.script.syntax.BlockScript;
 import frameWork.core.viewCompiler.script.syntax.BreakScript;
 import frameWork.core.viewCompiler.script.syntax.ContineScript;
@@ -97,16 +97,15 @@ public class ScriptsBuffer {
 				if (!iterator.hasNext()) {
 					return;
 				}
-				final Scriptlet scriptlet = iterator.next().toScriptlet();
+				final String scriptlet = iterator.next().toScript();
 				if (scriptlet != null) {
-					text += scriptlet.toString();
+					text += scriptlet;
 				}
 			}
 		}
 	}
 	
 	private void next() {
-		//		System.out.print(getChar());
 		index++;
 	}
 	
@@ -127,20 +126,7 @@ public class ScriptsBuffer {
 		        || (ch == '/') || (ch == '%') || (ch == '&') || (ch == '|') || (ch == '<') || (ch == '>');
 	}
 	
-	public String getPosition() {
-		int line = 1, col = 1;
-		for (int i = 0; i < index; i++) {
-			final char ch = getChar(i);
-			col++;
-			if (ch == '\n') {
-				line++;
-				col = 0;
-			}
-		}
-		return "(line: " + line + ", col: " + col + ")";
-	}
-	
-	public boolean startWith(final String string) {
+	private boolean startWith(final String string) {
 		String s = "";
 		for (int i = 0; i < string.length(); i++) {
 			s += getChar(index + i);
@@ -148,7 +134,6 @@ public class ScriptsBuffer {
 		if (s.equals(string)) {
 			index += string.length();
 			if (hasRemaining() && (isWhitespace(getChar()) || !isOperator(getChar()))) {
-				//				System.out.print(string);
 				skip();
 				return true;
 			}
@@ -164,28 +149,28 @@ public class ScriptsBuffer {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public SyntaxScript getSyntaxToken() throws Exception {
+	public final SyntaxScript getSyntaxToken() throws ScriptException {
 		final SyntaxScript script = block();
 		skip();
 		return script;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public SyntaxScript block() throws Exception {
+	private SyntaxScript block() throws ScriptException {
 		if (startToken("switch")) {
-			return new SwitchScript();
+			return new SwitchScript("");
 		}
 		else if (startToken("while")) {
-			return new WhileScript();
+			return new WhileScript("");
 		}
 		else if (startToken("for")) {
-			return new ForScript();
+			return new ForScript("");
 		}
 		else if (startToken("do")) {
-			return new DoScript();
+			return new DoScript("");
 		}
 		else if (startToken("if")) {
-			return new IfScript();
+			return new IfScript("");
 		}
 		else if (startToken("contine")) {
 			return new ContineScript();
@@ -193,21 +178,66 @@ public class ScriptsBuffer {
 		else if (startToken("break")) {
 			return new BreakScript();
 		}
+		else if (startToken("case")) {
+			throw ScriptException.IllegalStateException();
+		}
 		else if (startWith("{")) {
-			return new BlockScript();
+			return new BlockScript("");
 		}
 		else {
-			return getStatementToken();
+			int buffer = index;
+			final SyntaxScript script = getStatementToken();
+			if (getChar() == ':') {
+				final int temp = index;
+				index = buffer;
+				buffer = temp;
+				final String label = getToken();
+				if (getChar() == ':') {
+					gotoNextChar();
+					if (startToken("switch")) {
+						return new SwitchScript(label);
+					}
+					else if (startToken("while")) {
+						return new WhileScript(label);
+					}
+					else if (startToken("for")) {
+						return new ForScript(label);
+					}
+					else if (startToken("do")) {
+						return new DoScript(label);
+					}
+					else if (startToken("if")) {
+						return new IfScript(label);
+					}
+					else if (startToken("contine")) {
+						throw ScriptException.IllegalStateException();
+					}
+					else if (startToken("break")) {
+						throw ScriptException.IllegalStateException();
+					}
+					else if (startToken("case")) {
+						throw ScriptException.IllegalStateException();
+					}
+					else if (startWith("{")) {
+						return new BlockScript(label);
+					}
+					else {
+						index = buffer;
+						throw ScriptException.IllegalStateException();
+					}
+				}
+			}
+			return script;
 		}
 	}
 	
-	public ExpressionScript getStatementToken() throws Exception {
+	public ExpressionScript getStatementToken() throws ScriptException {
 		final ExpressionScript script = base();
 		skip();
 		return script;
 	}
 	
-	public ExpressionScript base() throws Exception {
+	private ExpressionScript base() throws ScriptException {
 		ExpressionScript ternary = condition();
 		//		logic:
 		{
@@ -237,7 +267,7 @@ public class ScriptsBuffer {
 			if (startWith("?")) {
 				final ExpressionScript expressionScript1 = base();
 				if (getChar() != ':') {
-					throw new Exception("Error " + getChar() + " at " + getPosition());
+					throw illegalCharacterError();
 				}
 				gotoNextChar();
 				ternary = new ConditionOperatorScript(ternary, expressionScript1, base());
@@ -284,7 +314,7 @@ public class ScriptsBuffer {
 		}
 	}
 	
-	private ExpressionScript condition() throws Exception {
+	private ExpressionScript condition() throws ScriptException {
 		ExpressionScript a = shift();
 		while ((getChar() == '<') || (getChar() == '>') || (getChar() == '=') || (getChar() == '!')) {
 			if (startWith("<")) {
@@ -312,7 +342,7 @@ public class ScriptsBuffer {
 		return a;
 	}
 	
-	private ExpressionScript shift() throws Exception {
+	private ExpressionScript shift() throws ScriptException {
 		ExpressionScript expression;
 		//expression:
 		{
@@ -368,7 +398,7 @@ public class ScriptsBuffer {
 		}
 	}
 	
-	private ExpressionScript term() throws Exception {
+	private ExpressionScript term() throws ScriptException {
 		ExpressionScript a = unary();
 		while ((getChar() == '/') || (getChar() == '%') || (getChar() == '*')) {
 			if (startWith("/")) {
@@ -387,7 +417,7 @@ public class ScriptsBuffer {
 		return a;
 	}
 	
-	private ExpressionScript unary() throws Exception {
+	private ExpressionScript unary() throws ScriptException {
 		ExpressionScript a = factor();
 		while ((getChar() == '!') || (getChar() == '~')) {
 			if (startWith("!")) {
@@ -403,7 +433,7 @@ public class ScriptsBuffer {
 		return a;
 	}
 	
-	private ExpressionScript factor() throws Exception {
+	private ExpressionScript factor() throws ScriptException {
 		switch ( getChar() ) {
 			case '\'' :
 			case '"' : {
@@ -413,7 +443,7 @@ public class ScriptsBuffer {
 				gotoNextChar();
 				final ExpressionScript a = base();
 				if (getChar() != '(') {
-					throw new Exception("Error " + getChar() + " at " + getPosition());
+					throw illegalCharacterError();
 				}
 				gotoNextChar();
 				return a;
@@ -447,7 +477,7 @@ public class ScriptsBuffer {
 		return null;
 	}
 	
-	private CallChainScript tokenScript() throws Exception {
+	private CallChainScript tokenScript() throws ScriptException {
 		skip();
 		final Deque<CallChain> expressionScripts = new ArrayDeque<>();
 		while (hasRemaining()) {
@@ -472,7 +502,7 @@ public class ScriptsBuffer {
 					break;
 				}
 				case '[' : {
-					final CallObjectScript callObjectScript = new CallObjectScript(expression);
+					final CallArrayScript callObjectScript = new CallArrayScript(expression);
 					do {
 						gotoNextChar();
 						callObjectScript.addArray(base());
@@ -497,10 +527,10 @@ public class ScriptsBuffer {
 				
 			}
 		}
-		throw new Exception("Error Overflow");
+		throw ScriptException.overflowException();
 	}
 	
-	private ConstructorScript newScript() throws Exception {
+	private ConstructorScript newScript() throws ScriptException {
 		skip();
 		while (hasRemaining()) {
 			String expression = "";
@@ -524,7 +554,7 @@ public class ScriptsBuffer {
 			expression += getChar();
 			skip();
 		}
-		throw new Exception("Error Overflow");
+		throw ScriptException.overflowException();
 	}
 	
 	public boolean startToken(final String string) {
@@ -535,7 +565,6 @@ public class ScriptsBuffer {
 		if (s.equals(string)) {
 			index += string.length();
 			if (hasRemaining() && (isWhitespace(getChar()) || !(isAlpha(getChar()) || isNumeric(getChar())))) {
-				//				System.out.print(string);
 				skip();
 				return true;
 			}
@@ -544,7 +573,7 @@ public class ScriptsBuffer {
 		return false;
 	}
 	
-	private NumericScript numeric() throws Exception {
+	private NumericScript numeric() throws ScriptException {
 		String numeric = "";
 		while (hasRemaining() && isNumeric(getChar())) {
 			numeric += getChar();
@@ -560,7 +589,7 @@ public class ScriptsBuffer {
 				}
 			}
 			else {
-				throw new Exception("Error " + getChar() + " at " + getPosition());
+				throw illegalCharacterError();
 			}
 		}
 		if (isWhitespace(getChar())) {
@@ -585,22 +614,59 @@ public class ScriptsBuffer {
 		token += getChar();
 		next();
 		skip();
-		token = token.substring(1, token.length() - 1).replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r");
+		token = token.substring(1, token.length() - 1).replace("\\\"", "\"").replace("\\\\", "\\").replace("\\n", "\n")
+		        .replace("\\r", "\r");
 		if (mark == '\'') {
 			return new CharacterScript(token.charAt(0));
 		}
 		return new StringScript(token);
 	}
 	
-	public Exception illegalCharacterError() {
-		return new Exception("Error " + getChar() + " at " + getPosition() + " " + stack());
+	public ScriptException illegalCharacterError() {
+		int line = 1, col = 1;
+		for (int i = 0; i < index; i++) {
+			final char ch = getChar(i);
+			col++;
+			if (ch == '\n') {
+				line++;
+				col = 0;
+			}
+		}
+		return ScriptException
+		        .IllegalStateException("Error " + getChar() + " at(line: " + line + ", col: " + col + ")");
 	}
 	
-	public String stack() {
-		return getChar(index - 10) + "" + getChar(index - 9) + getChar(index - 8) + getChar(index - 7)
-		        + getChar(index - 6) + getChar(index - 5) + getChar(index - 4) + getChar(index - 3)
-		        + getChar(index - 2) + getChar(index - 1) + getChar(index) + getChar(index + 1) + getChar(index + 2)
-		        + getChar(index + 3) + getChar(index + 4) + getChar(index + 5) + getChar(index + 6)
-		        + getChar(index + 7) + getChar(index + 8) + getChar(index + 9) + getChar(index + 10);
+	public void execute(final Scope scope) throws ScriptException {
+		while (hasRemaining()) {
+			skip();
+			@SuppressWarnings("rawtypes")
+			final SyntaxScript subScript = getSyntaxToken();
+			skip();
+			switch ( subScript.create(this) ) {
+				case ';' :
+				case '}' :
+					gotoNextChar();
+					break;
+				default :
+					break;
+			}
+			subScript.execute(scope);
+		}
+	}
+	
+	public String getToken() throws ScriptException {
+		final StringBuilder builder = new StringBuilder();
+		skip();
+		if (isAlpha(getChar()) || isNumeric(getChar())) {
+			while (hasRemaining() && (isAlpha(getChar()) || isNumeric(getChar()))) {
+				builder.append(getChar());
+				next();
+			}
+		}
+		else if ((getChar() == '"') || (getChar() == '\'')) {
+			builder.append(string(getChar()).execute(null).get().toString());
+		}
+		skip();
+		return builder.toString();
 	}
 }

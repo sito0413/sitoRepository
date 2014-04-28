@@ -3,97 +3,27 @@ package frameWork.core.viewCompiler;
 import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.CharBuffer;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
-import javax.swing.JOptionPane;
 
 import frameWork.ThrowableUtil;
 import frameWork.core.fileSystem.FileSystem;
-import frameWork.core.state.AttributeMap;
 import frameWork.core.state.Response;
 import frameWork.core.state.State;
+import frameWork.core.viewCompiler.parser.ParserBuffer;
+import frameWork.core.viewCompiler.script.Scope;
 import frameWork.core.viewCompiler.script.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.syntax.SyntaxScript;
 
 public class ViewCompiler {
-	public static void main(final String[] args) throws Exception {
-		//		if (state.getSession().getAttribute("dateId") == null) {
-		//			state.getSession().setAttribute("dateId", list.get(0).get(0).get(0));
-		//		}
-		//state.getRequest().setAttribute("data", list);
-		final Scope scope = new Scope();
-		final ViewerWriter out = new ViewerWriter();
-		scope.startScope();
-		scope.put("out", out);
-		scope.put("session", new AttributeMap() {
-			
-			@Override
-			public void setAttribute(final String name, final Object value) {
-			}
-			
-			@Override
-			public Enumeration<String> getAttributeNames() {
-				return null;
-			}
-			
-			@Override
-			public Object getAttribute(final String name) {
-				System.out.println("s@" + name);
-				return "";
-			}
-		});
-		scope.put("application", new AttributeMap() {
-			
-			@Override
-			public void setAttribute(final String name, final Object value) {
-			}
-			
-			@Override
-			public Enumeration<String> getAttributeNames() {
-				return null;
-			}
-			
-			@Override
-			public Object getAttribute(final String name) {
-				return null;
-			}
-		});
-		scope.put("request", new AttributeMap() {
-			
-			@Override
-			public void setAttribute(final String name, final Object value) {
-			}
-			
-			@Override
-			public Enumeration<String> getAttributeNames() {
-				return null;
-			}
-			
-			@Override
-			public Object getAttribute(final String name) {
-				System.out.println("r@" + name);
-				if (name.equals("data")) {
-					return new ArrayList<List<List<String>>>();
-				}
-				return "";
-			}
-		});
-		parse(new File("input.jsp"), null, scope);
-		out.writeTo(System.out);
-	}
-	
 	public static void compile(final Response response, final State state) {
 		try (final OutputStream responseOutputStream = response.getOutputStream()) {
 			final File targetFile = new File(FileSystem.Viewer, state.getPage().substring(1));
 			if (targetFile.exists()) {
 				final ViewerWriter out = new ViewerWriter();
-				//				final File scriptFile = File.createTempFile("view", ".js", FileSystem.Temp);
 				response.setContentType("text/html;charset=" + FileSystem.Config.getString("ViewChareet", "UTF-8"));
 				final Scope scope = new Scope();
 				scope.put("out", out);
@@ -105,50 +35,38 @@ public class ViewCompiler {
 				out.writeTo(responseOutputStream);
 			}
 		}
-		catch (final Exception e) {
+		catch (final Throwable e) {
 			response.setContentLength(0);
 			ThrowableUtil.throwable(e);
 		}
 	}
 	
-	private static void parse(final File targetFile, final Response response, final Scope scope) throws Exception {
-		JOptionPane.showMessageDialog(null, "");
+	protected static void parse(final File targetFile, final Response response, final Scope scope) throws Throwable {
 		try (final CharArrayWriter writer = new CharArrayWriter()) {
-			try (InputStreamReader reader = new InputStreamReader(new FileInputStream(targetFile),
-			        FileSystem.Config.getString("ViewChareet", "UTF-8"))) {
-				final char buf[] = new char[5120];
-				for (int i = 0; (i = reader.read(buf)) != -1;) {
-					writer.write(buf, 0, i);
-				}
-			}
-			catch (final UnsupportedEncodingException e) {
-				try (InputStreamReader reader = new InputStreamReader(new FileInputStream(targetFile), "UTF-8")) {
-					final char buf[] = new char[5120];
-					for (int i = 0; (i = reader.read(buf)) != -1;) {
-						writer.write(buf, 0, i);
-					}
-				}
-			}
 			final ScriptsBuffer scriptsBuffer = new ScriptsBuffer(
-			        new ParserBuffer(CharBuffer.wrap(writer.toString())).toTextlets(targetFile, scope, response));
-			while (scriptsBuffer.hasRemaining()) {
-				scriptsBuffer.skip();
-				@SuppressWarnings("rawtypes")
-				final SyntaxScript subScript = scriptsBuffer.getSyntaxToken();
-				scriptsBuffer.skip();
-				switch ( subScript.create(scriptsBuffer) ) {
-					case ';' :
-					case '}' :
-						subScript.print();
-						scriptsBuffer.gotoNextChar();
-						break;
-					default :
-						subScript.print();
-						break;
-				}
-				//subScript.execute(scope);
+			        new ParserBuffer(createCharBuffer(targetFile, writer)).toTextlets(scope, response));
+			scriptsBuffer.execute(scope);
+		}
+	}
+	
+	private static CharBuffer createCharBuffer(final File targetFile, final CharArrayWriter writer)
+	        throws FileNotFoundException, IOException {
+		try {
+			writerWrite(targetFile, writer, FileSystem.Config.getString("ViewChareet", "UTF-8"));
+		}
+		catch (final UnsupportedEncodingException e) {
+			writerWrite(targetFile, writer, "UTF-8");
+		}
+		return CharBuffer.wrap(writer.toString());
+	}
+	
+	private static void writerWrite(final File targetFile, final CharArrayWriter writer, final String viewChareet)
+	        throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(targetFile), viewChareet)) {
+			final char buf[] = new char[FileSystem.Config.getInteger("ViewSrcReadBuffer", 5120)];
+			for (int i = 0; (i = reader.read(buf)) != -1;) {
+				writer.write(buf, 0, i);
 			}
 		}
-		JOptionPane.showMessageDialog(null, "");
 	}
 }

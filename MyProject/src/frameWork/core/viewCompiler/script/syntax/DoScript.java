@@ -1,13 +1,19 @@
 package frameWork.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.script.Bytecode;
+import frameWork.core.viewCompiler.script.Scope;
 import frameWork.core.viewCompiler.script.Script;
+import frameWork.core.viewCompiler.script.ScriptException;
 import frameWork.core.viewCompiler.script.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.bytecode.Bytecode;
 
+@SuppressWarnings("rawtypes")
 public class DoScript extends SyntaxScript<Bytecode> {
+	public DoScript(final String label) {
+		super(label);
+	}
+	
 	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws Exception {
+	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
 		if (scriptsBuffer.getChar() == '{') {
 			block(scriptsBuffer);
 			if (scriptsBuffer.startToken("while")) {
@@ -24,35 +30,30 @@ public class DoScript extends SyntaxScript<Bytecode> {
 	}
 	
 	@Override
-	public Bytecode execute(final Scope scope) throws Exception {
+	public Bytecode execute(final Scope scope) throws ScriptException {
 		Bytecode bytecode = null;
 		do {
 			scope.startScope();
 			loop:
-			for (@SuppressWarnings("rawtypes")
-			final Script script : block) {
+			for (final Script script : block) {
 				bytecode = script.execute(scope);
 				if (bytecode.isBreak()) {
+					if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+						bytecode = null;
+					}
 					break loop;
 				}
 				if (bytecode.isContinue()) {
-					continue loop;
+					if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+						bytecode = null;
+						continue loop;
+					}
+					break loop;
 				}
 			}
 			scope.endScope();
 		}
-		while (Boolean.parseBoolean(statement.get(0).execute(scope).toString()));
+		while (statement.get(0).execute(scope).getBoolean());
 		return bytecode;
-	}
-	
-	@Override
-	public void print(final int index) {
-		print(index, "do{");
-		for (@SuppressWarnings("rawtypes")
-		final Script script : block) {
-			script.print(index + 1);
-		}
-		print(index, "}while" + statement);
-		
 	}
 }
