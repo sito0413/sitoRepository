@@ -2,12 +2,12 @@ package frameWork.core.state;
 
 import java.util.Enumeration;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
 
 public class RequestAttributeMap implements AttributeMap {
-	private final HttpServletRequest request;
+	private final ServletRequest request;
 	
-	public RequestAttributeMap(final HttpServletRequest request) {
+	public RequestAttributeMap(final ServletRequest request) {
 		this.request = request;
 	}
 	

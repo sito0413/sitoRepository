@@ -3,9 +3,14 @@ package frameWork.manager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,6 +23,11 @@ import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import frameWork.manager.authority.Authority;
+import frameWork.manager.database.Database;
+import frameWork.manager.info.Info;
+import frameWork.manager.project.Project;
+
 @SuppressWarnings({
         "rawtypes", "unchecked"
 })
@@ -26,6 +36,11 @@ public class FrameworkManager {
 	private JFrame frame;
 	private final CardLayout cl_panel = new CardLayout(0, 0);
 	private JPanel panel;
+	private final JPanel panel_2 = new JPanel();
+	private Project project;
+	private Info info;
+	private Authority authority;
+	private Database database;
 	
 	public static void main(final String[] args) {
 		try {
@@ -50,21 +65,26 @@ public class FrameworkManager {
 	
 	public FrameworkManager() {
 		initialize();
+		update();
+	}
+	
+	private void update() {
+		project.update();
+		info.update();
+		authority.update();
+		database.update();
 	}
 	
 	private void initialize() {
 		this.frame = new JFrame();
 		this.frame.setTitle("フレームワーク管理ツール");
-		this.frame.setBounds(100, 100, 450, 300);
+		this.frame.setBounds(100, 100, 600, 450);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		{
 			final JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 			this.frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 			{
-				final JPanel panel_1 = new JPanel();
-				tabbedPane.addTab("サーバー管理", null, panel_1, null);
-			}
-			{
+				final List<String> __list = new ArrayList<>();
 				final JPanel panel_1 = new JPanel();
 				tabbedPane.addTab("プロジェクト管理", null, panel_1, null);
 				panel_1.setLayout(new BorderLayout(0, 0));
@@ -76,16 +96,24 @@ public class FrameworkManager {
 						scrollPane.setViewportView(panel);
 						panel.setLayout(cl_panel);
 						{
-							final Project project = new Project();
+							project = new Project();
 							this.panel.add(project, project.getListName());
+							__list.add(project.getListName());
 						}
 						{
-							final Info info = new Info();
+							info = new Info();
 							this.panel.add(info, info.getListName());
+							__list.add(info.getListName());
 						}
 						{
-							final Authority authority = new Authority();
+							authority = new Authority();
 							this.panel.add(authority, authority.getListName());
+							__list.add(authority.getListName());
+						}
+						{
+							database = new Database();
+							this.panel.add(database, database.getListName());
+							__list.add(database.getListName());
 						}
 					}
 				}
@@ -107,29 +135,38 @@ public class FrameworkManager {
 							}
 						});
 						list.setModel(new AbstractListModel() {
-							String[] values = new String[] {
-							        "プロジェクト作成", "Info作成", "権限作成"
-							};
 							
 							@Override
 							public int getSize() {
-								return values.length;
+								return __list.size();
 							}
 							
 							@Override
 							public Object getElementAt(final int index) {
-								return values[index];
+								return __list.get(index);
 							}
 						});
 						list.setSelectedIndex(0);
 						scrollPane.setViewportView(list);
 					}
 				}
-				{
-					final JLabel lblNewLabel = new JLabel(new File("").getAbsolutePath());
-					panel_1.add(lblNewLabel, BorderLayout.NORTH);
-				}
+				panel_1.add(this.panel_2, BorderLayout.NORTH);
 			}
+		}
+		this.panel_2.setLayout(new BorderLayout(0, 0));
+		{
+			final JLabel lblNewLabel = new JLabel(new File("").getAbsolutePath());
+			this.panel_2.add(lblNewLabel);
+		}
+		{
+			final JButton btnNewButton = new JButton("更新");
+			btnNewButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					update();
+				}
+			});
+			this.panel_2.add(btnNewButton, BorderLayout.EAST);
 		}
 	}
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 
 import frameWork.core.fileSystem.FileSystem;
 import frameWork.core.state.Response;
-import frameWork.core.viewCompiler.script.Scope;
+import frameWork.core.viewCompiler.Scope;
 
 public class ParserBuffer {
 	private final CharBuffer charBuffer;

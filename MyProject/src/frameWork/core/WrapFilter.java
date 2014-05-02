@@ -1,6 +1,5 @@
 package frameWork.core;
 
-
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -18,12 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import frameWork.ThrowableUtil;
 import frameWork.core.state.Response;
 import frameWork.core.state.State;
-import frameWork.databaseConnector.DatabaseConnectorKey;
-import frameWork.databaseConnector.pool.ConnectorPool;
 
 @WebFilter("/*")
 @WebListener
 public class WrapFilter implements Filter, ServletContextListener {
+	private static final String KEY = "@FRAMEWORK";
+	
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 	        throws IOException, ServletException {
@@ -32,8 +31,7 @@ public class WrapFilter implements Filter, ServletContextListener {
 		final String method = ((HttpServletRequest) request).getMethod();
 		final State state = new State((HttpServletRequest) request);
 		try {
-			((CoreHandler) request.getServletContext().getAttribute("FRAMEWORK"))
-			        .handle(target, respons, method, state);
+			((CoreHandler) request.getServletContext().getAttribute(KEY)).handle(target, respons, method, state);
 		}
 		catch (final Exception e) {
 			ThrowableUtil.throwable(e);
@@ -46,8 +44,7 @@ public class WrapFilter implements Filter, ServletContextListener {
 	
 	@Override
 	public void contextInitialized(final ServletContextEvent event) {
-		event.getServletContext().setAttribute("FRAMEWORK",
-		        new CoreHandler(new ConnectorPool(new DatabaseConnectorKey(null, null, "", ""))));
+		event.getServletContext().setAttribute(KEY, new CoreHandler());
 	}
 	
 	@Override

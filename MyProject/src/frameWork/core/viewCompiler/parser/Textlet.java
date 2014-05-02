@@ -29,11 +29,8 @@ public class Textlet {
 		final StringBuilder sb = new StringBuilder("out.write(\"");
 		final int initLength = sb.length();
 		for (int j = 0; j < text.length(); j++) {
-			char ch = text.charAt(j);
+			final char ch = text.charAt(j);
 			isAllSpace &= Character.isWhitespace(ch);
-			if (ch == '\t') {
-				ch = ' ';
-			}
 			switch ( ch ) {
 				case '"' :
 					sb.append("\\\"");
@@ -46,6 +43,9 @@ public class Textlet {
 					break;
 				case '\n' :
 					sb.append("\\n");
+					break;
+				case '\t' :
+					sb.append("\\t");
 					break;
 				default :
 					sb.append(ch);

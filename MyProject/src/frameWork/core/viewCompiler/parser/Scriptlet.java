@@ -18,5 +18,4 @@ public class Scriptlet extends Textlet {
 	public String toScript() {
 		return text;
 	}
-	
 }

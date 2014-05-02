@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.Script;
+import frameWork.core.viewCompiler.ScriptException;
+import frameWork.core.viewCompiler.ScriptsBuffer;
 import frameWork.core.viewCompiler.script.Bytecode;
-import frameWork.core.viewCompiler.script.Scope;
-import frameWork.core.viewCompiler.script.Script;
-import frameWork.core.viewCompiler.script.ScriptException;
-import frameWork.core.viewCompiler.script.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.SyntaxScript;
 
 @SuppressWarnings("rawtypes")
 public class SwitchScript extends SyntaxScript<Bytecode> {
@@ -62,8 +63,6 @@ public class SwitchScript extends SyntaxScript<Bytecode> {
 						throw scriptsBuffer.illegalCharacterError();
 					}
 				}
-				scriptsBuffer.skip();
-				
 				final SyntaxScript subScript = scriptsBuffer.getSyntaxToken();
 				caseBlock.add(subScript);
 				switch ( subScript.create(scriptsBuffer) ) {
@@ -98,17 +97,19 @@ public class SwitchScript extends SyntaxScript<Bytecode> {
 		loop:
 		for (final Script script : caseBlock) {
 			bytecode = script.execute(scope);
-			if (bytecode.isBreak()) {
-				if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
-					bytecode = null;
+			if (bytecode != null) {
+				if (bytecode.isBreak()) {
+					if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {
+						bytecode = null;
+					}
+					break loop;
 				}
-				break loop;
-			}
-			if (bytecode.isContinue()) {
-				if (!label.isEmpty() && bytecode.get().equals(label)) {
-					bytecode = null;
+				if (bytecode.isContinue()) {
+					if (!label.isEmpty() && bytecode.get().equals(label)) {
+						bytecode = null;
+					}
+					break loop;
 				}
-				break loop;
 			}
 		}
 		scope.endScope();

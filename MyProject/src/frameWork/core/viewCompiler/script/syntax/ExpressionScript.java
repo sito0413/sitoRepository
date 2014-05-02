@@ -1,10 +1,13 @@
 package frameWork.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.script.ScriptException;
-import frameWork.core.viewCompiler.script.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.ScriptException;
+import frameWork.core.viewCompiler.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.SyntaxScript;
+import frameWork.core.viewCompiler.script.syntax.expression.InstanceBytecode;
 
 public abstract class ExpressionScript extends SyntaxScript<InstanceBytecode> {
+	
 	public ExpressionScript() {
 		super("");
 	}
@@ -13,4 +16,15 @@ public abstract class ExpressionScript extends SyntaxScript<InstanceBytecode> {
 	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
 		return scriptsBuffer.getChar();
 	}
+	
+	public InstanceBytecode execute(final Class<?> type, final Object object, final Scope scope) throws ScriptException {
+		return execute(scope);
+	}
+	
+	@Override
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+		return execute(null, null, scope);
+	}
+	
+	public abstract String toNameString();
 }

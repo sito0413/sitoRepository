@@ -1,10 +1,11 @@
 package frameWork.core.viewCompiler.script.syntax;
 
+import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.Script;
+import frameWork.core.viewCompiler.ScriptException;
+import frameWork.core.viewCompiler.ScriptsBuffer;
 import frameWork.core.viewCompiler.script.Bytecode;
-import frameWork.core.viewCompiler.script.Scope;
-import frameWork.core.viewCompiler.script.Script;
-import frameWork.core.viewCompiler.script.ScriptException;
-import frameWork.core.viewCompiler.script.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.SyntaxScript;
 
 @SuppressWarnings("rawtypes")
 public class ElseScript extends SyntaxScript<Bytecode> {

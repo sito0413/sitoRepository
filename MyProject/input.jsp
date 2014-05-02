@@ -1,74 +1,68 @@
+<%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html>
 <%
-var y =0;
-y++;
-y--;
---y;
-++y;
-//System.out.print("test");
-//var y = new ArrayList<String>();
-	var masterData = request.getAttribute("data");
-	var list1 = masterData.get(1);
-	var list1Size = list1.size();
-	var data = masterData.get(0).get(0);
-	var data11 = data.get(11);
-	var data12 = data.get(12);
-	var data13 = data.get(13);
-	var data14 = data.get(14);
-	var data15 = data.get(15);
-	var data16 = data.get(16);
-	var data17 = data.get(17);
-	var data18 = data.get(18);
-	var data19 = data.get(19);
-	var data20 = data.get(20);
-	var data21 = data.get(21);
-	var data22 = data.get(22);
-	var data23 = data.get(23);
-	var data24 = data.get(24);
-	var data25 = data.get(25);
-	var data26 = data.get(26);
-	var data27 = data.get(27);
-	var data28 = data.get(28);
-	var data29 = data.get(29);
-	var data30 = data.get(30);
-	var data31 = data.get(31);
-	var data32 = data.get(32);
-	var data33 = data.get(33);
-	var data34 = data.get(34);
-	var data35 = data.get(35);
-	var data36 = data.get(36);
-	var data37 = data.get(37);
-	var data38 = data.get(38);
-	var data39 = data.get(39);
-	var data40 = data.get(40);
-	var data41 = data.get(41);
-	var data42 = data.get(42);
-	var data43 = data.get(43);
-	var data44 = data.get(44);
-	var data45 = data.get(45);
-	var data46 = data.get(46);
-	var data47 = data.get(47);
-	var data48 = data.get(48);
-	var data49 = data.get(49);
-	var data50 = data.get(50);
-	var data51 = data.get(51);
-	var data52 = data.get(52);
-	var data69 = data.get(69);
-	var data70 = data.get(70);
-	var data71 = data.get(71);
-	var data72 = data.get(72);
-	var data73 = data.get(73);
-	var data74 = data.get(74);
-	var data75 = data.get(75);
-	var data81 = data.get(81);
-	var data82 = data.get(82);
-	var clockH = "　";
-	var clockM = "　";
-	for(var i = 0;i < list1Size; i++){
-		if( list1.get(i).get(0) == data14){
+	List<List<List<String>>> masterData = (List<List<List<String>>>)request.getAttribute("data");
+	List<List<String>> list1 = masterData.get(1);
+	int list1Size = list1.size();
+	List<String> data = masterData.get(0).get(0);
+	String data11 = data.get(11);
+	String data12 = data.get(12);
+	String data13 = data.get(13);
+	String data14 = data.get(14);
+	String data15 = data.get(15);
+	String data16 = data.get(16);
+	String data17 = data.get(17);
+	String data18 = data.get(18);
+	String data19 = data.get(19);
+	String data20 = data.get(20);
+	String data21 = data.get(21);
+	String data22 = data.get(22);
+	String data23 = data.get(23);
+	String data24 = data.get(24);
+	String data25 = data.get(25);
+	String data26 = data.get(26);
+	String data27 = data.get(27);
+	String data28 = data.get(28);
+	String data29 = data.get(29);
+	String data30 = data.get(30);
+	String data31 = data.get(31);
+	String data32 = data.get(32);
+	String data33 = data.get(33);
+	String data34 = data.get(34);
+	String data35 = data.get(35);
+	String data36 = data.get(36);
+	String data37 = data.get(37);
+	String data38 = data.get(38);
+	String data39 = data.get(39);
+	String data40 = data.get(40);
+	String data41 = data.get(41);
+	String data42 = data.get(42);
+	String data43 = data.get(43);
+	String data44 = data.get(44);
+	String data45 = data.get(45);
+	String data46 = data.get(46);
+	String data47 = data.get(47);
+	String data48 = data.get(48);
+	String data49 = data.get(49);
+	String data50 = data.get(50);
+	String data51 = data.get(51);
+	String data52 = data.get(52);
+	String data69 = data.get(69);
+	String data70 = data.get(70);
+	String data71 = data.get(71);
+	String data72 = data.get(72);
+	String data73 = data.get(73);
+	String data74 = data.get(74);
+	String data75 = data.get(75);
+	String data81 = data.get(81);
+	String data82 = data.get(82);
+	String clockH = "　";
+	String clockM = "　";
+	for(int i = 0;i < list1Size; i++){
+		if(list1.get(i).get(0).equals(data14)){
 			clockH = list1.get(i).get(1);
 			clockM = list1.get(i).get(2);
 			break;
@@ -116,30 +110,30 @@ y--;
 					a[4] = Math.floor(Number("<%=data19%>"));
 					a[5] = Math.floor(Number("<%=data20%>"));
 		        	at = "<%=data.get(76)%>";
-			       	b[0] = "<%if(data21 == -1 && data37 == -1) {%>3<% } else if(data21 == -1) {%>2<% } else if(data37 == -1){%>1<%} else{%>0<%}%>";
-		        	b[1] = "<%if(data22 == -1 && data38 == -1) {%>3<% } else if(data22 == -1) {%>2<% } else if(data38 == -1){%>1<%} else{%>0<%}%>";
-		        	b[2] = "<%if(data23 == -1 && data39 == -1) {%>3<% } else if(data23 == -1) {%>2<% } else if(data39 == -1){%>1<%} else{%>0<%}%>";
-		        	b[3] = "<%if(data24 == -1 && data40 == -1) {%>3<% } else if(data24 == -1) {%>2<% } else if(data40 == -1){%>1<%} else{%>0<%}%>";
-		        	b[4] = "<%if(data25 == -1 && data41 == -1) {%>3<% } else if(data25 == -1) {%>2<% } else if(data41 == -1){%>1<%} else{%>0<%}%>";
-		        	b[5] = "<%if(data26 == -1 && data42 == -1) {%>3<% } else if(data26 == -1) {%>2<% } else if(data42 == -1){%>1<%} else{%>0<%}%>";
-		        	b[6] = "<%if(data27 == -1 && data43 == -1) {%>3<% } else if(data27 == -1) {%>2<% } else if(data43 == -1){%>1<%} else{%>0<%}%>";
-			       	b[7] = "<%if(data28 == -1 && data44 == -1) {%>3<% } else if(data28 == -1) {%>2<% } else if(data44 == -1){%>1<%} else{%>0<%}%>";
-		        	b[8] = "<%if(data29 == -1 && data45 == -1) {%>3<% } else if(data29 == -1) {%>2<% } else if(data45 == -1){%>1<%} else{%>0<%}%>";
-		        	b[9] = "<%if(data30 == -1 && data46 == -1) {%>3<% } else if(data30 == -1) {%>2<% } else if(data46 == -1){%>1<%} else{%>0<%}%>";
-		        	b[10] = "<%if(data31 == -1 && data47 == -1) {%>3<% } else if(data31 == -1) {%>2<% } else if(data47 == -1){%>1<%} else{%>0<%}%>";
-		        	b[11] = "<%if(data32 == -1 && data48 == -1) {%>3<% } else if(data32 == -1) {%>2<% } else if(data48 == -1){%>1<%} else{%>0<%}%>";
-		        	b[12] = "<%if(data33 == -1 && data49 == -1) {%>3<% } else if(data33 == -1) {%>2<% } else if(data49 == -1){%>1<%} else{%>0<%}%>";
-		        	b[13] = "<%if(data34 == -1 && data50 == -1) {%>3<% } else if(data34 == -1) {%>2<% } else if(data50 == -1){%>1<%} else{%>0<%}%>";
-			       	b[14] = "<%if(data35 == -1 && data51 == -1) {%>3<% } else if(data35 == -1) {%>2<% } else if(data51 == -1){%>1<%} else{%>0<%}%>";
-		        	b[15] = "<%if(data36 == -1 && data52 == -1) {%>3<% } else if(data36 == -1) {%>2<% } else if(data52 == -1){%>1<%} else{%>0<%}%>";
+			       	b[0] = "<%if(data21.equals("-1") && data37.equals("-1")) {%>3<% } else if(data21.equals("-1")) {%>2<% } else if(data37.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[1] = "<%if(data22.equals("-1") && data38.equals("-1")) {%>3<% } else if(data22.equals("-1")) {%>2<% } else if(data38.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[2] = "<%if(data23.equals("-1") && data39.equals("-1")) {%>3<% } else if(data23.equals("-1")) {%>2<% } else if(data39.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[3] = "<%if(data24.equals("-1") && data40.equals("-1")) {%>3<% } else if(data24.equals("-1")) {%>2<% } else if(data40.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[4] = "<%if(data25.equals("-1") && data41.equals("-1")) {%>3<% } else if(data25.equals("-1")) {%>2<% } else if(data41.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[5] = "<%if(data26.equals("-1") && data42.equals("-1")) {%>3<% } else if(data26.equals("-1")) {%>2<% } else if(data42.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[6] = "<%if(data27.equals("-1") && data43.equals("-1")) {%>3<% } else if(data27.equals("-1")) {%>2<% } else if(data43.equals("-1")){%>1<%} else{%>0<%}%>";
+			       	b[7] = "<%if(data28.equals("-1") && data44.equals("-1")) {%>3<% } else if(data28.equals("-1")) {%>2<% } else if(data44.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[8] = "<%if(data29.equals("-1") && data45.equals("-1")) {%>3<% } else if(data29.equals("-1")) {%>2<% } else if(data45.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[9] = "<%if(data30.equals("-1") && data46.equals("-1")) {%>3<% } else if(data30.equals("-1")) {%>2<% } else if(data46.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[10] = "<%if(data31.equals("-1") && data47.equals("-1")) {%>3<% } else if(data31.equals("-1")) {%>2<% } else if(data47.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[11] = "<%if(data32.equals("-1") && data48.equals("-1")) {%>3<% } else if(data32.equals("-1")) {%>2<% } else if(data48.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[12] = "<%if(data33.equals("-1") && data49.equals("-1")) {%>3<% } else if(data33.equals("-1")) {%>2<% } else if(data49.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[13] = "<%if(data34.equals("-1") && data50.equals("-1")) {%>3<% } else if(data34.equals("-1")) {%>2<% } else if(data50.equals("-1")){%>1<%} else{%>0<%}%>";
+			       	b[14] = "<%if(data35.equals("-1") && data51.equals("-1")) {%>3<% } else if(data35.equals("-1")) {%>2<% } else if(data51.equals("-1")){%>1<%} else{%>0<%}%>";
+		        	b[15] = "<%if(data36.equals("-1") && data52.equals("-1")) {%>3<% } else if(data36.equals("-1")) {%>2<% } else if(data52.equals("-1")){%>1<%} else{%>0<%}%>";
 			       	bt = "<%=data.get(77)%>";
-			       	c[0] = "<%if(data69 == 1) {%>1<% } else {%>0<% }%>";
-		        	c[1] = "<%if(data70 == 1) {%>1<% } else {%>0<% }%>";
-		        	c[2] = "<%if(data71 == 1) {%>1<% } else {%>0<% }%>";
-		        	c[3] = "<%if(data72 == 1) {%>1<% } else {%>0<% }%>";
-		        	c[4] = "<%if(data73 == 1) {%>1<% } else {%>0<% }%>";
-		        	c[5] = "<%if(data74 == 1) {%>1<% } else {%>0<% }%>";
-		        	c[6] = "<%if(data75 == 1) {%>1<% } else {%>0<% }%>";
+			       	c[0] = "<%if(data69.equals("1")) {%>1<% } else {%>0<% }%>";
+		        	c[1] = "<%if(data70.equals("1")) {%>1<% } else {%>0<% }%>";
+		        	c[2] = "<%if(data71.equals("1")) {%>1<% } else {%>0<% }%>";
+		        	c[3] = "<%if(data72.equals("1")) {%>1<% } else {%>0<% }%>";
+		        	c[4] = "<%if(data73.equals("1")) {%>1<% } else {%>0<% }%>";
+		        	c[5] = "<%if(data74.equals("1")) {%>1<% } else {%>0<% }%>";
+		        	c[6] = "<%if(data75.equals("1")) {%>1<% } else {%>0<% }%>";
 		          	ct = "<%=data.get(78)%>";
 		          	t = "<%=data.get(79)%>";
 		          	r = "<%=data.get(80)%>";
@@ -147,7 +141,7 @@ y--;
 		        	d[1] = "<%=data82%>";
 					$("#clockH").text("時間の数字（<%=clockH%>）が指示されている");
 					$("#clockM").text("分の数字（<%=clockM%>）が指示されている");
-		        	editable = "<%=data.get(85)%>" == 1;
+		        	editable = "<%=data.get(85)%>".equals("1");
 		        	if(editable){
 		        		alert("受講者確定処理が行われています。\r\n\r\n「受講・検査結果の入力」で\r\n受講者確定解除処理を行ってから検査結果入力を行って下さい。\r\n\r\n内容を変更しても保存されません。");
 		        	}
@@ -246,8 +240,8 @@ y--;
 		        	clockIndex = Math.floor(Number(value));
 		        	switch (clockIndex) {
 <%
-	for(var i = 0;i < list1Size; i++){
-%>     	        		case <%= list1.get(i).get(0)%>:
+	for(int i = 0;i < list1Size; i++){
+%>     	        		case <%=list1.get(i).get(0) %>:
 							$("#clockH").text("時間の数字（<%= list1.get(i).get(1)%>）が指示されている");
 							$("#clockM").text("分の数字（<%= list1.get(i).get(2)%>）が指示されている");
 		                    break;
@@ -400,10 +394,10 @@ y--;
 								<select onchange="changeStartH(value)" >
 									<option value="-1">　</option>
 <%
-	for(var i = 0;i < 24; i++){
-		var s = "" + i;
+	for(int i = 0;i < 24; i++){
+		String s = "" + i;
 		if(i < 10){
-			s= '0' + i;
+			s= "0" + i;
 		}
 %>									<option value="<%=s%>"<%if(s==data12) {%> selected="selected"<% }%>><%=s%>時</option>
 <%
@@ -413,10 +407,10 @@ y--;
 								<select onchange="changeStartM(value)" >
 									<option value="-1">　</option>
 <%
-	for(var i = 0;i < 60; i++){
-		var s = "" + i;
+	for(int i = 0;i < 60; i++){
+		String s = "" + i;
 		if(i < 10){
-			s= '0' + i;
+			s= "0" + i;
 		}
 %>									<option value="<%=s%>"<%if(s==data13) {%> selected="selected"<% }%>><%=s%>分</option>
 <%
@@ -430,12 +424,12 @@ y--;
 								<select onchange="changeClock(value)" >
 									<option value="-1">　</option>
 <%
-	for(var i = 0;i < list1Size; i++){
-		if( list1.get(i).get(0) == data14){
+	for(int i = 0;i < list1Size; i++){
+		if(list1.get(i).get(0) == data14){
 %>									<option value="<%= list1.get(i).get(0)%>" selected="selected"><%=list1.get(i).get(3)%></option>
 <%
-		}
-		else if (false){} else
+					}
+					else {
 %>									<option value="<%= list1.get(i).get(0)%>"><%=list1.get(i).get(3)%></option>
 <%
 		}
@@ -482,11 +476,11 @@ y--;
 										<select onchange="changeA(1, value)" >
 											<option value="0">　</option>
 <%
-	for(var i = 1; i <= 12; i++){
-		var s1 = "" + i;
-		var s2 = "" + i;
+	for(int i = 1; i <= 12; i++){
+		String s1 = "" + i;
+		String s2 = "" + i;
 		if(i < 10){
-			s2= '0' + i;
+			s2= "0" + i;
 		}
 %>											<option value="<%=s1%>"<%if(s1==data16) {%> selected="selected"<% }%>><%=s2%>月</option>
 <%
@@ -505,11 +499,11 @@ y--;
 										<select onchange="changeA(2,value)" >
 											<option value="0">　</option>
 <%
-	for(var i = 1; i <= 31; i++){
-		var s1 = "" + i;
-		var s2 = "" + i;
+	for(int i = 1; i <= 31; i++){
+		String s1 = "" + i;
+		String s2 = "" + i;
 		if(i < 10){
-			s2= '0' + i;
+			s2= "0" + i;
 		}
 %>											<option value="<%=s1%>"<%if(s1==data17) {%> selected="selected"<% }%>><%=s2%>日</option>
 <%
@@ -549,10 +543,10 @@ y--;
 										<select onchange="changeA(4,value)" >
 											<option value="-1">　</option>
 <%
-	for(var i = 0; i <= 23; i++){
-		var s = "" + i;
+	for(int i = 0; i <= 23; i++){
+		String s = "" + i;
 		if(i < 10){
-			s= '0' + i;
+			s= "0" + i;
 		}
 %>											<option value="<%=s%>"<%if(s==data19) {%> selected="selected"<% }%>><%=s%>時</option>
 <%
@@ -561,10 +555,10 @@ y--;
 										<select onchange="changeA(5,value)" >
 											<option value="-1">　</option>
 <%
-	for(var i = 0; i <= 59; i++){
-		var s = "" + i;
+	for(int i = 0; i <= 59; i++){
+		String s = "" + i;
 		if(i < 10){
-			s= '0' + i;
+			s= "0" + i;
 		}
 %>											<option value="<%=s%>"<%if(s==data20) {%> selected="selected"<% }%>><%=s%>分</option>
 <%
@@ -593,334 +587,332 @@ y--;
 								<td>
 									<select>
 <%
-	var list5 = masterData.get(5);
-	var list5Size = list5.size();
-	for(var i = 0;i < list5Size; i++){
+	List<List<String>> list5 =  masterData.get(5);
+	int list5Size = list5.size();
+	for(int i = 0;i < list5Size; i++){
 %>										<option disabled="disabled"><%=list5.get(i).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-0-1" type="checkbox" <%if(data21 == -1) {%> checked="checked"<% }%> onchange="changeB(0)"><label for="c2-0-1" >自由</label>
-										<input id="c2-0-2" type="checkbox" <%if(data37 == -1) {%> checked="checked"<% }%> onchange="changeB(0)"><label for="c2-0-2" >手がかり</label>
+										<input id="c2-0-1" type="checkbox" <%if(data21.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(0)"><label for="c2-0-1" >自由</label>
+										<input id="c2-0-2" type="checkbox" <%if(data37.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(0)"><label for="c2-0-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-0-3" ></td>
 							</tr>
 							<tr>
 								<td>2</td>
-								<td><%=masterData.get(29).get(1).get(0)%></td>
+								<td><%=((masterData.get(29)).get(1)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list6 = masterData.get(6);
-	var list6Size = list6.size();
-	for(var i = 0;i < list6Size; i++){
-%>										<option disabled="disabled"><%=list6.get(i).get(0)%></option>
+	List<List<String>> list6 =  masterData.get(6);
+	int list6Size = list6.size();
+	for(int i = 0;i < list6Size; i++){
+%>										<option disabled="disabled"><%=(list6.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-1-1" type="checkbox" <%if(data22 == -1) {%> checked="checked"<% }%> onchange="changeB(1)"><label for="c2-1-1" >自由</label>
-										<input id="c2-1-2" type="checkbox" <%if(data38 == -1) {%> checked="checked"<% }%> onchange="changeB(1)"><label for="c2-1-2" >手がかり</label>
+										<input id="c2-1-1" type="checkbox" <%if(data22.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(1)"><label for="c2-1-1" >自由</label>
+										<input id="c2-1-2" type="checkbox" <%if(data38.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(1)"><label for="c2-1-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-1-3" ></td>
 							</tr>
 							<tr>
 								<td>3</td>
-								<td><%=masterData.get(29).get(2).get(0)%></td>
+								<td><%=((masterData.get(29)).get(2)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list7 = masterData.get(7);
-	var list7Size = list7.size();
-	for(var i = 0;i < list7Size; i++){
-%>										<option disabled="disabled"><%=list7.get(i).get(0)%></option>
+	List<List<String>> list7 =  masterData.get(7);
+	int list7Size = list7.size();
+	for(int i = 0;i < list7Size; i++){
+%>										<option disabled="disabled"><%=(list7.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-2-1" type="checkbox" <%if(data23 == -1) {%> checked="checked"<% }%> onchange="changeB(2)"><label for="c2-2-1" >自由</label>
-										<input id="c2-2-2" type="checkbox" <%if(data39 == -1) {%> checked="checked"<% }%> onchange="changeB(2)"><label for="c2-2-2" >手がかり</label>
+										<input id="c2-2-1" type="checkbox" <%if(data23.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(2)"><label for="c2-2-1" >自由</label>
+										<input id="c2-2-2" type="checkbox" <%if(data39.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(2)"><label for="c2-2-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-2-3" ></td>
 							</tr>
 							<tr>
 								<td>4</td>
-								<td><%=masterData.get(29).get(3).get(0)%></td>
+								<td><%=((masterData.get(29)).get(3)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list8 = masterData.get(8);
-	var list8Size = list8.size();
-	for(var i = 0;i < list8Size; i++){
-%>										<option disabled="disabled"><%=list8.get(i).get(0)%></option>
+	List<List<String>> list8 =  masterData.get(8);
+	int list8Size = list8.size();
+	for(int i = 0;i < list8Size; i++){
+%>										<option disabled="disabled"><%=(list8.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-3-1" type="checkbox" <%if(data24 == -1) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-1" >自由</label>
-										<input id="c2-3-2" type="checkbox" <%if(data40 == -1) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-2" >手が かり</label>
+										<input id="c2-3-1" type="checkbox" <%if(data24.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-1" >自由</label>
+										<input id="c2-3-2" type="checkbox" <%if(data40.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(3)"><label for="c2-3-2" >手が かり</label>
 									</div>
 								</td>
 								<td id="c2-3-3" ></td>
 							</tr>
 							<tr>
 								<td>5</td>
-								<td><%=masterData.get(29).get(4).get(0)%></td>
+								<td><%=((masterData.get(29)).get(4)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list9 = masterData.get(9);
-	var list9Size = list9.size();
-	for(var i = 0;i < list9Size; i++){
-%>										<option disabled="disabled"><%=list9.get(i).get(0)%></option>
+	List<List<String>> list9 =  masterData.get(9);
+	int list9Size = list9.size();
+	for(int i = 0;i < list9Size; i++){
+%>										<option disabled="disabled"><%=(list9.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-4-1" type="checkbox" <%if(data25 == -1) {%> checked="checked"<% }%> onchange="changeB(4)"><label for="c2-4-1" >自由</label>
-										<input id="c2-4-2" type="checkbox" <%if(data41 == -1) {%> checked="checked"<% }%> onchange="changeB(4)"><label for="c2-4-2" >手がかり</label>
+										<input id="c2-4-1" type="checkbox" <%if(data25.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(4)"><label for="c2-4-1" >自由</label>
+										<input id="c2-4-2" type="checkbox" <%if(data41.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(4)"><label for="c2-4-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-4-3" ></td>
 							</tr>
 							<tr>
 								<td>6</td>
-								<td><%=masterData.get(29).get(5).get(0)%></td>
+								<td><%=((masterData.get(29)).get(5)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list10 = masterData.get(10);
-	var list10Size = list10.size();
-	for(var i = 0;i < list10Size; i++){
-%>										<option disabled="disabled"><%=list10.get(i).get(0)%></option>
+	List<List<String>> list10 =  masterData.get(10);
+	int list10Size = list10.size();
+	for(int i = 0;i < list10Size; i++){
+%>										<option disabled="disabled"><%=(list10.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-5-1" type="checkbox" <%if(data26 == -1) {%> checked="checked"<% }%> onchange="changeB(5)"><label for="c2-5-1" >自由</label>
-										<input id="c2-5-2" type="checkbox" <%if(data42 == -1) {%> checked="checked"<% }%> onchange="changeB(5)"><label for="c2-5-2" >手がかり</label>
+										<input id="c2-5-1" type="checkbox" <%if(data26.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(5)"><label for="c2-5-1" >自由</label>
+										<input id="c2-5-2" type="checkbox" <%if(data42.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(5)"><label for="c2-5-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-5-3" ></td>
 							</tr>
 							<tr>
 								<td>7</td>
-								<td><%=masterData.get(29).get(6).get(0)%></td>
+								<td><%=((masterData.get(29)).get(6)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list11 = masterData.get(11);
-	var list11Size = list11.size();
-
-	for(var i = 0;i < list11Size; i++){
-%>										<option disabled="disabled"><%=list11.get(i).get(0)%></option>
+	List<List<String>> list11 =  masterData.get(11);
+	int list11Size = list11.size();
+	for(int i = 0;i < list11Size; i++){
+%>										<option disabled="disabled"><%=(list11.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-6-1" type="checkbox" <%if(data27 == -1) {%> checked="checked"<% }%> onchange="changeB(6)"><label for="c2-6-1" >自由</label>
-										<input id="c2-6-2" type="checkbox" <%if(data43 == -1) {%> checked="checked"<% }%> onchange="changeB(6)"><label for="c2-6-2" >手がかり</label>
+										<input id="c2-6-1" type="checkbox" <%if(data27.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(6)"><label for="c2-6-1" >自由</label>
+										<input id="c2-6-2" type="checkbox" <%if(data43.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(6)"><label for="c2-6-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-6-3" ></td>
 							</tr>
 							<tr>
 								<td>8</td>
-								<td><%=masterData.get(29).get(7).get(0)%></td>
+								<td><%=((masterData.get(29)).get(7)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list12 = masterData.get(12);
-	var list12Size = list12.size();
-	for(var i = 0;i < list12Size; i++){
-%>										<option disabled="disabled"><%=list12.get(i).get(0)%></option>
+	List<List<String>> list12 =  masterData.get(12);
+	int list12Size = list12.size();
+	for(int i = 0;i < list12Size; i++){
+%>										<option disabled="disabled"><%=(list12.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-7-1" type="checkbox" <%if(data28 == -1) {%> checked="checked"<% }%> onchange="changeB(7)"><label for="c2-7-1" >自由</label>
-										<input id="c2-7-2" type="checkbox" <%if(data44 == -1) {%> checked="checked"<% }%> onchange="changeB(7)"><label for="c2-7-2" >手がかり</label>
+										<input id="c2-7-1" type="checkbox" <%if(data28.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(7)"><label for="c2-7-1" >自由</label>
+										<input id="c2-7-2" type="checkbox" <%if(data44.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(7)"><label for="c2-7-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-7-3" ></td>
 							</tr>
 							<tr>
 								<td>9</td>
-								<td><%=masterData.get(29).get(8).get(0)%></td>
+								<td><%=((masterData.get(29)).get(8)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list13 = masterData.get(13);
-	var list13Size = list13.size();
-
-	for(var i = 0;i < list13Size; i++){
-%>										<option disabled="disabled"><%=list13.get(i).get(0)%></option>
+	List<List<String>> list13 =  masterData.get(13);
+	int list13Size = list13.size();
+	for(int i = 0;i < list13Size; i++){
+%>										<option disabled="disabled"><%=(list13.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-8-1" type="checkbox" <%if(data29 == -1) {%> checked="checked"<% }%> onchange="changeB(8)"><label for="c2-8-1" >自由</label>
-										<input id="c2-8-2" type="checkbox" <%if(data45 == -1) {%> checked="checked"<% }%> onchange="changeB(8)"><label for="c2-8-2" >手がかり</label>
+										<input id="c2-8-1" type="checkbox" <%if(data29.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(8)"><label for="c2-8-1" >自由</label>
+										<input id="c2-8-2" type="checkbox" <%if(data45.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(8)"><label for="c2-8-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-8-3" ></td>
 							</tr>
 							<tr>
 								<td>10</td>
-								<td><%=masterData.get(29).get(9).get(0)%></td>
+								<td><%=((masterData.get(29)).get(9)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list14 = masterData.get(14);
-	var list14Size = list14.size();
-	for(var i = 0;i < list14Size; i++){
-%>										<option disabled="disabled"><%=list14.get(i).get(0)%></option>
+	List<List<String>> list14 =  masterData.get(14);
+	int list14Size = list14.size();
+	for(int i = 0;i < list14Size; i++){
+%>										<option disabled="disabled"><%=(list14.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-9-1" type="checkbox" <%if(data30 == -1) {%> checked="checked"<% }%> onchange="changeB(9)"><label for="c2-9-1" >自由</label>
-										<input id="c2-9-2" type="checkbox" <%if(data46 == -1) {%> checked="checked"<% }%> onchange="changeB(9)"><label for="c2-9-2" >手がかり</label>
+										<input id="c2-9-1" type="checkbox" <%if(data30.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(9)"><label for="c2-9-1" >自由</label>
+										<input id="c2-9-2" type="checkbox" <%if(data46.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(9)"><label for="c2-9-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-9-3" ></td>
 							</tr>
 							<tr>
 								<td>11</td>
-								<td><%=masterData.get(29).get(10).get(0)%></td>
+								<td><%=((masterData.get(29)).get(10)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list15 = masterData.get(15);
-	var list15Size = list15.size();
-	for(var i = 0;i < list15Size; i++){
-%>										<option disabled="disabled"><%=list15.get(i).get(0)%></option>
+	List<List<String>> list15 =  masterData.get(15);
+	int list15Size = list15.size();
+	for(int i = 0;i < list15Size; i++){
+%>										<option disabled="disabled"><%=(list15.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-10-1" type="checkbox" <%if(data31 == -1) {%> checked="checked"<% }%> onchange="changeB(10)"><label for="c2-10-1" >自由</label>
-										<input id="c2-10-2" type="checkbox" <%if(data47 == -1) {%> checked="checked"<% }%> onchange="changeB(10)"><label for="c2-10-2" >手がかり</label>
+										<input id="c2-10-1" type="checkbox" <%if(data31.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(10)"><label for="c2-10-1" >自由</label>
+										<input id="c2-10-2" type="checkbox" <%if(data47.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(10)"><label for="c2-10-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-10-3" ></td>
 							</tr>
 							<tr>
 								<td>12</td>
-								<td><%=masterData.get(29).get(11).get(0)%></td>
+								<td><%=((masterData.get(29)).get(11)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list16 = masterData.get(16);
-	var list16Size = list16.size();
-	for(var i = 0;i < list16Size; i++){
-%>										<option disabled="disabled"><%=list16.get(i).get(0)%></option>
+	List<List<String>> list16 =  masterData.get(16);
+	int list16Size = list16.size();
+	for(int i = 0;i < list16Size; i++){
+%>										<option disabled="disabled"><%=(list16.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-11-1" type="checkbox" <%if(data32 == -1) {%> checked="checked"<% }%> onchange="changeB(11)"><label for="c2-11-1" >自由</label>
-										<input id="c2-11-2" type="checkbox" <%if(data48 == -1) {%> checked="checked"<% }%> onchange="changeB(11)"><label for="c2-11-2" >手がかり</label>
+										<input id="c2-11-1" type="checkbox" <%if(data32.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(11)"><label for="c2-11-1" >自由</label>
+										<input id="c2-11-2" type="checkbox" <%if(data48.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(11)"><label for="c2-11-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-11-3" ></td>
 							</tr>
 							<tr>
 								<td>13</td>
-								<td><%=masterData.get(29).get(12).get(0)%></td>
+								<td><%=((masterData.get(29)).get(12)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list17 = masterData.get(17);
-	var list17Size = list17.size();
-	for(var i = 0;i < list17Size; i++){
-%>										<option disabled="disabled"><%=list17.get(i).get(0)%></option>
+	List<List<String>> list17 =  masterData.get(17);
+	int list17Size = list17.size();
+	for(int i = 0;i < list17Size; i++){
+%>										<option disabled="disabled"><%=(list17.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-12-1" type="checkbox" <%if(data33 == -1) {%> checked="checked"<% }%> onchange="changeB(12)"><label for="c2-12-1" >自由</label>
-										<input id="c2-12-2" type="checkbox" <%if(data49 == -1) {%> checked="checked"<% }%> onchange="changeB(12)"><label for="c2-12-2" >手がかり</label>
+										<input id="c2-12-1" type="checkbox" <%if(data33.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(12)"><label for="c2-12-1" >自由</label>
+										<input id="c2-12-2" type="checkbox" <%if(data49.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(12)"><label for="c2-12-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-12-3" ></td>
 							</tr>
 							<tr>
 								<td>14</td>
-								<td><%=masterData.get(29).get(13).get(0)%></td>
+								<td><%=((masterData.get(29)).get(13)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list18 = masterData.get(18);
-	var list18Size = list18.size();
-	for(var i = 0;i < list18Size; i++){
-%>										<option disabled="disabled"><%=list18.get(i).get(0)%></option>
+	List<List<String>> list18 =  masterData.get(18);
+	int list18Size = list18.size();
+	for(int i = 0;i < list18Size; i++){
+%>										<option disabled="disabled"><%=(list18.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-13-1" type="checkbox" <%if(data34 == -1) {%> checked="checked"<% }%> onchange="changeB(13)"><label for="c2-13-1" >自由</label>
-										<input id="c2-13-2" type="checkbox" <%if(data50 == -1) {%> checked="checked"<% }%> onchange="changeB(13)"><label for="c2-13-2" >手がかり</label>
+										<input id="c2-13-1" type="checkbox" <%if(data34.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(13)"><label for="c2-13-1" >自由</label>
+										<input id="c2-13-2" type="checkbox" <%if(data50.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(13)"><label for="c2-13-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-13-3" ></td>
 							</tr>
 							<tr>
 								<td>15</td>
-								<td><%=masterData.get(29).get(14).get(0)%></td>
+								<td><%=((masterData.get(29)).get(14)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list19 = masterData.get(19);
-	var list19Size = list19.size();
-	for(var i = 0;i < list19Size; i++){
-%>										<option disabled="disabled"><%=list19.get(i).get(0)%></option>
+	List<List<String>> list19 =  masterData.get(19);
+	int list19Size = list19.size();
+	for(int i = 0;i < list19Size; i++){
+%>										<option disabled="disabled"><%=(list19.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-14-1" type="checkbox" <%if(data35 == -1) {%> checked="checked"<% }%> onchange="changeB(14)"><label for="c2-14-1" >自由</label>
-										<input id="c2-14-2" type="checkbox" <%if(data51 == -1) {%> checked="checked"<% }%> onchange="changeB(14)"><label for="c2-14-2" >手がかり</label>
+										<input id="c2-14-1" type="checkbox" <%if(data35.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(14)"><label for="c2-14-1" >自由</label>
+										<input id="c2-14-2" type="checkbox" <%if(data51.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(14)"><label for="c2-14-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-14-3" ></td>
 							</tr>
 							<tr>
 								<td>16</td>
-								<td><%=masterData.get(29).get(15).get(0)%></td>
+								<td><%=((masterData.get(29)).get(15)).get(0)%></td>
 								<td>
 									<select>
 <%
-	var list20 = masterData.get(20);
-	var list20Size = list20.size();
-	for(var i = 0;i < list20Size; i++){
-%>										<option disabled="disabled"><%=list20.get(i).get(0)%></option>
+	List<List<String>> list20 =  masterData.get(20);
+	int list20Size = list20.size();
+	for(int i = 0;i < list20Size; i++){
+%>										<option disabled="disabled"><%= (list20.get(i)).get(0)%></option>
 <%	}%>
 									</select>
 								</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input id="c2-15-1" type="checkbox" <%if(data36 == -1) {%> checked="checked"<% }%> onchange="changeB(15)"><label for="c2-15-1" >自由</label>
-										<input id="c2-15-2" type="checkbox" <%if(data52 == -1) {%> checked="checked"<% }%> onchange="changeB(15)"><label for="c2-15-2" >手がかり</label>
+										<input id="c2-15-1" type="checkbox" <%if(data36.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(15)"><label for="c2-15-1" >自由</label>
+										<input id="c2-15-2" type="checkbox" <%if(data52.equals("-1")) {%> checked="checked"<% }%> onchange="changeB(15)"><label for="c2-15-2" >手がかり</label>
 									</div>
 								</td>
 								<td id="c2-15-3" ></td>
@@ -946,8 +938,8 @@ y--;
 								<td>１から１２までの数字のみが書かれている</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-1" id="c3-1-1" type="radio" <%if(data69 == 1) {%> checked="checked"<% }%> onchange="changeC(0,1)"><label for="c3-1-1" >正解</label>
-										<input name="c3-1" id="c3-1-2" type="radio" <%if(data69 != 1) {%> checked="checked"<% }%> onchange="changeC(0,0)"><label for="c3-1-2" >不正解</label>
+										<input name="c3-1" id="c3-1-1" type="radio" <%if(data69.equals("1")) {%> checked="checked"<% }%> onchange="changeC(0,1)"><label for="c3-1-1" >正解</label>
+										<input name="c3-1" id="c3-1-2" type="radio" <%if(!data69.equals("1")) {%> checked="checked"<% }%> onchange="changeC(0,0)"><label for="c3-1-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -959,8 +951,8 @@ y--;
 								<td>数字の順番が正しい</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-2" id="c3-2-1" type="radio" <%if(data70 == 1) {%> checked="checked"<% }%> onchange="changeC(1,1)"><label for="c3-2-1" >正解</label>
-										<input name="c3-2" id="c3-2-2" type="radio" <%if(data70 != 1) {%> checked="checked"<% }%> onchange="changeC(1,0)"><label for="c3-2-2" >不正解</label>
+										<input name="c3-2" id="c3-2-1" type="radio" <%if(data70.equals("1")) {%> checked="checked"<% }%> onchange="changeC(1,1)"><label for="c3-2-1" >正解</label>
+										<input name="c3-2" id="c3-2-2" type="radio" <%if(!data70.equals("1")) {%> checked="checked"<% }%> onchange="changeC(1,0)"><label for="c3-2-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -972,8 +964,8 @@ y--;
 								<td>数字は正しい位置になくてはならない</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-3" id="c3-3-1" type="radio" <%if(data71 == 1) {%> checked="checked"<% }%> onchange="changeC(2,1)"><label for="c3-3-1" >正解</label>
-										<input name="c3-3" id="c3-3-2" type="radio" <%if(data71 != 1) {%> checked="checked"<% }%> onchange="changeC(2,0)"><label for="c3-3-2" >不正解</label>
+										<input name="c3-3" id="c3-3-1" type="radio" <%if(data71.equals("1")) {%> checked="checked"<% }%> onchange="changeC(2,1)"><label for="c3-3-1" >正解</label>
+										<input name="c3-3" id="c3-3-2" type="radio" <%if(!data71.equals("1")) {%> checked="checked"<% }%> onchange="changeC(2,0)"><label for="c3-3-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -985,8 +977,8 @@ y--;
 								<td>２つの針がある</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-4" id="c3-4-1" type="radio" <%if(data72 == 1) {%> checked="checked"<% }%> onchange="changeC(3,1)"><label for="c3-4-1" >正解</label>
-										<input name="c3-4" id="c3-4-2" type="radio" <%if(data72 != 1) {%> checked="checked"<% }%> onchange="changeC(3,0)"><label for="c3-4-2" >不正解</label>
+										<input name="c3-4" id="c3-4-1" type="radio" <%if(data72.equals("1")) {%> checked="checked"<% }%> onchange="changeC(3,1)"><label for="c3-4-1" >正解</label>
+										<input name="c3-4" id="c3-4-2" type="radio" <%if(!data72.equals("1")) {%> checked="checked"<% }%> onchange="changeC(3,0)"><label for="c3-4-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -998,8 +990,8 @@ y--;
 								<td  id="clockH"></td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-5" id="c3-5-1" type="radio" <%if(data73 == 1) {%> checked="checked"<% }%> onchange="changeC(4,1)"><label for="c3-5-1" >正解</label>
-										<input name="c3-5" id="c3-5-2" type="radio" <%if(data73 != 1) {%> checked="checked"<% }%> onchange="changeC(4,0)"><label for="c3-5-2" >不正解</label>
+										<input name="c3-5" id="c3-5-1" type="radio" <%if(data73.equals("1")) {%> checked="checked"<% }%> onchange="changeC(4,1)"><label for="c3-5-1" >正解</label>
+										<input name="c3-5" id="c3-5-2" type="radio" <%if(!data73.equals("1")) {%> checked="checked"<% }%> onchange="changeC(4,0)"><label for="c3-5-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -1011,8 +1003,8 @@ y--;
 								<td id="clockM"></td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-6" id="c3-6-1" type="radio" <%if(data74 == 1) {%> checked="checked"<% }%> onchange="changeC(5,1)"><label for="c3-6-1" >正解</label>
-										<input name="c3-6" id="c3-6-2" type="radio" <%if(data74 != 1) {%> checked="checked"<% }%> onchange="changeC(5,0)"><label for="c3-6-2" >不正解</label>
+										<input name="c3-6" id="c3-6-1" type="radio" <%if(data74.equals("1")) {%> checked="checked"<% }%> onchange="changeC(5,1)"><label for="c3-6-1" >正解</label>
+										<input name="c3-6" id="c3-6-2" type="radio" <%if(!data74.equals("1")) {%> checked="checked"<% }%> onchange="changeC(5,0)"><label for="c3-6-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -1024,8 +1016,8 @@ y--;
 								<td>長身と短針が正しい長さの割合になってなければならない</td>
 								<td>
 									<div data-role="controlgroup" data-type="horizontal">
-										<input name="c3-7" id="c3-7-1" type="radio" <%if(data75 == 1) {%> checked="checked"<% }%> onchange="changeC(6,1)"><label for="c3-7-1" >正解</label>
-										<input name="c3-7" id="c3-7-2" type="radio" <%if(data75 != 1) {%> checked="checked"<% }%> onchange="changeC(6,0)"><label for="c3-7-2" >不正解</label>
+										<input name="c3-7" id="c3-7-1" type="radio" <%if(data75.equals("1")) {%> checked="checked"<% }%> onchange="changeC(6,1)"><label for="c3-7-1" >正解</label>
+										<input name="c3-7" id="c3-7-2" type="radio" <%if(!data75.equals("1")) {%> checked="checked"<% }%> onchange="changeC(6,0)"><label for="c3-7-2" >不正解</label>
 									</div>
 								</td>
 							</tr>
@@ -1053,10 +1045,10 @@ y--;
 								<select onchange="changeD(0,value)" >
 									<option value="-1">　</option>
 <%
-	var list2 = masterData.get(2);
-	var list2Size = list2.size();
-	for(var i = 0;i < list2Size; i++){
-%>									<option value="<%= list2.get(i).get(0)%>"<%if(list2.get(i).get(0)==data81) {%> selected="selected"<% }%>><%=list2.get(i).get(1)%></option>
+	List<List<String>> list2 = masterData.get(2);
+	int list2Size = list2.size();
+	for(int i = 0;i < list2Size; i++){
+%>									<option value="<%=(list2.get(i)).get(0)%>"<%if((list2.get(i)).get(0)==data81) {%> selected="selected"<% }%>><%=(list2.get(i)).get(1)%></option>
 <%
 	}
 %>								</select>
@@ -1067,11 +1059,10 @@ y--;
 								<select onchange="changeD(1,value)" >
 									<option value="-1">　</option>
 <%
-	var list3 = masterData.get(3);
-	var list3Size = list3.size();
-	var data82 = data.get(82);
-	for(var i = 0;i < list3Size; i++){
-%>									<option value="<%= list3.get(i).get(0)%>" <%if(list3.get(i).get(0)==data82) {%> selected="selected"<% }%>><%=list3.get(i).get(1)%></option>
+	List<List<String>> list3 =  masterData.get(3);
+	int list3Size = list3.size();
+	for(int i = 0;i < list3Size; i++){
+%>									<option value="<%=(list3.get(i)).get(0)%>" <%if((list3.get(i)).get(0)==data82) {%> selected="selected"<% }%>><%=(list3.get(i)).get(1)%></option>
 <%
 	}
 %>								</select>
@@ -1086,24 +1077,24 @@ y--;
 			<div data-role="popup" id="popupHintA" data-overlay-theme="a" data-theme="d" data-corners="false" draggable="false">
 				<table class="table">
 <%
-	var list4 = masterData.get(4);
-	var list4Size = list4.size();
-	for(var i = 0;i < list4Size; i++){
-%>					<tr><td><%= list4.get(i).get(0)%></td><td><%= list4.get(i).get(1)%></td><td><%= list4.get(i).get(2)%></td></tr>
+	List<List<String>> list4 =  masterData.get(4);
+	int list4Size = list4.size();
+	for(int i = 0;i < list4Size; i++){
+%>					<tr><td><%= (list4.get(i)).get(0)%></td><td><%= (list4.get(i)).get(1)%></td><td><%= (list4.get(i)).get(2)%></td></tr>
 <%
 	}
 %>				</table>
 			</div>
 <%
- 	for(var j = 0;j <= 7; j++){
- 		var s = j + "";
+ 	for(int j = 0;j <= 7; j++){
+ 		String s = j + "";
 %>			<div data-role="popup" id="popupHintC<%=s %>" data-overlay-theme="a" data-theme="d" data-corners="false" draggable="false">
 				<table class="table">
 <%
-		var listj = masterData.get(21 + j);
-		var listjSize = listj.size();
-		for(var i = 0;i < listjSize; i++){
-%>					<tr><td><%= listj.get(i).get(0)%></td><td><%= listj.get(i).get(1)%></td></tr>
+		List<List<String>> listj =  masterData.get(21 + j);
+		int listjSize = listj.size();
+		for(int i = 0;i < listjSize; i++){
+%>					<tr><td><%= (listj.get(i)).get(0)%></td><td><%= (listj.get(i)).get(1)%></td></tr>
 <%
 		}
 %>				</table>
@@ -1172,4 +1163,11 @@ y--;
 			</div>
 		</div>
 	</body>
-</html>
+</html><%
+String[] sss = new String[10];
+%><%
+for(String ss:sss){
+	%><%=1%><%
+//	%><%=ss%><%
+}
+%>

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import frameWork.core.state.AttributeMap;
-import frameWork.core.viewCompiler.script.Scope;
 
 public class ViewCompilerTest {
 	//ViewChareet
@@ -79,7 +80,13 @@ public class ViewCompilerTest {
 				return "";
 			}
 		});
+		JOptionPane.showMessageDialog(null, "s");
 		ViewCompiler.parse(new File("input.jsp"), null, scope);
-		out.writeTo(System.out);
+		JOptionPane.showMessageDialog(null, "e");
 	}
+	
+	//	@Test
+	//	public void isNull() {
+	//		assertNull(TargetFilter.parse(null));
+	//	}
 }

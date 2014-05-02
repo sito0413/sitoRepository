@@ -2,24 +2,29 @@ package frameWork.core.viewCompiler;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import frameWork.core.fileSystem.FileSystem;
 
 public class ViewerWriter {
-	private static final int INIT_SIZE = 5120;
-	private byte[] _buf;
-	private int _size;
+	private static final int INIT_SIZE = 5012;
+	private byte[] buffer;
+	private int size;
 	
 	ViewerWriter() {
-		_buf = new byte[INIT_SIZE];
+		buffer = new byte[INIT_SIZE];
 	}
 	
 	int size() {
-		return _size;
+		return size;
+	}
+	
+	byte[] getBuffer() {
+		return buffer;
 	}
 	
 	void writeTo(final OutputStream out) throws IOException {
-		out.write(_buf, 0, _size);
+		out.write(buffer, 0, size);
 	}
 	
 	public void write() {
@@ -38,14 +43,21 @@ public class ViewerWriter {
 	}
 	
 	public void write(final String str) throws IOException {
-		final byte[] bs = str.getBytes(FileSystem.Config.getString("ViewChareet", "UTF-8"));
-		if ((_size + bs.length) > _buf.length) {
-			final byte[] buf = new byte[((_buf.length + bs.length) * 4) / 3];
-			System.arraycopy(_buf, 0, buf, 0, _size);
-			_buf = buf;
+		byte[] bs;
+		try {
+			bs = str.getBytes(FileSystem.Config.getString("ViewChareet", "UTF-8"));
+		}
+		catch (final UnsupportedEncodingException e) {
+			bs = str.getBytes("UTF-8");
+		}
+		if ((size + bs.length) > buffer.length) {
+			
+			final byte[] buf = new byte[(size + bs.length) + INIT_SIZE];
+			System.arraycopy(buffer, 0, buf, 0, size);
+			buffer = buf;
 		}
 		for (final byte b : bs) {
-			_buf[_size++] = b;
+			buffer[size++] = b;
 		}
 	}
 }

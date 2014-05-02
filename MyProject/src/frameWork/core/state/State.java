@@ -1,9 +1,9 @@
 package frameWork.core.state;
 
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,9 +11,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 import frameWork.ThrowableUtil;
 import frameWork.core.authority.Role;
-import frameWork.databaseConnector.DatabaseConnector;
+import frameWork.core.fileSystem.FileSystem;
 
 public class State {
 	
@@ -21,7 +25,6 @@ public class State {
 	private final AttributeMap context;
 	private final AttributeMap session;
 	private final AttributeMap request;
-	private DatabaseConnector connector;
 	private final Map<String, List<String>> parameters;
 	private final Map<String, File> fileMap;
 	private String page;
@@ -36,33 +39,52 @@ public class State {
 		this.request = new RequestAttributeMap(request);
 		this.parameters = new ConcurrentHashMap<>();
 		this.fileMap = new ConcurrentHashMap<>();
-		for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-			final List<String> list = new ArrayList<>();
-			parameters.put(entry.getKey(), list);
-			for (final String string : entry.getValue()) {
-				list.add(string);
+		
+		try {
+			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			if (isMultipart) {
+				final ServletFileUpload upload = new ServletFileUpload(
+				        new DiskFileItemFactory(FileSystem.Config.getInteger("MaxUploadfileSize", 100 * 1024 * 1024),
+				                FileSystem.Temp.UploadDir));
+				final List<FileItem> items = upload.parseRequest(request);
+				final Iterator<FileItem> iter = items.iterator();
+				while (iter.hasNext()) {
+					final FileItem item = iter.next();
+					if (item.isFormField()) {
+						final String name = item.getFieldName();
+						final String value = item.getString();
+						final List<String> list = new ArrayList<>();
+						list.add(value);
+						parameters.put(name, list);
+					}
+					else {
+						final String fieldName = item.getFieldName();
+						final File uploadedFile = FileSystem.Temp.UploadDir.getUploadfile(item.getName());
+						item.write(uploadedFile);
+						fileMap.put(fieldName, uploadedFile);
+					}
+				}
+			}
+			else {
+				for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+					final List<String> list = new ArrayList<>();
+					parameters.put(entry.getKey(), list);
+					for (final String string : entry.getValue()) {
+						list.add(string);
+					}
+				}
 			}
 		}
-		try {
-			//			for (final javax.servlet.http.Part part : request.getParts()) {
-			// FIXME
-			//				final part.set
-			//				for (final String cd : part.getHeader("Content-Disposition").split(";")) {
-			//					if (cd.trim().startsWith("filename")) {
-			//						part.write(cd.substring(cd.indexOf('=') + 1).trim().replace("\"", ""));
-			//						break;
-			//					}
-			//				}
-			//	part.
-			//			}
-		}
 		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
+			for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+				final List<String> list = new ArrayList<>();
+				parameters.put(entry.getKey(), list);
+				for (final String string : entry.getValue()) {
+					list.add(string);
+				}
+			}
+			
 		}
-	}
-	
-	public void setConnector(final DatabaseConnector connector) {
-		this.connector = connector;
 	}
 	
 	public Role[] auth() {
@@ -92,10 +114,6 @@ public class State {
 		return fileMap.get(name);
 	}
 	
-	public DatabaseConnector getConnector() {
-		return connector;
-	}
-	
 	public String getPage() {
 		return page;
 	}
@@ -111,17 +129,32 @@ public class State {
 				final String strValue = getParameter(field.getName());
 				if (strValue != null) {
 					try {
-						if (field.getType().equals(String.class)) {
+						if (field.getType().isAssignableFrom(String.class)) {
 							value = strValue;
 						}
-						else if (field.getType().equals(int.class)) {
+						else if (field.getType().isAssignableFrom(int.class)) {
 							value = Integer.parseInt(strValue);
 						}
-						else if (field.getType().equals(double.class)) {
+						else if (field.getType().isAssignableFrom(double.class)) {
 							value = Double.parseDouble(strValue);
 						}
-						else if (field.getType().equals(Boolean.class)) {
+						else if (field.getType().isAssignableFrom(boolean.class)) {
 							value = Boolean.parseBoolean(strValue);
+						}
+						else if (field.getType().isAssignableFrom(byte.class)) {
+							value = Byte.parseByte(strValue);
+						}
+						else if (field.getType().isAssignableFrom(long.class)) {
+							value = Long.parseLong(strValue);
+						}
+						else if (field.getType().isAssignableFrom(short.class)) {
+							value = Short.parseShort(strValue);
+						}
+						else if (field.getType().isAssignableFrom(float.class)) {
+							value = Float.parseFloat(strValue);
+						}
+						else if (field.getType().isAssignableFrom(char.class)) {
+							value = strValue.charAt(0);
 						}
 					}
 					catch (final Exception e) {

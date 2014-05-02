@@ -1,28 +1,20 @@
 package frameWork.core.viewCompiler.script.syntax;
 
+import frameWork.core.viewCompiler.Scope;
+import frameWork.core.viewCompiler.ScriptException;
+import frameWork.core.viewCompiler.ScriptsBuffer;
 import frameWork.core.viewCompiler.script.Bytecode;
-import frameWork.core.viewCompiler.script.Scope;
-import frameWork.core.viewCompiler.script.ScriptException;
-import frameWork.core.viewCompiler.script.ScriptsBuffer;
+import frameWork.core.viewCompiler.script.SyntaxScript;
 
 public class ContineScript extends SyntaxScript<Bytecode> implements Bytecode {
-	String contineLabel;
 	
-	public ContineScript() {
-		super("");
+	public ContineScript(final String contineLabel) {
+		super(contineLabel);
 	}
 	
 	@Override
 	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
-		scriptsBuffer.skip();
-		if (scriptsBuffer.getChar() != ';') {
-			contineLabel = scriptsBuffer.getToken();
-			scriptsBuffer.skip();
-			if (scriptsBuffer.getChar() != ';') {
-				throw scriptsBuffer.illegalCharacterError();
-			}
-		}
-		return scriptsBuffer.gotoNextChar();
+		return scriptsBuffer.getChar();
 	}
 	
 	@Override
@@ -47,6 +39,6 @@ public class ContineScript extends SyntaxScript<Bytecode> implements Bytecode {
 	
 	@Override
 	public Object get() {
-		return contineLabel;
+		return label;
 	}
 }

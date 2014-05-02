@@ -80,5 +80,4 @@ public class Config extends FileElement {
 			return defaultValue;
 		}
 	}
-	
 }

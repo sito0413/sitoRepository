@@ -15,8 +15,6 @@ import frameWork.core.fileSystem.FileSystem;
 import frameWork.core.state.Response;
 import frameWork.core.state.State;
 import frameWork.core.viewCompiler.parser.ParserBuffer;
-import frameWork.core.viewCompiler.script.Scope;
-import frameWork.core.viewCompiler.script.ScriptsBuffer;
 
 public class ViewCompiler {
 	public static void compile(final Response response, final State state) {

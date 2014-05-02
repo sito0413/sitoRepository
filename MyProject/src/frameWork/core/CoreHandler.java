@@ -1,6 +1,5 @@
 package frameWork.core;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,15 +14,11 @@ import frameWork.core.state.Response;
 import frameWork.core.state.State;
 import frameWork.core.targetFilter.TargetFilter;
 import frameWork.core.viewCompiler.ViewCompiler;
-import frameWork.databaseConnector.DatabaseConnector;
-import frameWork.databaseConnector.pool.ConnectorPool;
 
 public class CoreHandler {
-	private final ConnectorPool connectorPool;
 	
-	public CoreHandler(final ConnectorPool connectorPool) {
+	public CoreHandler() {
 		super();
-		this.connectorPool = connectorPool;
 	}
 	
 	public void handle(final String target, final Response respons, final String method, final State state)
@@ -43,29 +38,14 @@ public class CoreHandler {
 					m = c.getMethod(targetFilter.methodName, State.class);
 				}
 				if (AuthorityChecker.check(c, m, state.auth())) {
-					try (DatabaseConnector connector = connectorPool.getConnector()) {
-						state.setConnector(connector);
-						state.setPage(targetFilter.view);
-						state.setViewCompiler(true);
-						m.invoke(c.newInstance(), state);
-						if (state.isViewCompiler()) {
-							ViewCompiler.compile(respons, state);
-						}
-						else {
-							response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
-						}
+					state.setPage(targetFilter.view);
+					state.setViewCompiler(true);
+					m.invoke(c.newInstance(), state);
+					if (state.isViewCompiler()) {
+						ViewCompiler.compile(respons, state);
 					}
-					catch (final NullPointerException e) {
-						state.setConnector(null);
-						state.setPage(targetFilter.view);
-						state.setViewCompiler(true);
-						m.invoke(c.newInstance(), state);
-						if (state.isViewCompiler()) {
-							ViewCompiler.compile(respons, state);
-						}
-						else {
-							response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
-						}
+					else {
+						response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
 					}
 				}
 			}
