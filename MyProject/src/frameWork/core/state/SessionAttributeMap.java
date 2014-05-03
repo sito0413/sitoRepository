@@ -4,7 +4,6 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
 
-
 public class SessionAttributeMap implements AttributeMap {
 	
 	private final HttpSession session;

@@ -6,7 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import sito.archive.Archive;
 
-
 public abstract class AbstractConnection {
 	
 	private static Long sNo = 0L;

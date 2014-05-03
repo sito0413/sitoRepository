@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import sito.archive.connection.AbstractConnection;
 import sito.archive.connection.valueManager.ValueManager;
 
-
 public class Connection extends AbstractConnection {
 	Connection(final File tempDir, final File connectionDir) {
 		super(tempDir, connectionDir);

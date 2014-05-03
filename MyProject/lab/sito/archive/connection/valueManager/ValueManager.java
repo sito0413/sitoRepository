@@ -10,7 +10,6 @@ import sito.archive.Value;
 import sito.archive.connection.valueManager.file.FileValueManager;
 import sito.archive.connection.valueManager.text.TextValueManager;
 
-
 public abstract class ValueManager {
 	private static final ValueManager[] MANAGERS = {
 	        new FileValueManager(), new TextValueManager()

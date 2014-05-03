@@ -8,7 +8,6 @@ import sito.archive.Archive;
 import sito.archive.StoreException;
 import sito.archive.Value;
 
-
 class FileValue extends Value {
 	protected final File valueFile;
 	protected final String fileName;

@@ -4,7 +4,6 @@ import java.io.File;
 
 import sito.archive.driver.AbstractDriver;
 
-
 public class Driver extends AbstractDriver {
 	
 	public Driver(final File rootDirectory) throws StoreException {

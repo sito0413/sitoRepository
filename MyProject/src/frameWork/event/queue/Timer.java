@@ -1,11 +1,11 @@
 package frameWork.event.queue;
 
+import frameWork.ThrowableUtil;
 import frameWork.event.Event;
 import frameWork.event.TimerEvent;
 import frameWork.event.timerEvent.CallTimerEvent;
 import frameWork.event.timerEvent.TimerEventList;
 import frameWork.event.timerEvent.TimerEventStack;
-import frameWork.utility.ThrowableUtil;
 
 class Timer implements Event {
 	private final Queue queue;

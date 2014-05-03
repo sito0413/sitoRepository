@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Perceptron {
 	public static void main(final String args[]) throws IOException, FileNotFoundException {
-		int[][][] is = new int[][][] {
+		final int[][][] is = new int[][][] {
 		        {
 		                {
 		                        -1, -1
@@ -35,25 +35,25 @@ public class Perceptron {
 		                }
 		        }
 		};
-		Perceptron perceptron = new Perceptron(2, 2, 1);
+		final Perceptron perceptron = new Perceptron(2, 2, 1);
 		perceptron.input(is);
 		perceptron.input(0, -1);
 		perceptron.input(0, -1);
-		int[] ds = perceptron.output(new int[] {
+		final int[] ds = perceptron.output(new int[] {
 		        -1, -1
 		});
-		for (double d : ds) {
+		for (final double d : ds) {
 			System.out.println(d);
 		}
 	}
-
+	
 	private static final int MAX_TRY_COUNT = 100;
 	private final List<int[]> eList;
 	private final List<int[]> cList;
 	private final Unit[] inputUnits;
 	private final Unit[] middleUnits;
 	private final Unit[] outputUnits;
-
+	
 	Perceptron(final int inputUnit, final int middleUnit, final int outputUnit) {
 		eList = new LinkedList<int[]>();
 		cList = new LinkedList<int[]>();
@@ -70,20 +70,20 @@ public class Perceptron {
 			outputUnits[i] = new Unit(middleUnit);
 		}
 	}
-
+	
 	public void input(final int index, final int d) {
 		this.inputUnits[index].input(index, d);
 	}
-
+	
 	public int[] output(final int[] ts) {
-		int[] output = new int[outputUnits.length];
+		final int[] output = new int[outputUnits.length];
 		for (int i = 0; i < inputUnits.length; i++) {
-			int a = inputUnits[i].output();
+			final int a = inputUnits[i].output();
 			for (int j = 0; j < middleUnits.length; j++) {
 				middleUnits[i].input(i, a);
 			}
 			for (int j = 0; j < middleUnits.length; j++) {
-				int v = middleUnits[j].output();
+				final int v = middleUnits[j].output();
 				for (int k = 0; k < outputUnits.length; k++) {
 					outputUnits[k].input(j, v);
 				}
@@ -102,14 +102,14 @@ public class Perceptron {
 				}
 			}
 		}
-
+		
 		return output;
 	}
-
+	
 	private static class Unit {
 		private final int[] input;
 		private final int[] weight;
-
+		
 		public Unit(final int inputUnit) {
 			input = new int[inputUnit + 1];
 			weight = new int[inputUnit + 1];
@@ -120,16 +120,16 @@ public class Perceptron {
 				weight[i] = 1;
 			}
 		}
-
+		
 		public void learning(final int index, final int deltaWeight) {
 			weight[index] += deltaWeight;
-
+			
 		}
-
+		
 		public void input(final int index, final int d) {
 			this.input[index] = d;
 		}
-
+		
 		public int output() {
 			int output = 0;
 			for (int i = 0; i < input.length; i++) {
@@ -138,35 +138,35 @@ public class Perceptron {
 			return output;
 		}
 	}
-
+	
 	public void input(final int[][][] is) {
 		int maxLength = 0;
-		int inputSize = is.length;
+		final int inputSize = is.length;
 		for (int i = 0; i < inputSize; i++) {
-			int[] e = new int[is[i][0].length + 1];
+			final int[] e = new int[is[i][0].length + 1];
 			e[0] = 1;
 			for (int j = 1; j < e.length; j++) {
 				e[j] = is[i][0][j - 1];
 			}
 			maxLength = Math.max(maxLength, e.length);
 			eList.add(e);
-			int[] c = new int[is[i][1].length];
+			final int[] c = new int[is[i][1].length];
 			for (int j = 0; j < c.length; j++) {
 				c[j] = is[i][1][j];
 			}
 			cList.add(c);
 		}
-
+		
 		// 学習
 		int count = 0;
-		int[] w = new int[maxLength];
+		final int[] w = new int[maxLength];
 		/*
 		 * 実行
 		 */
 		int run = 0;
 		int run_p = 0;
 		int num_p = 0;
-		int[] W_p = new int[maxLength];
+		final int[] W_p = new int[maxLength];
 		while (true) {
 			count++;
 			if (count > MAX_TRY_COUNT) {
@@ -175,24 +175,27 @@ public class Perceptron {
 			else {
 				// 訓練例の選択
 				int k = (int) (new Random().nextDouble() * inputSize);
-				if (k >= inputSize)
+				if (k >= inputSize) {
 					k = inputSize - 1;
+				}
 				// 出力の計算
 				int s = 0;
 				for (int i = 0; i < maxLength; i++) {
 					s += w[i] * eList.get(k)[i];
 				}
 				// 正しい分類
-				if ((s > 0 && cList.get(k)[0] > 0) || (s < 0 && cList.get(k)[0] < 0)) {
+				if (((s > 0) && (cList.get(k)[0] > 0)) || ((s < 0) && (cList.get(k)[0] < 0))) {
 					run++;
 					if (run > run_p) {
 						int num = 0;
 						for (int i = 0; i < inputSize; i++) {
 							int t = 0;
-							for (int j = 0; j < maxLength; j++)
+							for (int j = 0; j < maxLength; j++) {
 								t += w[j] * eList.get(i)[j];
-							if ((t > 0 && cList.get(i)[0] > 0) || (t < 0 && cList.get(i)[0] < 0))
+							}
+							if (((t > 0) && (cList.get(i)[0] > 0)) || ((t < 0) && (cList.get(i)[0] < 0))) {
 								num++;
+							}
 						}
 						if (num > num_p) {
 							num_p = num;
@@ -218,32 +221,39 @@ public class Perceptron {
 		// 結果の出力
 		printout(count, num_p, inputSize, maxLength, W_p);
 	}
-
+	
 	@SuppressWarnings("nls")
 	private void printout(final int n_tri, final int num, final int inputSize, final int maxLength, final int[] W_p) {
 		System.out.print("重み\n");
-		for (int i1 = 0; i1 < maxLength; i1++)
+		for (int i1 = 0; i1 < maxLength; i1++) {
 			System.out.print("  " + W_p[i1]);
+		}
 		System.out.println();
-
+		
 		System.out.print("分類結果\n");
 		for (int i1 = 0; i1 < inputSize; i1++) {
 			int s = 0;
-			for (int i2 = 0; i2 < maxLength; i2++)
+			for (int i2 = 0; i2 < maxLength; i2++) {
 				s += eList.get(i1)[i2] * W_p[i2];
-			if (s > 0)
+			}
+			if (s > 0) {
 				s = 1;
-			else
+			}
+			else {
 				s = (s < 0) ? -1 : 0;
-			for (int i2 = 1; i2 < maxLength; i2++)
+			}
+			for (int i2 = 1; i2 < maxLength; i2++) {
 				System.out.print(" " + eList.get(i1)[i2]);
+			}
 			System.out.println(" Cor " + cList.get(i1)[0] + " Res " + s);
 		}
-
-		if (inputSize == num)
+		
+		if (inputSize == num) {
 			System.out.print("  ！！すべてを分類（試行回数：" + n_tri + "）\n");
-		else
+		}
+		else {
 			System.out.print("  ！！" + num + " 個を分類\n");
-
+		}
+		
 	}
 }

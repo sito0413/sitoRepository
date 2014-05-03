@@ -8,7 +8,6 @@ import sito.archive.Archive;
 import sito.archive.StoreException;
 import sito.archive.driver.packager.AbstractPackager;
 
-
 class Packager extends AbstractPackager {
 	private final File packagFile;
 	private final File baseDirectory;

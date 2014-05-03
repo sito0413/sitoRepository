@@ -4,7 +4,6 @@ import java.io.File;
 
 import sito.archive.StoreException;
 
-
 public abstract class AbstractDriver implements AutoCloseable {
 	
 	private final File baseDirectory;

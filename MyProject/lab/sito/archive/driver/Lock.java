@@ -9,7 +9,6 @@ import java.nio.file.StandardOpenOption;
 import sito.archive.Archive;
 import sito.archive.StoreException;
 
-
 class Lock {
 	private final File lockFile;
 	private FileChannel channel;
