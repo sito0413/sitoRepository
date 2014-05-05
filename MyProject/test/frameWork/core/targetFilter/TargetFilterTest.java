@@ -8,44 +8,34 @@ public class TargetFilterTest {
 	
 	@Test
 	public void isNull() {
-		assertNull(TargetFilter.parse(null));
+		assertNull(TargetFilter.getClassName(null));
 	}
 	
 	@Test
 	public void isIllegal() {
-		assertNull(TargetFilter.parse("/test/t.t./aaa"));
+		assertNull(TargetFilter.getClassName(""));
+		assertNull(TargetFilter.getClassName("/test/t.t./aaa"));
+		assertNull(TargetFilter.getClassName("/test//aaa"));
 	}
 	
 	@Test
 	public void isEmpty() {
-		assertEquals(TargetFilter.parse(""), new TargetFilter("Index", "index"));
-		assertEquals(TargetFilter.parse("test"), new TargetFilter("Test", "index"));
-		assertEquals(TargetFilter.parse("test").view, new TargetFilter("Test", "index").view);
+		assertEquals(TargetFilter.getClassName("test"), ".test");
 	}
 	
 	@Test
 	public void hasExtend() {
-		assertNotNull(TargetFilter.parse("/test/aaa.jpeg"));
-		assertEquals(TargetFilter.parse("/test/aaa"), TargetFilter.parse("/test/aaa.jpeg"));
-		assertEquals(TargetFilter.parse("/test/aaa").view, TargetFilter.parse("/test/aaa.jpeg").view);
+		assertNotNull(TargetFilter.getClassName("/test/aaa.jpeg"));
+		assertEquals(TargetFilter.getClassName("/test/aaa"), TargetFilter.getClassName("/test/aaa.jpeg"));
 	}
 	
 	@Test
 	public void hasPackage() {
-		assertEquals(TargetFilter.parse("/test/test/aaa"), new TargetFilter("test.Test", "aaa"));
-		assertEquals(TargetFilter.parse("/test/test/aaa"), TargetFilter.parse("test/test/aaa"));
-		assertEquals(TargetFilter.parse("/test/test/aaa").view, TargetFilter.parse("test/test/aaa").view);
+		assertEquals(TargetFilter.getClassName("/test/test/aaa"), ".test.test.aaa");
 	}
 	
 	@Test
 	public void isNormal() {
-		assertEquals(TargetFilter.parse("/test/aaa"), new TargetFilter("Test", "aaa"));
-		assertEquals(TargetFilter.parse("/test/aaa"), TargetFilter.parse("test/aaa"));
-		assertEquals(TargetFilter.parse("/test/aaa").view, TargetFilter.parse("test/aaa").view);
-	}
-	
-	@Test
-	public void view() {
-		assertEquals(new TargetFilter("Test", "index").view, "/Test/index.jsp");
+		assertEquals(TargetFilter.getClassName("/test/aaa"), ".test.aaa");
 	}
 }
