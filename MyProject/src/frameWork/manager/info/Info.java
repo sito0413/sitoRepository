@@ -73,7 +73,7 @@ public class Info extends SettingPanel {
 				this.txtCnewwavesystem.setText("C:/newwave/_system");
 			}
 			{
-				this.lblSdystemId = new JLabel("SDYSTEM ID");
+				this.lblSdystemId = new JLabel("SYSTEM ID");
 				final GridBagConstraints gbc_lblSdystemId = new GridBagConstraints();
 				gbc_lblSdystemId.fill = GridBagConstraints.HORIZONTAL;
 				gbc_lblSdystemId.insets = new Insets(0, 0, 0, 5);

@@ -1,73 +1,80 @@
 package frameWork.core.targetFilter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import frameWork.core.fileSystem.FileSystem;
+import frameWork.core.state.State;
 
 public class TargetFilter {
-	public static TargetFilter parse(final String target) {
+	public static TargetFilter parse(final String target, final String method) {
+		final String className = getClassName(target);
+		if ((className == null) || (method == null)) {
+			return null;
+		}
+		try {
+			final Class<?> c = Class.forName(FileSystem.Config.getString("packageName", "controller") + className);
+			final Method m = c.getMethod(method, State.class);
+			return new TargetFilter(c, m, className.replace(".", "/") + ".jsp");
+		}
+		catch (final ClassNotFoundException | NoSuchMethodException e) {
+			return null;
+		}
+	}
+	
+	static String getClassName(final String target) {
 		if (target == null) {
 			return null;
 		}
 		
 		final String[] uri = (target.startsWith("/") ? target.substring(1) : target).split("/");
-		final StringBuilder className = new StringBuilder();
-		final String methodName;
 		if (uri.length == 0) {
-			className.append("Index");
-			methodName = "index";
+			return null;
 		}
-		else if (uri.length == 1) {
-			if (uri[0].isEmpty()) {
-				className.append("Index");
-			}
-			else {
-				className.append(Character.toUpperCase(uri[0].charAt(0))).append(uri[0].substring(1));
-			}
-			methodName = "index";
-		}
-		else {
-			final int index = uri.length - 2;
-			for (int j = 0; j < index; j++) {
-				if (uri[j].contains(".")) {
-					return null;
-				}
-				className.append(uri[j]).append('.');
-			}
-			
-			final String dummyClassName = uri[index];
-			if (dummyClassName.contains(".")) {
+		
+		final StringBuilder className = new StringBuilder();
+		for (int i = 0; i < (uri.length - 1); i++) {
+			if (uri[i].isEmpty() || uri[i].contains(".")) {
 				return null;
 			}
-			className.append(Character.toUpperCase(dummyClassName.charAt(0))).append(dummyClassName.substring(1));
-			
-			final String dummyMethodName = uri[index + 1];
-			if (dummyMethodName.contains(".")) {
-				methodName = dummyMethodName.split("\\.")[0];
-			}
-			else {
-				methodName = dummyMethodName;
-			}
+			className.append(".").append(uri[i]);
 		}
-		return new TargetFilter(className.toString(), methodName);
+		if (uri[(uri.length - 1)].isEmpty()) {
+			return null;
+		}
+		else if (uri[(uri.length - 1)].contains(".")) {
+			className.append(".").append(uri[(uri.length - 1)].subSequence(0, uri[(uri.length - 1)].indexOf('.')));
+			return className.toString();
+		}
+		else {
+			className.append(".").append(uri[(uri.length - 1)]);
+			return className.toString();
+		}
 	}
 	
-	public final String className;
-	public final String methodName;
-	public final String view;
+	public final Class<?> className;
+	public final Method methodName;
+	public final String page;
 	
-	TargetFilter(final String className, final String methodName) {
-		this.className = FileSystem.Config.getString("packageName", "controller") + "." + className;
+	TargetFilter(final Class<?> className, final Method methodName, final String page) {
+		this.className = className;
 		this.methodName = methodName;
-		view = "/" + className.replace(".", "/") + "/" + methodName + ".jsp";
+		this.page = page;
 	}
 	
-	@Override
-	public String toString() {
-		return className + "." + methodName;
-	}
-	
-	@Override
-	public boolean equals(final Object obj) {
-		return toString().equals(obj.toString());
+	public boolean invoke(final State state) {
+		try {
+			state.setViewCompiler(true);
+			state.setPage(page);
+			methodName.setAccessible(true);
+			methodName.invoke(className.newInstance(), state);
+			return state.isViewCompiler();
+		}
+		catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException
+		        | InstantiationException e) {
+			return false;
+		}
+		
 	}
 	
 }
