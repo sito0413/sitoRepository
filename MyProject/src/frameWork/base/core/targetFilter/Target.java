@@ -28,7 +28,5 @@ public class Target {
 		        | InstantiationException e) {
 			return false;
 		}
-		
 	}
-	
 }

@@ -57,12 +57,14 @@ public class ParserBuffer {
 					while (i < size) {
 						char ch = input.charAt(i);
 						if (ch == '&') {
+							//&apos;⇒'
 							if (((i + 5) < size) && (input.charAt(i + 1) == 'a') && (input.charAt(i + 2) == 'p')
 							        && (input.charAt(i + 3) == 'o') && (input.charAt(i + 4) == 's')
 							        && (input.charAt(i + 5) == ';')) {
 								ch = '\'';
 								i += 6;
 							}
+							//&quot;⇒"
 							else if (((i + 5) < size) && (input.charAt(i + 1) == 'q') && (input.charAt(i + 2) == 'u')
 							        && (input.charAt(i + 3) == 'o') && (input.charAt(i + 4) == 't')
 							        && (input.charAt(i + 5) == ';')) {
@@ -98,7 +100,6 @@ public class ParserBuffer {
 					}
 					skipSpaces(charBuffer);
 					final String value = result.toString();
-					
 					if ("import".equals(qName)) {
 						int s = 0;
 						int index = -1;
@@ -123,8 +124,7 @@ public class ParserBuffer {
 				if (matches("%>")) {
 					if ((response != null) && (ct != null)) {
 						if (ct.indexOf("charset=") < 0) {
-							response.setContentType(ct + ";charset="
-							        + FileSystem.Config.getString("ViewChareet", "UTF-8"));
+							response.setContentType(ct + ";charset=" + FileSystem.Config.VIEW_CHAREET);
 						}
 						else {
 							response.setContentType(ct);
@@ -150,7 +150,7 @@ public class ParserBuffer {
 							String text = caw.toString();
 							text = ((text == null ? "" : text));
 							if (isExpression) {
-								text = "out.write(" + text + ");";
+								text = FileSystem.Config.VIEW_OUTPUT_METHOD + "(" + text + ");";
 							}
 							oldTextlet = oldTextlet.add(textlets, new Scriptlet(text));
 							continue Loop;

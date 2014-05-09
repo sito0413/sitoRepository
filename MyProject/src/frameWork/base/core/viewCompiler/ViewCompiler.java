@@ -22,7 +22,7 @@ public class ViewCompiler {
 			final File targetFile = new File(FileSystem.Viewer, state.getPage().substring(1));
 			if (targetFile.exists()) {
 				final ViewerWriter out = new ViewerWriter();
-				response.setContentType("text/html;charset=" + FileSystem.Config.getString("ViewChareet", "UTF-8"));
+				response.setContentType("text/html;charset=" + FileSystem.Config.VIEW_CHAREET);
 				final Scope scope = new Scope();
 				scope.put("out", out);
 				scope.put("session", state.getSession());
@@ -50,7 +50,7 @@ public class ViewCompiler {
 	private static CharBuffer createCharBuffer(final File targetFile, final CharArrayWriter writer)
 	        throws FileNotFoundException, IOException {
 		try {
-			writerWrite(targetFile, writer, FileSystem.Config.getString("ViewChareet", "UTF-8"));
+			writerWrite(targetFile, writer, FileSystem.Config.VIEW_CHAREET);
 		}
 		catch (final UnsupportedEncodingException e) {
 			writerWrite(targetFile, writer, "UTF-8");
@@ -61,7 +61,7 @@ public class ViewCompiler {
 	private static void writerWrite(final File targetFile, final CharArrayWriter writer, final String viewChareet)
 	        throws UnsupportedEncodingException, FileNotFoundException, IOException {
 		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(targetFile), viewChareet)) {
-			final char buf[] = new char[FileSystem.Config.getInteger("ViewSrcReadBuffer", 5120)];
+			final char buf[] = new char[FileSystem.Config.VIEW_SRC_READ_BUFFER_SIZE];
 			for (int i = 0; (i = reader.read(buf)) != -1;) {
 				writer.write(buf, 0, i);
 			}

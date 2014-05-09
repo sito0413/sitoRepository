@@ -9,13 +9,10 @@ import java.io.OutputStream;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
 import frameWork.base.core.authority.AuthorityChecker;
@@ -28,21 +25,22 @@ import frameWork.base.core.viewCompiler.ViewCompiler;
 import frameWork.base.util.ThrowableUtil;
 
 @WebFilter("/*")
-@WebListener
-public class WrapFilter implements Filter, ServletContextListener {
+public class WrapFilter implements Filter {
+	private boolean isMultipartContent;
+	
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 	        throws IOException, ServletException {
 		final String requestURI = ((HttpServletRequest) request).getRequestURI();
 		final Response respons = new Response(response);
 		final String method = ((HttpServletRequest) request).getMethod();
-		final State state = new State((HttpServletRequest) request);
+		final State state = new State((HttpServletRequest) request, isMultipartContent);
 		try {
 			final Target target = TargetFilter.parse(requestURI, method.toLowerCase());
 			if (target == null) {
 				response(FileSystem.Resource.getResource(requestURI), respons.getOutputStream());
 			}
-			else if (AuthorityChecker.check(target.className, target.methodName, state.auth())) {
+			else if (AuthorityChecker.check(target.className, target.methodName, state.getAuth())) {
 				if (target.invoke(state)) {
 					ViewCompiler.compile(respons, state);
 				}
@@ -81,11 +79,6 @@ public class WrapFilter implements Filter, ServletContextListener {
 	}
 	
 	@Override
-	public void contextInitialized(final ServletContextEvent event) {
-		// NOOP
-	}
-	
-	@Override
 	public void destroy() {
 		// NOOP
 	}
@@ -93,10 +86,14 @@ public class WrapFilter implements Filter, ServletContextListener {
 	@Override
 	public void init(final FilterConfig fConfig) throws ServletException {
 		// NOOP
-	}
-	
-	@Override
-	public void contextDestroyed(final ServletContextEvent Filter) {
-		// NOOP
+		try {
+			Class.forName("org.apache.commons.fileupload.FileItem");
+			Class.forName("org.apache.commons.fileupload.disk.DiskFileItemFactory");
+			Class.forName("org.apache.commons.fileupload.servlet.ServletFileUpload");
+			isMultipartContent = true;
+		}
+		catch (final Exception e) {
+			isMultipartContent = false;
+		}
 	}
 }

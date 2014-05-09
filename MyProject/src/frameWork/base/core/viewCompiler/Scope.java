@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
 
 @SuppressWarnings("rawtypes")
@@ -76,7 +77,7 @@ public class Scope {
 				exception = e;
 			}
 		}
-		if ((class1 == null) && key.equals("var")) {
+		if ((class1 == null) && FileSystem.Config.IS_VAR_USEABLE && key.equals("var")) {
 			class1 = Object.class;
 			classMap.put(key, Object.class);
 		}
@@ -104,7 +105,7 @@ public class Scope {
 		}
 		
 		if ((class1 == null) && (exception != null)) {
-			throw ScriptException.IllegalStateException(exception);
+			throw ScriptException.illegalStateException(exception);
 		}
 		return class1;
 	}

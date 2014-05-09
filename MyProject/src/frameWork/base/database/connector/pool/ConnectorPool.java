@@ -7,11 +7,11 @@ import java.sql.Connection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.database.connector.DatabaseConnector;
 import frameWork.base.util.ThrowableUtil;
 
 public class ConnectorPool {
-	private static int CAPACITY = 100;
 	private final String name;
 	private final ConcurrentLinkedQueue<PooledConnection> busy;
 	private final ArrayBlockingQueue<PooledConnection> idle;
@@ -20,7 +20,7 @@ public class ConnectorPool {
 	public ConnectorPool(final String name) {
 		this.name = name;
 		this.busy = new ConcurrentLinkedQueue<>();
-		this.idle = new ArrayBlockingQueue<>(CAPACITY, true);
+		this.idle = new ArrayBlockingQueue<>(FileSystem.Config.DATABASE_CONNECTOR_POOL_CAPACITY, true);
 		try {
 			this.proxyClassConstructor = Proxy.getProxyClass(ConnectorPool.class.getClassLoader(), Connection.class)
 			        .getConstructor(InvocationHandler.class);

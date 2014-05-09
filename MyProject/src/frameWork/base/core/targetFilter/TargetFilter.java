@@ -6,18 +6,18 @@ import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.state.State;
 
 public class TargetFilter {
+	
 	public static Target parse(final String target, final String method) {
 		final String className = getClassName(target);
 		if ((className == null) || (method == null)) {
 			return null;
 		}
 		try {
-			final Class<?> c = Class.forName(FileSystem.Config.getString("packageName", "controller") + className);
+			final Class<?> c = Class.forName(FileSystem.Config.PACKAGE_NAME + className);
 			if (c.isAssignableFrom(TargetHandler.class)) {
 				final Method m = c.getMethod(method, State.class);
-				return new Target(c, m, className.replace(".", "/") + ".jsp");
+				return new Target(c, m, className.replace(".", "/") + FileSystem.Config.VIEW_EXTENSION);
 			}
-			
 		}
 		catch (final ClassNotFoundException | NoSuchMethodException e) {
 			//NOOP

@@ -34,7 +34,7 @@ public class CallArrayScript extends ExpressionScript {
 			return new InstanceBytecode(arrayObject.getClass(), arrayObject);
 		}
 		catch (final Exception e) {
-			throw ScriptException.IllegalStateException(e);
+			throw ScriptException.illegalStateException(e);
 		}
 	}
 	

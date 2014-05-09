@@ -26,7 +26,7 @@ public class ArrayConstructorScript extends ConstructorScript {
 			return new InstanceBytecode(class1, Array.newInstance(class1, index.execute(scope).getInteger()));
 		}
 		catch (final Exception e) {
-			throw ScriptException.IllegalStateException(e);
+			throw ScriptException.illegalStateException(e);
 		}
 	}
 	

@@ -99,7 +99,7 @@ public class Project extends SettingPanel {
 	
 	private void create() {
 		new File("src").mkdirs();
-		new File("src/" + FileSystem.Config.getString("packageName", "controller")).mkdirs();
+		new File("src/" + FileSystem.Config.PACKAGE_NAME).mkdirs();
 		if (authority.isSelected()) {
 			Authority.createFile();
 		}

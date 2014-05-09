@@ -5,96 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JOptionPane;
 
-import frameWork.base.event.Event;
 import frameWork.base.event.queue.EventQueue;
 
 public class Sort {
 	static final int MIN_RANGE = 40;//1以上必須
 	static final int DOUBLE_RANGE = 60;//1以上必須
 	static final EventQueue EVENT_QUEUE = new EventQueue();
-	
-	private static class SortEvent implements Event {
-		final Sort sort;
-		int from;
-		int to;
-		int len;
-		
-		SortEvent(final Sort sort, final int from, final int to, final int len) {
-			this.sort = sort;
-			this.from = from;
-			this.to = to;
-			this.len = len;
-		}
-		
-		@Override
-		public void run() {
-			do {
-				final int index = getPivotIndex(sort.sortables, this);
-				if (index == -1) {
-					sort.remaining.addAndGet(-len);
-					return;
-				}
-				final int nextTo = swap(sort.sortables, index, this);
-				if (to != nextTo) {
-					final int len1 = nextTo - from;
-					final int len2 = to - nextTo;
-					if (MIN_RANGE < (len1)) {
-						if (MIN_RANGE < len2) {
-							if (60 < len2) {
-								if (60 < len1) {
-									EVENT_QUEUE.putEvent(new SortEvent(sort, from, nextTo, len1));
-									EVENT_QUEUE.putEvent(recycle(nextTo, to, len2));
-									return;
-								}
-								EVENT_QUEUE.putEvent(new SortEvent(sort, nextTo, to, len2));
-								recycle(from, nextTo, len1);
-								continue;
-							}
-							EVENT_QUEUE.putEvent(new SortEvent(sort, from, nextTo, len1));
-							recycle(nextTo, to, len2);
-							continue;
-						}
-						final int oldTo = to;
-						if (DOUBLE_RANGE < len1) {
-							EVENT_QUEUE.putEvent(recycle(from, nextTo, len1));
-							shortcutSort(sort.sortables, nextTo, oldTo, len2, sort.remaining);
-							return;
-						}
-						recycle(from, nextTo, len1);
-						shortcutSort(sort.sortables, nextTo, oldTo, len2, sort.remaining);
-						continue;
-					}
-					else if (MIN_RANGE < len2) {
-						final int oldFrom = from;
-						if (DOUBLE_RANGE < len2) {
-							EVENT_QUEUE.putEvent(recycle(nextTo, to, len2));
-							shortcutSort(sort.sortables, oldFrom, nextTo, len1, sort.remaining);
-							return;
-						}
-						recycle(nextTo, to, len2);
-						shortcutSort(sort.sortables, oldFrom, nextTo, len1, sort.remaining);
-						continue;
-					}
-					else {
-						shortcutSort(sort.sortables, from, nextTo, len1, sort.remaining);
-						shortcutSort(sort.sortables, nextTo, to, len2, sort.remaining);
-						return;
-					}
-				}
-				shortcutSort(sort.sortables, from, to, len, sort.remaining);
-				return;
-			}
-			while (true);
-			
-		}
-		
-		private Event recycle(final int f, final int t, final int l) {
-			this.from = f;
-			this.to = t;
-			this.len = l;
-			return this;
-		}
-	}
 	
 	static void shortcutSort(final Sortable[] sortables, final int from, final int to, final int len,
 	        final AtomicInteger remaining) {

@@ -20,14 +20,16 @@ class PooledConnection {
 	PooledConnection(final String name) throws InstantiationException, IllegalAccessException, ClassNotFoundException,
 	        SQLException {
 		this.name = name;
-		this.driver = (java.sql.Driver) Class.forName(
-		        FileSystem.Config.getString("DatabaseDriverClassName", "org.sqlite.JDBC")).newInstance();
-		this.innerConnection = this.driver.connect(
-		        FileSystem.Config.getString("DatabaseURL",
-		                "jdbc:sqlite:" + FileSystem.Data.getAbsolutePath().replace('\\', '/') + "/" + name + ".dt"),
-		        new Properties());
-		this.innerConnection.setAutoCommit(true);
+		this.driver = (java.sql.Driver) Class.forName(FileSystem.Config.DATABASE_DRIVER_CLASS).newInstance();
+		this.innerConnection = _connect();
 		this.isDiscarded = false;
+	}
+	
+	private Connection _connect() throws SQLException {
+		final Connection c = this.driver.connect(FileSystem.Config.DATABASE_URL + name
+		        + FileSystem.Config.DATABASE_EXTENSION, new Properties());
+		c.setAutoCommit(true);
+		return c;
 	}
 	
 	private void connect() {
@@ -38,11 +40,7 @@ class PooledConnection {
 			if (innerConnection != null) {
 				disconnect();
 			}
-			innerConnection = driver.connect(
-			        FileSystem.Config.getString("DatabaseURL", "jdbc:sqlite:"
-			                + FileSystem.Data.getAbsolutePath().replace('\\', '/') + "/" + name + ".dt"),
-			        new Properties());
-			innerConnection.setAutoCommit(true);
+			innerConnection = _connect();
 			this.isDiscarded = false;
 		}
 		catch (final Exception e) {

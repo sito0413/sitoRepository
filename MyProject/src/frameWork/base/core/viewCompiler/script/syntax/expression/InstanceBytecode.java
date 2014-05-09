@@ -63,7 +63,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 		if (value instanceof Boolean) {
 			return ((Boolean) value) ? expressionScript1.execute(scope) : expressionScript2.execute(scope);
 		}
-		throw ScriptException.IllegalStateException();
+		throw ScriptException.illegalStateException();
 	}
 	
 	public InstanceBytecode operation(final String op) throws ScriptException {
@@ -145,7 +145,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 				}
 				break;
 		}
-		throw ScriptException.IllegalStateException();
+		throw ScriptException.illegalStateException();
 	}
 	
 	public InstanceBytecode operation(final String op, final ExpressionScript expressionScript2, final Scope scope)
@@ -197,7 +197,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			default :
 				break;
 		}
-		throw ScriptException.IllegalStateException();
+		throw ScriptException.illegalStateException();
 	}
 	
 	public boolean logic(final String op, final Object obj) throws ScriptException {
@@ -377,7 +377,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 				case "!=" :
 					return value1 != value2;
 				default :
-					throw ScriptException.IllegalStateException();
+					throw ScriptException.illegalStateException();
 			}
 		}
 	}
@@ -389,7 +389,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "!=" :
 				return value1 != value2;
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 		
 	}
@@ -409,7 +409,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "!=" :
 				return value1 != value2;
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -428,7 +428,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "!=" :
 				return value1 != value2;
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -654,7 +654,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 				return operation(op, (String) obj, value);
 			}
 		}
-		throw ScriptException.IllegalStateException();
+		throw ScriptException.illegalStateException();
 	}
 	
 	private InstanceBytecode operation(final String op, final String value1, final Object value2)
@@ -663,7 +663,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "+" :
 				return new InstanceBytecode(String.class, value1 + value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -673,7 +673,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "+" :
 				return new InstanceBytecode(String.class, value1 + value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -687,7 +687,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "^" :
 				return new InstanceBytecode(boolean.class, value1 ^ value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -704,7 +704,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "%" :
 				return new InstanceBytecode(float.class, value1 % value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -722,7 +722,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case "%" :
 				return new InstanceBytecode(double.class, value1 % value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -751,7 +751,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case ">>>" :
 				return new InstanceBytecode(int.class, value1 >>> value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -780,7 +780,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 			case ">>>" :
 				return new InstanceBytecode(long.class, value1 >>> value2);
 			default :
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 		}
 	}
 	
@@ -798,7 +798,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 		if (value instanceof Boolean) {
 			return ((Boolean) value);
 		}
-		throw ScriptException.IllegalStateException();
+		throw ScriptException.illegalStateException();
 	}
 	
 	public int getInteger() throws ScriptException {
@@ -814,7 +814,7 @@ public class InstanceBytecode extends ExpressionScript implements Bytecode {
 		else if (value instanceof Character) {
 			return (Character) value;
 		}
-		throw ScriptException.IllegalStateException();
+		throw ScriptException.illegalStateException();
 	}
 	
 	@Override

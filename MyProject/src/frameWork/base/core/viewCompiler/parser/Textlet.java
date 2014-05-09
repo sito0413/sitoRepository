@@ -2,6 +2,8 @@ package frameWork.base.core.viewCompiler.parser;
 
 import java.util.List;
 
+import frameWork.base.core.fileSystem.FileSystem;
+
 public class Textlet {
 	String text;
 	
@@ -26,7 +28,7 @@ public class Textlet {
 	
 	public String toScript() {
 		boolean isAllSpace = true;
-		final StringBuilder sb = new StringBuilder("out.write(\"");
+		final StringBuilder sb = new StringBuilder(FileSystem.Config.VIEW_OUTPUT_METHOD + "(\"");
 		final int initLength = sb.length();
 		for (int j = 0; j < text.length(); j++) {
 			final char ch = text.charAt(j);

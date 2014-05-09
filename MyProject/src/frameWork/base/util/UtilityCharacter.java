@@ -537,4 +537,21 @@ public class UtilityCharacter {
 		}
 		return sbBuf.toString();
 	}
+	
+	public static boolean isWhitespace(final char ch) {
+		return (ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r');
+	}
+	
+	public static boolean isAlpha(final char ch) {
+		return ((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z')) || (ch == '_');
+	}
+	
+	public static boolean isNumeric(final char ch) {
+		return (ch >= '0') && (ch <= '9');
+	}
+	
+	public static boolean isOperator(final char ch) {
+		return (ch == '!') || (ch == '^') || (ch == '~') || (ch == '=') || (ch == '+') || (ch == '-') || (ch == '*')
+		        || (ch == '/') || (ch == '%') || (ch == '&') || (ch == '|') || (ch == '<') || (ch == '>');
+	}
 }

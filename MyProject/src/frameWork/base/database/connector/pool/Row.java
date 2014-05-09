@@ -45,5 +45,4 @@ class Row implements Iterable<String>, Iterator<String> {
 	public Iterator<String> iterator() {
 		return this;
 	}
-	
 }

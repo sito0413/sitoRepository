@@ -10,20 +10,19 @@ public class ScriptException extends Exception {
 		super(string);
 	}
 	
-	public static ScriptException IllegalStateException() {
+	public static ScriptException illegalStateException() {
 		return new ScriptException("IllegalState");
 	}
 	
-	public static ScriptException IllegalStateException(final Throwable e) {
+	public static ScriptException illegalStateException(final Throwable e) {
 		return new ScriptException(e);
 	}
 	
-	public static ScriptException IllegalStateException(final String string) {
+	public static ScriptException illegalStateException(final String string) {
 		return new ScriptException(string);
 	}
 	
 	public static ScriptException overflowException() {
-		return new ScriptException("overflow");
+		return new ScriptException("Overflow");
 	}
-	
 }

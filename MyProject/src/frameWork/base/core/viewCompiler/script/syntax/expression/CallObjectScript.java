@@ -20,13 +20,12 @@ public class CallObjectScript extends ExpressionScript {
 			return result;
 		}
 		try {
-			System.out.println(type + " " + object + " " + expression);
 			final Field field = type.getField(expression);
 			field.setAccessible(true);
 			return new InstanceBytecode(field.getType(), field.get(object));
 		}
 		catch (final Exception e) {
-			throw ScriptException.IllegalStateException(e);
+			throw ScriptException.illegalStateException(e);
 		}
 	}
 	

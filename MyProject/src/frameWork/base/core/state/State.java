@@ -1,7 +1,6 @@
 package frameWork.base.core.state;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,17 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
 import frameWork.base.core.authority.Role;
 import frameWork.base.core.fileSystem.FileSystem;
-import frameWork.base.util.ThrowableUtil;
 
 public class State {
-	
-	private final Role[] auth;
+	private Role[] auth;
 	private final AttributeMap context;
 	private final AttributeMap session;
 	private final AttributeMap request;
@@ -30,26 +23,28 @@ public class State {
 	private String page;
 	private boolean isViewCompiler;
 	
-	public State(final HttpServletRequest request) {
-		this.auth = new Role[] {
-			Role.ANONYMOUS
-		};
+	public State(final HttpServletRequest request, final boolean isMultipartContent) {
 		this.context = new ContextAttributeMap(request.getServletContext());
 		this.session = new SessionAttributeMap(request.getSession(true));
 		this.request = new RequestAttributeMap(request);
 		this.parameters = new ConcurrentHashMap<>();
 		this.fileMap = new ConcurrentHashMap<>();
 		
-		try {
-			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			if (isMultipart) {
-				final ServletFileUpload upload = new ServletFileUpload(
-				        new DiskFileItemFactory(FileSystem.Config.getInteger("MaxUploadfileSize", 100 * 1024 * 1024),
-				                FileSystem.Temp.UploadDir));
-				final List<FileItem> items = upload.parseRequest(request);
-				final Iterator<FileItem> iter = items.iterator();
+		this.auth = (Role[]) session.getAttribute(FileSystem.Config.CALL_AUTH);
+		if (auth == null) {
+			setAuth(new Role[] {
+				FileSystem.Config.DEFAULT_ROLE
+			});
+		}
+		if (isMultipartContent && org.apache.commons.fileupload.servlet.ServletFileUpload.isMultipartContent(request)) {
+			try {
+				final org.apache.commons.fileupload.servlet.ServletFileUpload upload = new org.apache.commons.fileupload.servlet.ServletFileUpload(
+				        new org.apache.commons.fileupload.disk.DiskFileItemFactory(
+				                FileSystem.Config.MAX_UPLOADFILE_SIZE, FileSystem.Temp.UploadDir));
+				final List<org.apache.commons.fileupload.FileItem> items = upload.parseRequest(request);
+				final Iterator<org.apache.commons.fileupload.FileItem> iter = items.iterator();
 				while (iter.hasNext()) {
-					final FileItem item = iter.next();
+					final org.apache.commons.fileupload.FileItem item = iter.next();
 					if (item.isFormField()) {
 						final String name = item.getFieldName();
 						final String value = item.getString();
@@ -65,30 +60,32 @@ public class State {
 					}
 				}
 			}
-			else {
-				for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-					final List<String> list = new ArrayList<>();
-					parameters.put(entry.getKey(), list);
-					for (final String string : entry.getValue()) {
-						list.add(string);
-					}
-				}
+			catch (final Exception e) {
+				createParameters(request);
 			}
 		}
-		catch (final Exception e) {
-			for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-				final List<String> list = new ArrayList<>();
-				parameters.put(entry.getKey(), list);
-				for (final String string : entry.getValue()) {
-					list.add(string);
-				}
-			}
-			
+		else {
+			createParameters(request);
 		}
 	}
 	
-	public Role[] auth() {
+	private void createParameters(@SuppressWarnings("hiding") final HttpServletRequest request) {
+		for (final Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+			final List<String> list = new ArrayList<>();
+			parameters.put(entry.getKey(), list);
+			for (final String string : entry.getValue()) {
+				list.add(string);
+			}
+		}
+	}
+	
+	public Role[] getAuth() {
 		return auth;
+	}
+	
+	public void setAuth(final Role[] auth) {
+		this.auth = auth;
+		this.session.setAttribute(FileSystem.Config.CALL_AUTH, auth);
 	}
 	
 	public AttributeMap getContext() {
@@ -120,57 +117,6 @@ public class State {
 	
 	public void setPage(final String page) {
 		this.page = page;
-	}
-	
-	public void bind(final Object obj) {
-		try {
-			for (final Field field : obj.getClass().getFields()) {
-				Object value = null;
-				final String strValue = getParameter(field.getName());
-				if (strValue != null) {
-					try {
-						if (field.getType().isAssignableFrom(String.class)) {
-							value = strValue;
-						}
-						else if (field.getType().isAssignableFrom(int.class)) {
-							value = Integer.parseInt(strValue);
-						}
-						else if (field.getType().isAssignableFrom(double.class)) {
-							value = Double.parseDouble(strValue);
-						}
-						else if (field.getType().isAssignableFrom(boolean.class)) {
-							value = Boolean.parseBoolean(strValue);
-						}
-						else if (field.getType().isAssignableFrom(byte.class)) {
-							value = Byte.parseByte(strValue);
-						}
-						else if (field.getType().isAssignableFrom(long.class)) {
-							value = Long.parseLong(strValue);
-						}
-						else if (field.getType().isAssignableFrom(short.class)) {
-							value = Short.parseShort(strValue);
-						}
-						else if (field.getType().isAssignableFrom(float.class)) {
-							value = Float.parseFloat(strValue);
-						}
-						else if (field.getType().isAssignableFrom(char.class)) {
-							value = strValue.charAt(0);
-						}
-					}
-					catch (final Exception e) {
-						ThrowableUtil.throwable(e);
-					}
-					if (value != null) {
-						field.setAccessible(true);
-						field.set(obj, value);
-					}
-				}
-				
-			}
-		}
-		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
-		}
 	}
 	
 	public boolean isViewCompiler() {

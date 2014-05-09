@@ -20,9 +20,7 @@ public abstract class SyntaxScript<T extends Bytecode> implements Script<T> {
 	
 	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
 		statement(scriptsBuffer);
-		final char c = block(scriptsBuffer);
-		//		execute(scope);
-		return c;
+		return block(scriptsBuffer);
 	}
 	
 	protected char block(final ScriptsBuffer scriptsBuffer) throws ScriptException {

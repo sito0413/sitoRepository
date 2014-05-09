@@ -33,7 +33,7 @@ public class DeclarationScript extends ExpressionScript {
 			case "boolean" :
 				return scope.put(expressionScript, new InstanceBytecode(boolean.class, false));
 			case "long[]" :
-				return scope.put(expressionScript, new InstanceBytecode(long[].class, (long) 0));
+				return scope.put(expressionScript, new InstanceBytecode(long[].class, null));
 			case "int[]" :
 				return scope.put(expressionScript, new InstanceBytecode(int[].class, null));
 			case "short[]" :

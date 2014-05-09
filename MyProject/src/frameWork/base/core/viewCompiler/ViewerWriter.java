@@ -7,12 +7,11 @@ import java.io.UnsupportedEncodingException;
 import frameWork.base.core.fileSystem.FileSystem;
 
 public class ViewerWriter {
-	private static final int INIT_SIZE = 5012;
 	private byte[] buffer;
 	private int size;
 	
 	ViewerWriter() {
-		buffer = new byte[INIT_SIZE];
+		buffer = new byte[FileSystem.Config.VIEWER_WRITER];
 	}
 	
 	int size() {
@@ -45,14 +44,14 @@ public class ViewerWriter {
 	public void write(final String str) throws IOException {
 		byte[] bs;
 		try {
-			bs = str.getBytes(FileSystem.Config.getString("ViewChareet", "UTF-8"));
+			bs = str.getBytes(FileSystem.Config.VIEW_CHAREET);
 		}
 		catch (final UnsupportedEncodingException e) {
 			bs = str.getBytes("UTF-8");
 		}
 		if ((size + bs.length) > buffer.length) {
 			
-			final byte[] buf = new byte[(size + bs.length) + INIT_SIZE];
+			final byte[] buf = new byte[(size + bs.length) + FileSystem.Config.VIEWER_WRITER];
 			System.arraycopy(buffer, 0, buf, 0, size);
 			buffer = buf;
 		}

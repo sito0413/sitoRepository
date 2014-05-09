@@ -56,14 +56,11 @@ public class CallMethodScript extends ExpressionScript {
 						}
 					}
 				}
-				throw ScriptException.IllegalStateException(e);
+				throw ScriptException.illegalStateException(e);
 			}
 		}
-		catch (SecurityException | IllegalAccessException | IllegalArgumentException e) {
-			throw ScriptException.IllegalStateException(e);
-		}
-		catch (final InvocationTargetException e) {
-			throw ScriptException.IllegalStateException(e.getCause());
+		catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw ScriptException.illegalStateException(e);
 		}
 	}
 	

@@ -39,7 +39,7 @@ public class ConstructorScript extends ExpressionScript {
 			return new InstanceBytecode(class1, constructor.newInstance(objects));
 		}
 		catch (final Exception e) {
-			throw ScriptException.IllegalStateException(e);
+			throw ScriptException.illegalStateException(e);
 		}
 	}
 	

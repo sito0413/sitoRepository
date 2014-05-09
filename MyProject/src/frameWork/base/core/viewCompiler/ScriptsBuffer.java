@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.viewCompiler.parser.Textlet;
 import frameWork.base.core.viewCompiler.script.SyntaxScript;
 import frameWork.base.core.viewCompiler.script.syntax.BlockScript;
@@ -29,6 +30,7 @@ import frameWork.base.core.viewCompiler.script.syntax.expression.ConstructorScri
 import frameWork.base.core.viewCompiler.script.syntax.expression.DeclarationScript;
 import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
 import frameWork.base.core.viewCompiler.script.syntax.expression.OperatorScript;
+import frameWork.base.util.UtilityCharacter;
 
 @SuppressWarnings("rawtypes")
 public class ScriptsBuffer {
@@ -40,10 +42,11 @@ public class ScriptsBuffer {
 		text = "";
 		iterator = textlets.iterator();
 		index = 0;
+		read(0);
 	}
 	
 	public void skip() {
-		while (hasRemaining() && isWhitespace(getChar())) {
+		while (hasRemaining() && UtilityCharacter.isWhitespace(getChar())) {
 			next();
 		}
 		if (hasRemaining()) {
@@ -100,23 +103,6 @@ public class ScriptsBuffer {
 		index++;
 	}
 	
-	private static boolean isWhitespace(final char ch) {
-		return (ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r');
-	}
-	
-	private static boolean isAlpha(final char ch) {
-		return ((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z')) || (ch == '_');
-	}
-	
-	private static boolean isNumeric(final char ch) {
-		return (ch >= '0') && (ch <= '9');
-	}
-	
-	private static boolean isOperator(final char ch) {
-		return (ch == '!') || (ch == '^') || (ch == '~') || (ch == '=') || (ch == '+') || (ch == '-') || (ch == '*')
-		        || (ch == '/') || (ch == '%') || (ch == '&') || (ch == '|') || (ch == '<') || (ch == '>');
-	}
-	
 	private boolean startWith(final String string) {
 		String s = "";
 		for (int i = 0; i < string.length(); i++) {
@@ -124,7 +110,7 @@ public class ScriptsBuffer {
 		}
 		if (s.equals(string)) {
 			index += string.length();
-			if (hasRemaining() && (isWhitespace(getChar()) || !isOperator(getChar()))) {
+			if (hasRemaining() && (UtilityCharacter.isWhitespace(getChar()) || !UtilityCharacter.isOperator(getChar()))) {
 				skip();
 				return true;
 			}
@@ -179,7 +165,7 @@ public class ScriptsBuffer {
 			return new BreakScript(token);
 		}
 		else if (startToken("case")) {
-			throw ScriptException.IllegalStateException();
+			throw ScriptException.illegalStateException();
 		}
 		else if (startWith("{")) {
 			return new BlockScript("");
@@ -214,7 +200,7 @@ public class ScriptsBuffer {
 					}
 					index = buffer;
 				}
-				throw ScriptException.IllegalStateException();
+				throw ScriptException.illegalStateException();
 			}
 			return script;
 		}
@@ -444,7 +430,7 @@ public class ScriptsBuffer {
 					throw illegalCharacterError();
 				}
 				gotoNextChar();
-				if (isAlpha(getChar()) || isNumeric(getChar()) || (getChar() == '(')) {
+				if (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()) || (getChar() == '(')) {
 					return new CastScript(a, getStatementToken());
 				}
 				else if ((getChar() == '.')) {
@@ -456,7 +442,7 @@ public class ScriptsBuffer {
 				return a;
 			}
 			default :
-				if (isNumeric(getChar())) {
+				if (UtilityCharacter.isNumeric(getChar())) {
 					return numeric();
 				}
 				else if (startToken("new")) {
@@ -471,7 +457,7 @@ public class ScriptsBuffer {
 				else if (startToken("null")) {
 					return new InstanceBytecode(Object.class, null);
 				}
-				else if (isAlpha(getChar())) {
+				else if (UtilityCharacter.isAlpha(getChar())) {
 					return callChain();
 				}
 				break;
@@ -482,7 +468,7 @@ public class ScriptsBuffer {
 	private ExpressionScript callChain() throws ScriptException {
 		final CallChainScript token = tokenScript(new ArrayDeque<ExpressionScript>());
 		skip();
-		if (isAlpha(getChar())) {
+		if (UtilityCharacter.isAlpha(getChar())) {
 			return new DeclarationScript(token, tokenScript(new ArrayDeque<ExpressionScript>()));
 		}
 		return token;
@@ -493,7 +479,7 @@ public class ScriptsBuffer {
 		skip();
 		while (hasRemaining()) {
 			String expression = "";
-			while (hasRemaining() && (isAlpha(getChar()) || isNumeric(getChar()))) {
+			while (hasRemaining() && (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()))) {
 				expression += getChar();
 				next();
 			}
@@ -534,8 +520,9 @@ public class ScriptsBuffer {
 					gotoNextChar();
 					int depth = 1;
 					while (hasRemaining() && (depth > 0)) {
-						if (isAlpha(getChar())) {
-							while (hasRemaining() && (isAlpha(getChar()) || isNumeric(getChar()))) {
+						if (UtilityCharacter.isAlpha(getChar())) {
+							while (hasRemaining()
+							        && (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()))) {
 								next();
 							}
 						}
@@ -577,7 +564,7 @@ public class ScriptsBuffer {
 		skip();
 		String expression = "";
 		while (hasRemaining()) {
-			while (hasRemaining() && (isAlpha(getChar()) || isNumeric(getChar()))) {
+			while (hasRemaining() && (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()))) {
 				expression += getChar();
 				next();
 			}
@@ -633,15 +620,15 @@ public class ScriptsBuffer {
 	
 	private InstanceBytecode numeric() throws ScriptException {
 		String numeric = "";
-		while (hasRemaining() && isNumeric(getChar())) {
+		while (hasRemaining() && UtilityCharacter.isNumeric(getChar())) {
 			numeric += getChar();
 			next();
 		}
 		if (getChar() == '.') {
 			numeric += getChar();
 			next();
-			if (hasRemaining() && isNumeric(getChar())) {
-				while (hasRemaining() && isNumeric(getChar())) {
+			if (hasRemaining() && UtilityCharacter.isNumeric(getChar())) {
+				while (hasRemaining() && UtilityCharacter.isNumeric(getChar())) {
 					numeric += getChar();
 					next();
 				}
@@ -707,21 +694,23 @@ public class ScriptsBuffer {
 				col = 0;
 			}
 		}
-		return ScriptException.IllegalStateException("Error " + getChar() + " at(line: " + line + ", col: " + col + ")"
-		        + getChar(index + 1) + getChar(index + 2) + getChar(index + 3) + getChar(index + 4)
-		        + getChar(index + 5) + getChar(index + 6) + getChar(index + 7) + getChar(index + 8)
-		        + getChar(index + 9) + getChar(index + 10) + getChar(index + 11) + getChar(index + 12));
+		String stack = "";
+		for (int i = 0; i < FileSystem.Config.VIEW_STACK_SIZE; i++) {
+			stack += getChar(index + i);
+		}
+		return ScriptException.illegalStateException("Error " + getChar() + " at(line: " + line + ", col: " + col + ")"
+		        + stack);
 	}
 	
 	private String getLabel() throws ScriptException {
 		final StringBuilder builder = new StringBuilder();
 		skip();
-		if (isAlpha(getChar()) || isNumeric(getChar())) {
+		if (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar())) {
 			do {
 				builder.append(getChar());
 				next();
 			}
-			while (hasRemaining() && (isAlpha(getChar()) || isNumeric(getChar())));
+			while (hasRemaining() && (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar())));
 		}
 		else if ((getChar() == '"') || (getChar() == '\'')) {
 			builder.append(string(getChar()).execute(null).get().toString());
@@ -737,7 +726,9 @@ public class ScriptsBuffer {
 		}
 		if (s.equals(string)) {
 			index += string.length();
-			if (hasRemaining() && (isWhitespace(getChar()) || !(isAlpha(getChar()) || isNumeric(getChar())))) {
+			if (hasRemaining()
+			        && (UtilityCharacter.isWhitespace(getChar()) || !(UtilityCharacter.isAlpha(getChar()) || UtilityCharacter
+			                .isNumeric(getChar())))) {
 				skip();
 				return true;
 			}
