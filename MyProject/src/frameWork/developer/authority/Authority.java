@@ -121,9 +121,9 @@ public class Authority extends SettingPanel {
 	}
 	
 	private void createSrc(final List<List<String>> roles) {
-		new File("src/frameWork/core/authority").mkdirs();
-		try (final PrintWriter printWriter = new PrintWriter(new File("src/frameWork/core/authority/Role.java"))) {
-			printWriter.println("package frameWork.core.authority;");
+		new File("src/frameWork/base/core/authority").mkdirs();
+		try (final PrintWriter printWriter = new PrintWriter(new File("src/frameWork/base/core/authority/Role.java"))) {
+			printWriter.println("package frameWork.base.core.authority;");
 			printWriter.println("");
 			printWriter.println(SrcUtil.getComment(FILE_NAME));
 			printWriter.println("public enum Role {");

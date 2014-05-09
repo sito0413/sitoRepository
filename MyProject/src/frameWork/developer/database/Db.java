@@ -46,6 +46,7 @@ public class Db {
 	}
 	
 	public static void createJavaFile() {
+		new File("src/frameWork/base/database").mkdirs();
 		try (final PrintWriter printWriter = new PrintWriter(new File(
 		        "src/frameWork/base/database/DatabaseManager.java"))) {
 			printWriter.println("package frameWork.base.database;");

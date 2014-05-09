@@ -14,6 +14,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.developer.SettingPanel;
 import frameWork.developer.authority.Authority;
 import frameWork.developer.database.Database;
@@ -98,6 +99,7 @@ public class Project extends SettingPanel {
 	
 	private void create() {
 		new File("src").mkdirs();
+		new File("src/" + FileSystem.Config.getString("packageName", "controller")).mkdirs();
 		if (authority.isSelected()) {
 			Authority.createFile();
 		}
