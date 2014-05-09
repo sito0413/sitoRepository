@@ -6,6 +6,6 @@ public class TABLE {
 	public final ADD ADD;
 	
 	public TABLE(final String sql, final Table<?> table) {
-		this.ADD = new ADD(sql + "TABLE " + table.getName() + " ");
+		this.ADD = new ADD(sql + "TABLE " + table.name + " ");
 	}
 }

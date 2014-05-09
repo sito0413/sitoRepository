@@ -8,7 +8,7 @@ public class FROM implements SQL<DeleteSQL> {
 	private final String base;
 	
 	public FROM(final Table<?> table) {
-		this.base = "DELETE FROM " + table.getName() + " ";
+		this.base = "DELETE FROM " + table.name + " ";
 	}
 	
 	@Override

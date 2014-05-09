@@ -13,7 +13,7 @@ public class SELECT implements SQL<SelectSQL> {
 	public SELECT(final String sql, final Field<?>... fields) {
 		final StringBuilder builder = new StringBuilder();
 		for (final Field<?> field : fields) {
-			builder.append(", ").append(field.getName());
+			builder.append(", ").append(field.table + "." + field.name);
 		}
 		base = sql + builder.append(" ").substring(1);
 		UNION = new UNION_ALL(base);

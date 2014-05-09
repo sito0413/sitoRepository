@@ -23,9 +23,10 @@ class PooledConnection {
 		this.driver = (java.sql.Driver) Class.forName(
 		        FileSystem.Config.getString("DatabaseDriverClassName", "org.sqlite.JDBC")).newInstance();
 		this.innerConnection = this.driver.connect(
-		        FileSystem.Config.getString("DatabaseURL", FileSystem.Data.getName() + name + ".data"),
+		        FileSystem.Config.getString("DatabaseURL",
+		                "jdbc:sqlite:" + FileSystem.Data.getAbsolutePath().replace('\\', '/') + "/" + name + ".dt"),
 		        new Properties());
-		this.innerConnection.setAutoCommit(false);
+		this.innerConnection.setAutoCommit(true);
 		this.isDiscarded = false;
 	}
 	
@@ -38,8 +39,10 @@ class PooledConnection {
 				disconnect();
 			}
 			innerConnection = driver.connect(
-			        FileSystem.Config.getString("DatabaseURL", FileSystem.Data.getName() + name + ".data"),
+			        FileSystem.Config.getString("DatabaseURL", "jdbc:sqlite:"
+			                + FileSystem.Data.getAbsolutePath().replace('\\', '/') + "/" + name + ".dt"),
 			        new Properties());
+			innerConnection.setAutoCommit(true);
 			this.isDiscarded = false;
 		}
 		catch (final Exception e) {

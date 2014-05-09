@@ -20,6 +20,7 @@ class ConnectorImp implements DatabaseConnector {
 	
 	@Override
 	public synchronized void executeQuery(final String paramString) throws SQLException {
+		System.out.println(paramString);
 		if (statement == null) {
 			statement = connection.createStatement();
 		}
@@ -37,6 +38,7 @@ class ConnectorImp implements DatabaseConnector {
 	
 	@Override
 	public synchronized void executeUpdate(final String paramString) throws SQLException {
+		System.out.println(paramString);
 		if (statement == null) {
 			statement = connection.createStatement();
 		}

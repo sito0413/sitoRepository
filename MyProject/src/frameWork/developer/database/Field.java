@@ -60,8 +60,8 @@ public class Field {
 		printWriter.println("\t\t\t */");
 		printWriter.println("\t\t\tpublic static final class " + name + " extends Field<" + ty.getType() + ">{");
 		printWriter.println("\t\t\t\t" + name + "(){");
-		printWriter.println("\t\t\t\t\tsuper(\"" + database + "." + table + "." + name + "\", false, Type." + ty + ", "
-		        + ("○".equals(isUnique)) + ", " + (!"×".equals(isNullable)) + ", "
+		printWriter.println("\t\t\t\t\tsuper(\"" + database + "\", \"" + table + "\", \"" + name + "\", false, Type."
+		        + ty + ", " + ("○".equals(isUnique)) + ", " + (!"×".equals(isNullable)) + ", "
 		        + (defaultValue == null ? "null" : ("\"" + defaultValue + "\"")) + " );");
 		printWriter.println("\t\t\t\t}");
 		printWriter.println("\t\t\t}");

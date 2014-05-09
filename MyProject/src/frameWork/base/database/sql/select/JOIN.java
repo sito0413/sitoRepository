@@ -13,7 +13,7 @@ public class JOIN implements SQL<SelectSQL> {
 	public final FULL FULL;
 	
 	public JOIN(final String sql, final Table<?> table) {
-		this(sql, table.getName());
+		this(sql, table.name);
 	}
 	
 	public JOIN(final String sql, final SelectSQL selectSQL) {

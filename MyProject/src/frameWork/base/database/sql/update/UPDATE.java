@@ -7,7 +7,7 @@ public class UPDATE {
 	private final String base;
 	
 	public UPDATE(final Table<?> table) {
-		this.base = "UPDATE " + table.getName() + " ";
+		this.base = "UPDATE " + table.name + " ";
 	}
 	
 	public SET SET(final Field<?>... fields) {

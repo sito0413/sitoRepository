@@ -2,7 +2,9 @@ package frameWork.base.database.scheme;
 
 public class Field<T> {
 	
-	private final String name;
+	public final String database;
+	public final String table;
+	public final String name;
 	private final boolean isKey;
 	private final Type type;
 	private final boolean isUnique;
@@ -10,18 +12,16 @@ public class Field<T> {
 	private final T defaultValue;
 	private T value = null;
 	
-	public Field(final String name, final boolean isKey, final Type type, final boolean isUnique,
-	        final boolean isNullable, final String defaultValue) {
+	public Field(final String database, final String table, final String name, final boolean isKey, final Type type,
+	        final boolean isUnique, final boolean isNullable, final String defaultValue) {
+		this.database = database;
+		this.table = table;
 		this.name = name;
 		this.isKey = isKey;
 		this.type = type;
 		this.isUnique = isUnique;
 		this.isNullable = isNullable;
 		this.defaultValue = (T) type.parseValue(defaultValue);
-	}
-	
-	public String getName() {
-		return name;
 	}
 	
 	public T get() {
@@ -37,9 +37,9 @@ public class Field<T> {
 	}
 	
 	public String toColumnDefine() {
-		return name + " " + type.toString() + " " + (isKey ? "PRIMARY_KEY  AUTOINCREMENT " : "")
-		        + (isUnique ? "UNIQUE " : "") + (isNullable ? "" : "NOT NULL ")
-		        + (defaultValue == null ? "" : ("DEFAULT " + type.parseSQL(value) + " "));
+		return name + " " + type.toString() + " " + (isNullable ? "" : "NOT NULL ")
+		        + (isKey ? "PRIMARY KEY AUTOINCREMENT " : "") + (isUnique ? "UNIQUE " : "")
+		        + (defaultValue == null ? "" : ("DEFAULT " + type.parseSQL(defaultValue) + " "));
 	}
 	
 	public String getSqlValue() {

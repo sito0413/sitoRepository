@@ -7,7 +7,7 @@ public class TABLE_AS {
 	public final AS AS;
 	
 	public TABLE_AS(final String sql, final Table<?> table) {
-		AS = new AS(sql + "TABLE " + table.getName() + " ");
+		AS = new AS(sql + "TABLE " + table.name + " ");
 	}
 	
 }

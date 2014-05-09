@@ -7,7 +7,7 @@ public class ON {
 	private final String base;
 	
 	public ON(final String sql, final Table<?> table) {
-		this.base = "ON " + table.getName() + " ";
+		this.base = "ON " + table.name + " ";
 	}
 	
 	public WHEN WHEN(final Expression expression) {

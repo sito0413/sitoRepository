@@ -13,7 +13,7 @@ public class TABLE implements SQL<CreateSQL> {
 		for (final Field<?> field : fields) {
 			builder.append(",").append(field.toColumnDefine());
 		}
-		this.base = (sql + "TABLE " + table.getName() + " (" + builder.substring(1) + ") ");
+		this.base = (sql + "TABLE " + table.name + " (" + builder.substring(1) + ") ");
 	}
 	
 	@Override

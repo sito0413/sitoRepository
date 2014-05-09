@@ -24,12 +24,13 @@ public abstract class Database {
 		try {
 			connector.executeUpdate(new SQLBuilder().BEGIN.toSQL().toString());
 			try {
-				for (final Table<?> database : getTables()) {
-					database.createTable(connector);
+				for (final Table<?> table : getTables()) {
+					table.createTable(connector);
 				}
 				connector.executeUpdate(new SQLBuilder().COMMIT.toSQL().toString());
 			}
 			catch (final SQLException e) {
+				e.printStackTrace();
 				connector.executeUpdate(new SQLBuilder().ROLLBACK.toSQL().toString());
 			}
 		}
@@ -44,8 +45,8 @@ public abstract class Database {
 		try {
 			connector.executeUpdate(new SQLBuilder().BEGIN.toSQL().toString());
 			try {
-				for (final Table<?> database : getTables()) {
-					database.dropTable(connector);
+				for (final Table<?> table : getTables()) {
+					table.dropTable(connector);
 				}
 				connector.executeUpdate(new SQLBuilder().COMMIT.toSQL().toString());
 			}

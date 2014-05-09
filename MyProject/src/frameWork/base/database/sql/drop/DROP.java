@@ -17,7 +17,7 @@ public class DROP {
 		return new SQL<DropSQL>() {
 			@Override
 			public DropSQL toSQL() {
-				return new DropSQL("DROP TABLE " + table.getName() + " ");
+				return new DropSQL("DROP TABLE " + table.name + " ");
 			}
 		};
 	}

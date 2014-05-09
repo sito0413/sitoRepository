@@ -54,7 +54,7 @@ public class Table {
 		printWriter.println("\t\t */");
 		printWriter.println("\t\tpublic static final class " + name + " extends Table<" + name + "Row >{");
 		printWriter.println("\t\t\t" + name + "(){");
-		printWriter.println("\t\t\t\tsuper(\"" + database + "." + name + "\");");
+		printWriter.println("\t\t\t\tsuper(\"" + database + "\", \"" + name + "\");");
 		printWriter.println("\t\t\t}");
 		
 		printWriter.println("");
@@ -63,8 +63,8 @@ public class Table {
 		printWriter.println("\t\t\t */");
 		printWriter.println("\t\t\tpublic static final class id extends Field<Integer>{");
 		printWriter.println("\t\t\t\tid(){");
-		printWriter.println("\t\t\t\t\tsuper(\"" + database + "." + name + ".id\", true, Type." + Type.INTEGER
-		        + ", true, false, \"0\");");
+		printWriter.println("\t\t\t\t\tsuper(\"" + database + "\", \"" + name + "\", \"id\", true, Type."
+		        + Type.INTEGER + ", false, true, \"0\");");
 		printWriter.println("\t\t\t\t}");
 		printWriter.println("\t\t\t}");
 		

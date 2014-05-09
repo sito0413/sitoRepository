@@ -17,7 +17,7 @@ public class INDEX {
 		for (final ColumnSort column : columns) {
 			builder.append(", ").append(column);
 		}
-		final String sql = (base + "ON " + table.getName() + " (" + builder + ") ");
+		final String sql = (base + "ON " + table.name + " (" + builder + ") ");
 		return new SQL<CreateSQL>() {
 			@Override
 			public CreateSQL toSQL() {

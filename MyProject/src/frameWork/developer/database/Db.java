@@ -85,6 +85,12 @@ public class Db {
 			}
 			printWriter.println("\t};");
 			
+			printWriter.println("\tpublic final void create() {");
+			printWriter.println("\t\tfor (final Database database : databases) {");
+			printWriter.println("\t\t\tdatabase.create();");
+			printWriter.println("\t\t}");
+			printWriter.println("\t}");
+			
 			printWriter.println("}");
 		}
 		catch (final IOException exp) {
@@ -118,7 +124,7 @@ public class Db {
 		printWriter.println("\t\tpublic final Table<?>[] getTables(){");
 		printWriter.println("\t\t\treturn new Table<?>[]{");
 		for (final Table table : tables) {
-			printWriter.println("\t\t\t" + table.name + ",");
+			printWriter.println("\t\t\t\t" + table.name + ",");
 		}
 		printWriter.println("\t\t\t};");
 		printWriter.println("\t\t}");

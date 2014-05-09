@@ -7,14 +7,12 @@ import frameWork.base.database.sql.SQLBuilder;
 
 public abstract class Table<T extends Row> {
 	
-	private final String name;
+	public final String database;
+	public final String name;
 	
-	public Table(final String name) {
+	public Table(final String database, final String name) {
+		this.database = database;
 		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
 	}
 	
 	public abstract T createRow();

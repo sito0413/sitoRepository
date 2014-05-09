@@ -28,6 +28,12 @@ public class Database extends SettingPanel {
 	private JList databaseList;
 	private JList tableList;
 	private JList fieldList;
+	private JScrollPane scrollPane1;
+	private JScrollPane scrollPane2;
+	private JScrollPane scrollPane3;
+	private JButton button3;
+	private JButton button2;
+	private JButton button1;
 	
 	public static void createFile() {
 		Db.createFile();
@@ -89,11 +95,11 @@ public class Database extends SettingPanel {
 					final FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
 					flowLayout.setAlignment(FlowLayout.LEFT);
 					panel_2.add(panel_1, BorderLayout.NORTH);
-					final JButton button_1 = new JButton("データベース編集");
-					panel_1.add(button_1);
+					button1 = new JButton("データベース編集");
+					panel_1.add(button1);
 					{
-						final JScrollPane scrollPane = new JScrollPane();
-						panel_2.add(scrollPane, BorderLayout.CENTER);
+						scrollPane1 = new JScrollPane();
+						panel_2.add(scrollPane1, BorderLayout.CENTER);
 						{
 							databaseList = new JList();
 							this.databaseList.addListSelectionListener(new ListSelectionListener() {
@@ -101,52 +107,40 @@ public class Database extends SettingPanel {
 								public void valueChanged(final ListSelectionEvent e) {
 									final Db d = (Db) databaseList.getSelectedValue();
 									if (d == null) {
-										tableList.setModel(new AbstractListModel() {
-											@Override
-											public int getSize() {
-												return 0;
-											}
-											
-											@Override
-											public Object getElementAt(final int index) {
-												return null;
-											}
-										});
+										scrollPane2.setVisible(false);
+										button3.setVisible(false);
 									}
 									else {
-										tableList.setModel(new AbstractListModel() {
-											List<Table> table = Table.getTable(d.name);
-											
-											@Override
-											public int getSize() {
-												return table.size();
-											}
-											
-											@Override
-											public Object getElementAt(final int index) {
-												if (getSize() <= index) {
-													return null;
+										final List<Table> table = Table.getTable(d.name);
+										if (table.isEmpty()) {
+											scrollPane2.setVisible(false);
+											button3.setVisible(false);
+										}
+										else {
+											scrollPane2.setVisible(true);
+											button3.setVisible(true);
+											tableList.setModel(new AbstractListModel() {
+												@Override
+												public int getSize() {
+													return table.size();
 												}
-												return table.get(index);
-											}
-										});
+												
+												@Override
+												public Object getElementAt(final int index) {
+													if (getSize() <= index) {
+														return null;
+													}
+													return table.get(index);
+												}
+											});
+										}
 									}
-									fieldList.setModel(new AbstractListModel() {
-										@Override
-										public int getSize() {
-											return 0;
-										}
-										
-										@Override
-										public Object getElementAt(final int index) {
-											return null;
-										}
-									});
+									scrollPane3.setVisible(false);
 									Database.this.revalidate();
 								}
 							});
 							databaseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-							scrollPane.setViewportView(databaseList);
+							scrollPane1.setViewportView(databaseList);
 						}
 					}
 					{
@@ -159,8 +153,8 @@ public class Database extends SettingPanel {
 						panel.add(panel_3, gbc_panel_3);
 						panel_3.setLayout(new BorderLayout(0, 0));
 						{
-							final JScrollPane scrollPane = new JScrollPane();
-							panel_3.add(scrollPane, BorderLayout.CENTER);
+							scrollPane2 = new JScrollPane();
+							panel_3.add(scrollPane2, BorderLayout.CENTER);
 							{
 								tableList = new JList();
 								this.tableList.addListSelectionListener(new ListSelectionListener() {
@@ -169,41 +163,37 @@ public class Database extends SettingPanel {
 										final Db d = (Db) databaseList.getSelectedValue();
 										final Table t = (Table) tableList.getSelectedValue();
 										if (t == null) {
-											fieldList.setModel(new AbstractListModel() {
-												@Override
-												public int getSize() {
-													return 0;
-												}
-												
-												@Override
-												public Object getElementAt(final int index) {
-													return null;
-												}
-											});
+											scrollPane3.setVisible(false);
 										}
 										else {
-											fieldList.setModel(new AbstractListModel() {
-												List<Field> field = Field.getField(d.name, t.name);
-												
-												@Override
-												public int getSize() {
-													return field.size();
-												}
-												
-												@Override
-												public Object getElementAt(final int index) {
-													if (getSize() <= index) {
-														return null;
+											final List<Field> field = Field.getField(d.name, t.name);
+											if (field.isEmpty()) {
+												scrollPane3.setVisible(false);
+											}
+											else {
+												scrollPane3.setVisible(true);
+												fieldList.setModel(new AbstractListModel() {
+													
+													@Override
+													public int getSize() {
+														return field.size();
 													}
-													return field.get(index);
-												}
-											});
+													
+													@Override
+													public Object getElementAt(final int index) {
+														if (getSize() <= index) {
+															return null;
+														}
+														return field.get(index);
+													}
+												});
+											}
 										}
 										Database.this.revalidate();
 									}
 								});
 								tableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-								scrollPane.setViewportView(tableList);
+								scrollPane2.setViewportView(tableList);
 							}
 						}
 						{
@@ -212,8 +202,8 @@ public class Database extends SettingPanel {
 							final FlowLayout fl_panel_4 = (FlowLayout) panel_4.getLayout();
 							fl_panel_4.setAlignment(FlowLayout.LEFT);
 							{
-								final JButton button = new JButton("テーブル編集");
-								button.addActionListener(new ActionListener() {
+								button2 = new JButton("テーブル編集");
+								button2.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(final ActionEvent e) {
 										final Db d = (Db) databaseList.getSelectedValue();
@@ -222,7 +212,7 @@ public class Database extends SettingPanel {
 										}
 									}
 								});
-								panel_4.add(button);
+								panel_4.add(button2);
 							}
 						}
 					}
@@ -236,12 +226,12 @@ public class Database extends SettingPanel {
 						panel.add(panel_3, gbc_panel_3);
 						panel_3.setLayout(new BorderLayout(0, 0));
 						{
-							final JScrollPane scrollPane = new JScrollPane();
-							panel_3.add(scrollPane, BorderLayout.CENTER);
+							scrollPane3 = new JScrollPane();
+							panel_3.add(scrollPane3, BorderLayout.CENTER);
 							{
 								fieldList = new JList();
 								fieldList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-								scrollPane.setViewportView(fieldList);
+								scrollPane3.setViewportView(fieldList);
 							}
 						}
 						{
@@ -250,8 +240,8 @@ public class Database extends SettingPanel {
 							final FlowLayout fl_panel_4 = (FlowLayout) panel_4.getLayout();
 							fl_panel_4.setAlignment(FlowLayout.LEFT);
 							{
-								final JButton button = new JButton("フィールド編集");
-								button.addActionListener(new ActionListener() {
+								button3 = new JButton("フィールド編集");
+								button3.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(final ActionEvent e) {
 										final Db d = (Db) databaseList.getSelectedValue();
@@ -263,11 +253,11 @@ public class Database extends SettingPanel {
 										}
 									}
 								});
-								panel_4.add(button);
+								panel_4.add(button3);
 							}
 						}
 					}
-					button_1.addActionListener(new ActionListener() {
+					button1.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(final ActionEvent e) {
 							Db.edit();
@@ -280,43 +270,18 @@ public class Database extends SettingPanel {
 	
 	@Override
 	public void update() {
-		databaseList.setModel(new AbstractListModel() {
-			List<Db> database = Db.getDatabase();
-			
-			@Override
-			public int getSize() {
-				return database.size();
-			}
-			
-			@Override
-			public Object getElementAt(final int index) {
-				if (getSize() <= index) {
-					return null;
-				}
-				return database.get(index);
-			}
-		});
-		final Db d = (Db) databaseList.getModel().getElementAt(0);
-		if (d == null) {
-			tableList.setModel(new AbstractListModel() {
-				@Override
-				public int getSize() {
-					return 0;
-				}
-				
-				@Override
-				public Object getElementAt(final int index) {
-					return null;
-				}
-			});
+		final List<Db> database = Db.getDatabase();
+		if (database.isEmpty()) {
+			scrollPane1.setVisible(false);
+			button2.setVisible(false);
 		}
 		else {
-			tableList.setModel(new AbstractListModel() {
-				List<Table> table = Table.getTable(d.name);
-				
+			scrollPane1.setVisible(true);
+			button2.setVisible(true);
+			databaseList.setModel(new AbstractListModel() {
 				@Override
 				public int getSize() {
-					return table.size();
+					return database.size();
 				}
 				
 				@Override
@@ -324,21 +289,13 @@ public class Database extends SettingPanel {
 					if (getSize() <= index) {
 						return null;
 					}
-					return table.get(index);
+					return database.get(index);
 				}
 			});
 		}
-		fieldList.setModel(new AbstractListModel() {
-			@Override
-			public int getSize() {
-				return 0;
-			}
-			
-			@Override
-			public Object getElementAt(final int index) {
-				return null;
-			}
-		});
+		scrollPane2.setVisible(false);
+		button3.setVisible(false);
+		scrollPane3.setVisible(false);
 		revalidate();
 	}
 	
