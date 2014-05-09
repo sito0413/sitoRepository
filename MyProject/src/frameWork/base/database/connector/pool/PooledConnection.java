@@ -1,29 +1,32 @@
-package frameWork.database.connector.pool;
+package frameWork.base.database.connector.pool;
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
-import frameWork.ThrowableUtil;
-import frameWork.database.connector.DatabaseConnector;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.util.ThrowableUtil;
 
 class PooledConnection {
-	private final DatabaseConnector key;
 	private final Driver driver;
+	private final String name;
 	private volatile Handler handler;
 	volatile boolean released = false;
 	volatile Connection innerConnection;
 	volatile boolean isDiscarded = true;
 	
-	PooledConnection(final DatabaseConnector key) throws InstantiationException, IllegalAccessException,
-	        ClassNotFoundException, SQLException {
-		this.key = key;
-		this.driver = (java.sql.Driver) Class.forName(key.getDriverClassName()).newInstance();
-		this.innerConnection = this.driver.connect(key.getUrl(), key.getProperties());
+	PooledConnection(final String name) throws InstantiationException, IllegalAccessException, ClassNotFoundException,
+	        SQLException {
+		this.name = name;
+		this.driver = (java.sql.Driver) Class.forName(
+		        FileSystem.Config.getString("DatabaseDriverClassName", "org.sqlite.JDBC")).newInstance();
+		this.innerConnection = this.driver.connect(
+		        FileSystem.Config.getString("DatabaseURL", FileSystem.Data.getName() + name + ".data"),
+		        new Properties());
 		this.innerConnection.setAutoCommit(false);
 		this.isDiscarded = false;
-		
 	}
 	
 	private void connect() {
@@ -34,7 +37,9 @@ class PooledConnection {
 			if (innerConnection != null) {
 				disconnect();
 			}
-			innerConnection = driver.connect(key.getUrl(), key.getProperties());
+			innerConnection = driver.connect(
+			        FileSystem.Config.getString("DatabaseURL", FileSystem.Data.getName() + name + ".data"),
+			        new Properties());
 			this.isDiscarded = false;
 		}
 		catch (final Exception e) {

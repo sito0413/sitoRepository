@@ -1,4 +1,4 @@
-package frameWork.manager;
+package frameWork.developer;
 
 import javax.swing.JPanel;
 

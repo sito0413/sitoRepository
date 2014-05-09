@@ -1,8 +1,10 @@
-package frameWork.core.targetFilter;
+package frameWork.base.core.targetFilter;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import frameWork.base.core.targetFilter.TargetFilter;
 
 public class TargetFilterTest {
 	

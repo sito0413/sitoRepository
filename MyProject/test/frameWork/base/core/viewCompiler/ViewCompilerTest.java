@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,7 +7,10 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import frameWork.core.state.AttributeMap;
+import frameWork.base.core.state.AttributeMap;
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ViewCompiler;
+import frameWork.base.core.viewCompiler.ViewerWriter;
 
 public class ViewCompilerTest {
 	//ViewChareet

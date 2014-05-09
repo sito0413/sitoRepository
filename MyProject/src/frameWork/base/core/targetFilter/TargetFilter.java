@@ -1,25 +1,28 @@
-package frameWork.core.targetFilter;
+package frameWork.base.core.targetFilter;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import frameWork.core.fileSystem.FileSystem;
-import frameWork.core.state.State;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.State;
 
 public class TargetFilter {
-	public static TargetFilter parse(final String target, final String method) {
+	public static Target parse(final String target, final String method) {
 		final String className = getClassName(target);
 		if ((className == null) || (method == null)) {
 			return null;
 		}
 		try {
 			final Class<?> c = Class.forName(FileSystem.Config.getString("packageName", "controller") + className);
-			final Method m = c.getMethod(method, State.class);
-			return new TargetFilter(c, m, className.replace(".", "/") + ".jsp");
+			if (c.isAssignableFrom(TargetHandler.class)) {
+				final Method m = c.getMethod(method, State.class);
+				return new Target(c, m, className.replace(".", "/") + ".jsp");
+			}
+			
 		}
 		catch (final ClassNotFoundException | NoSuchMethodException e) {
-			return null;
+			//NOOP
 		}
+		return null;
 	}
 	
 	static String getClassName(final String target) {
@@ -51,30 +54,4 @@ public class TargetFilter {
 			return className.toString();
 		}
 	}
-	
-	public final Class<?> className;
-	public final Method methodName;
-	public final String page;
-	
-	TargetFilter(final Class<?> className, final Method methodName, final String page) {
-		this.className = className;
-		this.methodName = methodName;
-		this.page = page;
-	}
-	
-	public boolean invoke(final State state) {
-		try {
-			state.setViewCompiler(true);
-			state.setPage(page);
-			methodName.setAccessible(true);
-			methodName.invoke(className.newInstance(), state);
-			return state.isViewCompiler();
-		}
-		catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException
-		        | InstantiationException e) {
-			return false;
-		}
-		
-	}
-	
 }

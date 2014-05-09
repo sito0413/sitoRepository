@@ -1,12 +1,12 @@
-package frameWork.sort;
+package frameWork.base.sort;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JOptionPane;
 
-import frameWork.event.Event;
-import frameWork.event.queue.EventQueue;
+import frameWork.base.event.Event;
+import frameWork.base.event.queue.EventQueue;
 
 public class Sort {
 	static final int MIN_RANGE = 40;//1以上必須

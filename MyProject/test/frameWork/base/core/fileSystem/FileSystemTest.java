@@ -1,8 +1,10 @@
-package frameWork.core.fileSystem;
+package frameWork.base.core.fileSystem;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import frameWork.base.core.fileSystem.FileSystem;
 
 public class FileSystemTest {
 	@Test

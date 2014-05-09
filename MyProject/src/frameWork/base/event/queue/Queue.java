@@ -1,12 +1,12 @@
-package frameWork.event.queue;
+package frameWork.base.event.queue;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import frameWork.event.Event;
-import frameWork.event.TimerEvent;
+import frameWork.base.event.Event;
+import frameWork.base.event.TimerEvent;
 
 class Queue {
 	private transient EventNode head;

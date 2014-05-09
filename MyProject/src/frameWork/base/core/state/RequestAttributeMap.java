@@ -1,4 +1,4 @@
-package frameWork.core.state;
+package frameWork.base.core.state;
 
 import java.util.Enumeration;
 

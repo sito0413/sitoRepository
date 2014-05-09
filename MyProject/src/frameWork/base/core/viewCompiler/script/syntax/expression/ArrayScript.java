@@ -1,10 +1,10 @@
-package frameWork.core.viewCompiler.script.syntax.expression;
+package frameWork.base.core.viewCompiler.script.syntax.expression;
 
 import java.util.Deque;
 
-import frameWork.core.viewCompiler.Scope;
-import frameWork.core.viewCompiler.ScriptException;
-import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
 
 public class ArrayScript extends ExpressionScript {
 	private final Deque<ExpressionScript> expressionScripts;

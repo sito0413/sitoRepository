@@ -1,4 +1,4 @@
-package frameWork;
+package frameWork.base.util;
 
 
 public class ThrowableUtil {

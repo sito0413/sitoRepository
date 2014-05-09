@@ -1,5 +1,5 @@
-package frameWork.database;
+package frameWork.base.database.scheme;
 
-
-public class Row {
+public abstract class Row {
+	public abstract Field<?>[] getFields();
 }

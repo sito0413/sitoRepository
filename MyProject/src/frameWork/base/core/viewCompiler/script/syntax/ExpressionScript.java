@@ -1,10 +1,10 @@
-package frameWork.core.viewCompiler.script.syntax;
+package frameWork.base.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.Scope;
-import frameWork.core.viewCompiler.ScriptException;
-import frameWork.core.viewCompiler.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.SyntaxScript;
-import frameWork.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.ScriptsBuffer;
+import frameWork.base.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
 
 public abstract class ExpressionScript extends SyntaxScript<InstanceBytecode> {
 	

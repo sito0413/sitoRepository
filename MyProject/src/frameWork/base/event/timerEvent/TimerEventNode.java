@@ -1,6 +1,6 @@
-package frameWork.event.timerEvent;
+package frameWork.base.event.timerEvent;
 
-import frameWork.event.TimerEvent;
+import frameWork.base.event.TimerEvent;
 
 class TimerEventNode {
 	TimerEvent item;

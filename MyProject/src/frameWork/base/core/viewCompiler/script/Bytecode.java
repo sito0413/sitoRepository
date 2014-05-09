@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler.script;
+package frameWork.base.core.viewCompiler.script;
 
 public interface Bytecode {
 	boolean isBreak();

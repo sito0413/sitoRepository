@@ -1,12 +1,12 @@
-package frameWork.core.viewCompiler.script;
+package frameWork.base.core.viewCompiler.script;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import frameWork.core.viewCompiler.Script;
-import frameWork.core.viewCompiler.ScriptException;
-import frameWork.core.viewCompiler.ScriptsBuffer;
-import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
+import frameWork.base.core.viewCompiler.Script;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.ScriptsBuffer;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
 
 @SuppressWarnings("rawtypes")
 public abstract class SyntaxScript<T extends Bytecode> implements Script<T> {

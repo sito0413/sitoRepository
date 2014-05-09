@@ -1,14 +1,16 @@
-package frameWork.manager;
+package frameWork.developer;
 
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
 
 public class ExcelUtil {
-	
 	public static void setColumnWidth(final Sheet sheet, final int... width) {
 		for (int i = 0; i < width.length; i++) {
 			sheet.setColumnWidth(i, width[i]);
@@ -47,7 +49,7 @@ public class ExcelUtil {
 		}
 	}
 	
-	public static void setParameter(final int i, final int j, final Workbook book, final Sheet sheet,
+	public static void setParameter(final int columnIndex, final int rowIndex, final Workbook book, final Sheet sheet,
 	        final String string, final String connector) {
 		final CellStyle style1 = book.createCellStyle();
 		style1.setBorderTop(CellStyle.BORDER_THIN);
@@ -62,13 +64,20 @@ public class ExcelUtil {
 		style2.setBorderRight(CellStyle.BORDER_THIN);
 		style2.setBorderBottom(CellStyle.BORDER_THIN);
 		
-		final Row row = sheet.createRow(1);
-		final Cell cell1 = row.createCell(1);
-		cell1.setCellValue("cn");
+		final Row row = sheet.createRow(rowIndex);
+		final Cell cell1 = row.createCell(columnIndex);
+		cell1.setCellValue(string);
 		cell1.setCellStyle(style1);
-		final Cell cell2 = row.createCell(2);
+		final Cell cell2 = row.createCell(columnIndex + 1);
 		cell2.setCellValue(connector);
 		cell2.setCellStyle(style2);
 	}
 	
+	public static void setListInput(final int i, final int rowIndex, final Sheet sheet, final String... value) {
+		final CellRangeAddressList addressList = new CellRangeAddressList(rowIndex, -1, i, i);
+		final DVConstraint dvConstraint = DVConstraint.createExplicitListConstraint(value);
+		final HSSFDataValidation dataValidation = new HSSFDataValidation(addressList, dvConstraint);
+		dataValidation.setSuppressDropDownArrow(false);
+		sheet.addValidationData(dataValidation);
+	}
 }

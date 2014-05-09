@@ -1,11 +1,11 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
-import frameWork.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
 
 @SuppressWarnings("rawtypes")
 public class Scope {

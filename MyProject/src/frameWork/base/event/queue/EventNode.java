@@ -1,6 +1,6 @@
-package frameWork.event.queue;
+package frameWork.base.event.queue;
 
-import frameWork.event.Event;
+import frameWork.base.event.Event;
 
 class EventNode {
 	Event item;

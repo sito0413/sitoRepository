@@ -1,7 +1,7 @@
-package frameWork.event.queue;
+package frameWork.base.event.queue;
 
-import frameWork.event.Event;
-import frameWork.event.TimerEvent;
+import frameWork.base.event.Event;
+import frameWork.base.event.TimerEvent;
 
 public class EventQueue {
 	private static Queue QUEUE = new Queue();

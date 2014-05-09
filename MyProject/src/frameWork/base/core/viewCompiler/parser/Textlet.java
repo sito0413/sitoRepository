@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler.parser;
+package frameWork.base.core.viewCompiler.parser;
 
 import java.util.List;
 

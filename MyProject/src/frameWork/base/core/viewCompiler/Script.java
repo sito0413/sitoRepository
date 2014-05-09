@@ -1,6 +1,6 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
-import frameWork.core.viewCompiler.script.Bytecode;
+import frameWork.base.core.viewCompiler.script.Bytecode;
 
 
 public interface Script<T extends Bytecode> {

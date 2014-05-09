@@ -1,4 +1,4 @@
-package frameWork.manager;
+package frameWork.developer;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -23,10 +23,10 @@ import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import frameWork.manager.authority.Authority;
-import frameWork.manager.database.Database;
-import frameWork.manager.info.Info;
-import frameWork.manager.project.Project;
+import frameWork.developer.authority.Authority;
+import frameWork.developer.database.Database;
+import frameWork.developer.info.Info;
+import frameWork.developer.project.Project;
 
 @SuppressWarnings({
         "rawtypes", "unchecked"

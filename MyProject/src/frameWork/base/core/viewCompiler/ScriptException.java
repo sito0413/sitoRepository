@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
 public class ScriptException extends Exception {
 	

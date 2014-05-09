@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -6,29 +6,29 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-import frameWork.core.viewCompiler.parser.Textlet;
-import frameWork.core.viewCompiler.script.SyntaxScript;
-import frameWork.core.viewCompiler.script.syntax.BlockScript;
-import frameWork.core.viewCompiler.script.syntax.BreakScript;
-import frameWork.core.viewCompiler.script.syntax.ContineScript;
-import frameWork.core.viewCompiler.script.syntax.DoScript;
-import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
-import frameWork.core.viewCompiler.script.syntax.ForScript;
-import frameWork.core.viewCompiler.script.syntax.IfScript;
-import frameWork.core.viewCompiler.script.syntax.SwitchScript;
-import frameWork.core.viewCompiler.script.syntax.WhileScript;
-import frameWork.core.viewCompiler.script.syntax.expression.ArrayConstructorScript;
-import frameWork.core.viewCompiler.script.syntax.expression.ArrayScript;
-import frameWork.core.viewCompiler.script.syntax.expression.CallArrayScript;
-import frameWork.core.viewCompiler.script.syntax.expression.CallChainScript;
-import frameWork.core.viewCompiler.script.syntax.expression.CallMethodScript;
-import frameWork.core.viewCompiler.script.syntax.expression.CallObjectScript;
-import frameWork.core.viewCompiler.script.syntax.expression.CastScript;
-import frameWork.core.viewCompiler.script.syntax.expression.ConditionOperatorScript;
-import frameWork.core.viewCompiler.script.syntax.expression.ConstructorScript;
-import frameWork.core.viewCompiler.script.syntax.expression.DeclarationScript;
-import frameWork.core.viewCompiler.script.syntax.expression.InstanceBytecode;
-import frameWork.core.viewCompiler.script.syntax.expression.OperatorScript;
+import frameWork.base.core.viewCompiler.parser.Textlet;
+import frameWork.base.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.script.syntax.BlockScript;
+import frameWork.base.core.viewCompiler.script.syntax.BreakScript;
+import frameWork.base.core.viewCompiler.script.syntax.ContineScript;
+import frameWork.base.core.viewCompiler.script.syntax.DoScript;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+import frameWork.base.core.viewCompiler.script.syntax.ForScript;
+import frameWork.base.core.viewCompiler.script.syntax.IfScript;
+import frameWork.base.core.viewCompiler.script.syntax.SwitchScript;
+import frameWork.base.core.viewCompiler.script.syntax.WhileScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.ArrayConstructorScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.ArrayScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.CallArrayScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.CallChainScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.CallMethodScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.CallObjectScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.CastScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.ConditionOperatorScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.ConstructorScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.DeclarationScript;
+import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.syntax.expression.OperatorScript;
 
 @SuppressWarnings("rawtypes")
 public class ScriptsBuffer {

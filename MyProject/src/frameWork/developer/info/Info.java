@@ -1,4 +1,4 @@
-package frameWork.manager.info;
+package frameWork.developer.info;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import frameWork.manager.SettingPanel;
+import frameWork.developer.SettingPanel;
 
 public class Info extends SettingPanel {
 	private static String FILE_NAME = "./src/info.xml";

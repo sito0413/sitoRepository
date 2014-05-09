@@ -1,4 +1,4 @@
-package frameWork.database.connector.pool;
+package frameWork.base.database.connector.pool;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,10 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 
-import frameWork.ThrowableUtil;
-import frameWork.database.connector.DatabaseController;
+import frameWork.base.database.connector.DatabaseConnector;
+import frameWork.base.util.ThrowableUtil;
 
-class ConnectorImp implements DatabaseController {
+class ConnectorImp implements DatabaseConnector {
 	private final Connection connection;
 	private Statement statement;
 	private ResultSet resultSet;
@@ -53,23 +53,7 @@ class ConnectorImp implements DatabaseController {
 	}
 	
 	@Override
-	public synchronized void commit() throws SQLException {
-		connection.commit();
-	}
-	
-	@Override
-	public synchronized void rollback() throws SQLException {
-		connection.rollback();
-	}
-	
-	@Override
 	public synchronized void close() {
-		try {
-			connection.rollback();
-		}
-		catch (final SQLException e) {
-			//NOOP
-		}
 		try {
 			if (resultSet != null) {
 				try {

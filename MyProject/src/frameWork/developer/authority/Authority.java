@@ -1,4 +1,4 @@
-package frameWork.manager.authority;
+package frameWork.developer.authority;
 
 import java.awt.Desktop;
 import java.awt.FlowLayout;
@@ -21,9 +21,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import frameWork.manager.ExcelUtil;
-import frameWork.manager.SettingPanel;
-import frameWork.manager.SrcUtil;
+import frameWork.developer.ExcelUtil;
+import frameWork.developer.SettingPanel;
+import frameWork.developer.SrcUtil;
 
 public class Authority extends SettingPanel {
 	private static final String FILE_NAME = "authority/権限.xls";

@@ -1,10 +1,10 @@
-package frameWork.core.viewCompiler.script.syntax;
+package frameWork.base.core.viewCompiler.script.syntax;
 
-import frameWork.core.viewCompiler.Scope;
-import frameWork.core.viewCompiler.Script;
-import frameWork.core.viewCompiler.ScriptException;
-import frameWork.core.viewCompiler.script.Bytecode;
-import frameWork.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.Script;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.Bytecode;
+import frameWork.base.core.viewCompiler.script.SyntaxScript;
 
 @SuppressWarnings("rawtypes")
 public class WhileScript extends SyntaxScript<Bytecode> {

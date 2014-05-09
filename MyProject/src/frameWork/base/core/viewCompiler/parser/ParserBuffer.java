@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler.parser;
+package frameWork.base.core.viewCompiler.parser;
 
 import java.io.CharArrayWriter;
 import java.nio.CharBuffer;
@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import frameWork.core.fileSystem.FileSystem;
-import frameWork.core.state.Response;
-import frameWork.core.viewCompiler.Scope;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.Response;
+import frameWork.base.core.viewCompiler.Scope;
 
 public class ParserBuffer {
 	private final CharBuffer charBuffer;

@@ -1,4 +1,4 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
 import java.io.CharArrayWriter;
 import java.io.File;
@@ -10,11 +10,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.CharBuffer;
 
-import frameWork.ThrowableUtil;
-import frameWork.core.fileSystem.FileSystem;
-import frameWork.core.state.Response;
-import frameWork.core.state.State;
-import frameWork.core.viewCompiler.parser.ParserBuffer;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.Response;
+import frameWork.base.core.state.State;
+import frameWork.base.core.viewCompiler.parser.ParserBuffer;
+import frameWork.base.util.ThrowableUtil;
 
 public class ViewCompiler {
 	public static void compile(final Response response, final State state) {

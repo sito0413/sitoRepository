@@ -1,4 +1,4 @@
-package frameWork.database.connector.pool;
+package frameWork.base.database.connector.pool;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
@@ -7,36 +7,26 @@ import java.sql.Connection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import frameWork.ThrowableUtil;
-import frameWork.database.connector.DatabaseConnector;
-import frameWork.database.connector.DatabaseController;
+import frameWork.base.database.connector.DatabaseConnector;
+import frameWork.base.util.ThrowableUtil;
 
 public class ConnectorPool {
 	private static int CAPACITY = 100;
-	private final DatabaseConnector key;
+	private final String name;
 	private final ConcurrentLinkedQueue<PooledConnection> busy;
 	private final ArrayBlockingQueue<PooledConnection> idle;
 	private Constructor<?> proxyClassConstructor;
 	
-	public ConnectorPool(final DatabaseConnector key) {
-		if (key != null) {
-			this.key = key;
-			this.busy = new ConcurrentLinkedQueue<>();
-			this.idle = new ArrayBlockingQueue<>(CAPACITY, true);
-			try {
-				this.proxyClassConstructor = Proxy
-				        .getProxyClass(ConnectorPool.class.getClassLoader(), Connection.class).getConstructor(
-				                InvocationHandler.class);
-			}
-			catch (NoSuchMethodException | SecurityException | IllegalArgumentException e) {
-				ThrowableUtil.throwable(e);
-			}
+	public ConnectorPool(final String name) {
+		this.name = name;
+		this.busy = new ConcurrentLinkedQueue<>();
+		this.idle = new ArrayBlockingQueue<>(CAPACITY, true);
+		try {
+			this.proxyClassConstructor = Proxy.getProxyClass(ConnectorPool.class.getClassLoader(), Connection.class)
+			        .getConstructor(InvocationHandler.class);
 		}
-		else {
-			this.key = null;
-			this.busy = null;
-			this.idle = null;
-			this.proxyClassConstructor = null;
+		catch (NoSuchMethodException | SecurityException | IllegalArgumentException e) {
+			ThrowableUtil.throwable(e);
 		}
 	}
 	
@@ -49,19 +39,16 @@ public class ConnectorPool {
 		}
 	}
 	
-	public DatabaseController getConnector() {
-		if (key != null) {
-			try {
-				final PooledConnection con = borrowConnection();
-				return new ConnectorImp((Connection) proxyClassConstructor.newInstance(new DisposableConnectionFacade(
-				        con.getHandler(this))));
-			}
-			catch (final Exception e) {
-				ThrowableUtil.throwable(e);
-				return null;
-			}
+	public DatabaseConnector getConnector() {
+		try {
+			final PooledConnection con = borrowConnection();
+			return new ConnectorImp((Connection) proxyClassConstructor.newInstance(new DisposableConnectionFacade(con
+			        .getHandler(this))));
 		}
-		return null;
+		catch (final Exception e) {
+			ThrowableUtil.throwable(e);
+			return null;
+		}
 	}
 	
 	private PooledConnection borrowConnection() {
@@ -71,7 +58,7 @@ public class ConnectorPool {
 				if (con != null) {
 					con.release();
 				}
-				con = new PooledConnection(key);
+				con = new PooledConnection(name);
 			}
 			busy.offer(con);
 			return con;

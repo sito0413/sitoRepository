@@ -1,7 +1,7 @@
-package frameWork.event.timerEvent;
+package frameWork.base.event.timerEvent;
 
-import frameWork.event.Event;
-import frameWork.event.TimerEvent;
+import frameWork.base.event.Event;
+import frameWork.base.event.TimerEvent;
 
 public class CallTimerEvent implements Event {
 	private final TimerEvent timerEvent;

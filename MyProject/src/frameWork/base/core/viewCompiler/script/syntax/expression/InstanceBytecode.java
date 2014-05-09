@@ -1,9 +1,9 @@
-package frameWork.core.viewCompiler.script.syntax.expression;
+package frameWork.base.core.viewCompiler.script.syntax.expression;
 
-import frameWork.core.viewCompiler.Scope;
-import frameWork.core.viewCompiler.ScriptException;
-import frameWork.core.viewCompiler.script.Bytecode;
-import frameWork.core.viewCompiler.script.syntax.ExpressionScript;
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.Bytecode;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
 
 @SuppressWarnings("rawtypes")
 public class InstanceBytecode extends ExpressionScript implements Bytecode {

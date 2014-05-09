@@ -1,4 +1,4 @@
-package frameWork.core.authority;
+package frameWork.base.core.authority;
 
 import java.lang.reflect.Method;
 

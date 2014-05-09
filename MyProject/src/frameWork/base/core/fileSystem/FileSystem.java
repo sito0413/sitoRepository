@@ -1,4 +1,4 @@
-package frameWork.core.fileSystem;
+package frameWork.base.core.fileSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,35 +6,7 @@ import java.net.URLConnection;
 import java.util.Properties;
 
 public class FileSystem {
-	public static class Temp extends FileElement {
-		public static class UploadDir extends FileElement {
-			public UploadDir(final File root) {
-				super(root, "_uploadDir");
-			}
-			
-			public File getUploadfile(final String fileName) throws IOException {
-				return File.createTempFile("upload", "." + fileName, this);
-			}
-		}
-		
-		public final UploadDir UploadDir;
-		
-		public Temp(final File root) {
-			super(root, "temp");
-			UploadDir = new UploadDir(this);
-		}
-	}
-	
-	public static class Resource extends FileElement {
-		public Resource(final File root) {
-			super(root, "resource");
-		}
-		
-		public File getResource(final String target) {
-			return new File(this, target);
-		}
-	}
-	
+	public static final String SystemID;
 	static final File Root;
 	public static Temp Temp;
 	public static FileElement Data;
@@ -43,6 +15,7 @@ public class FileSystem {
 	public static Config Config;
 	static {
 		File dir;
+		String systemIDString = "Temp";
 		try {
 			File path;
 			final Properties properties = new Properties();
@@ -63,7 +36,7 @@ public class FileSystem {
 			else {
 				path = new File(new File("").getAbsolutePath());
 			}
-			final String systemIDString = properties.getProperty("SystemID");
+			systemIDString = properties.getProperty("SystemID");
 			if (systemIDString != null) {
 				dir = new File(path, systemIDString);
 				if (dir.exists() && dir.isFile()) {
@@ -89,6 +62,7 @@ public class FileSystem {
 				dir.mkdirs();
 			}
 		}
+		SystemID = systemIDString;
 		Root = dir;
 		Temp = new Temp(Root);
 		Data = new FileElement(Root, "data");

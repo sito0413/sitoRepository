@@ -1,10 +1,10 @@
-package frameWork.core.viewCompiler;
+package frameWork.base.core.viewCompiler;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import frameWork.core.fileSystem.FileSystem;
+import frameWork.base.core.fileSystem.FileSystem;
 
 public class ViewerWriter {
 	private static final int INIT_SIZE = 5012;

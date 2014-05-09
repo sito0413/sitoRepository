@@ -1,4 +1,4 @@
-package frameWork.manager.project;
+package frameWork.developer.project;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -14,9 +14,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import frameWork.manager.SettingPanel;
-import frameWork.manager.authority.Authority;
-import frameWork.manager.database.Database;
+import frameWork.developer.SettingPanel;
+import frameWork.developer.authority.Authority;
+import frameWork.developer.database.Database;
 
 public class Project extends SettingPanel {
 	private JCheckBox authority;

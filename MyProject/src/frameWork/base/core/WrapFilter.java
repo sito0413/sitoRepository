@@ -1,4 +1,4 @@
-package frameWork.core;
+package frameWork.base.core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,13 +18,14 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 
-import frameWork.ThrowableUtil;
-import frameWork.core.authority.AuthorityChecker;
-import frameWork.core.fileSystem.FileSystem;
-import frameWork.core.state.Response;
-import frameWork.core.state.State;
-import frameWork.core.targetFilter.TargetFilter;
-import frameWork.core.viewCompiler.ViewCompiler;
+import frameWork.base.core.authority.AuthorityChecker;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.Response;
+import frameWork.base.core.state.State;
+import frameWork.base.core.targetFilter.Target;
+import frameWork.base.core.targetFilter.TargetFilter;
+import frameWork.base.core.viewCompiler.ViewCompiler;
+import frameWork.base.util.ThrowableUtil;
 
 @WebFilter("/*")
 @WebListener
@@ -32,17 +33,17 @@ public class WrapFilter implements Filter, ServletContextListener {
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 	        throws IOException, ServletException {
-		final String target = ((HttpServletRequest) request).getRequestURI();
+		final String requestURI = ((HttpServletRequest) request).getRequestURI();
 		final Response respons = new Response(response);
 		final String method = ((HttpServletRequest) request).getMethod();
 		final State state = new State((HttpServletRequest) request);
 		try {
-			final TargetFilter targetFilter = TargetFilter.parse(target, method.toLowerCase());
-			if (targetFilter == null) {
-				response(FileSystem.Resource.getResource(target), respons.getOutputStream());
+			final Target target = TargetFilter.parse(requestURI, method.toLowerCase());
+			if (target == null) {
+				response(FileSystem.Resource.getResource(requestURI), respons.getOutputStream());
 			}
-			else if (AuthorityChecker.check(targetFilter.className, targetFilter.methodName, state.auth())) {
-				if (targetFilter.invoke(state)) {
+			else if (AuthorityChecker.check(target.className, target.methodName, state.auth())) {
+				if (target.invoke(state)) {
 					ViewCompiler.compile(respons, state);
 				}
 				else {
@@ -61,7 +62,7 @@ public class WrapFilter implements Filter, ServletContextListener {
 			chain.doFilter(request, response);
 		}
 	}
-
+	
 	private void response(final File resource, final OutputStream outputStream) {
 		if (resource != null) {
 			try (InputStream inputStream = new FileInputStream(resource)) {
@@ -78,22 +79,22 @@ public class WrapFilter implements Filter, ServletContextListener {
 			}
 		}
 	}
-
+	
 	@Override
 	public void contextInitialized(final ServletContextEvent event) {
 		// NOOP
 	}
-
+	
 	@Override
 	public void destroy() {
 		// NOOP
 	}
-
+	
 	@Override
 	public void init(final FilterConfig fConfig) throws ServletException {
 		// NOOP
 	}
-
+	
 	@Override
 	public void contextDestroyed(final ServletContextEvent Filter) {
 		// NOOP
