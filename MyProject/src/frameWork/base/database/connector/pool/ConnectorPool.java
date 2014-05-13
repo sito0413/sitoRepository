@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.database.connector.DatabaseConnector;
-import frameWork.base.util.ThrowableUtil;
 
 public class ConnectorPool {
 	private final String name;
@@ -26,7 +25,7 @@ public class ConnectorPool {
 			        .getConstructor(InvocationHandler.class);
 		}
 		catch (NoSuchMethodException | SecurityException | IllegalArgumentException e) {
-			ThrowableUtil.throwable(e);
+			FileSystem.Log.logging(e);
 		}
 	}
 	
@@ -46,7 +45,7 @@ public class ConnectorPool {
 			        .getHandler(this))));
 		}
 		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
+			FileSystem.Log.logging(e);
 			return null;
 		}
 	}
@@ -64,7 +63,7 @@ public class ConnectorPool {
 			return con;
 		}
 		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
+			FileSystem.Log.logging(e);
 			return null;
 		}
 	}

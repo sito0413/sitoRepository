@@ -2,6 +2,7 @@ package frameWork.base.database.scheme;
 
 import java.sql.SQLException;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.database.connector.DatabaseConnector;
 import frameWork.base.database.connector.pool.ConnectorPool;
 import frameWork.base.database.sql.SQLBuilder;
@@ -35,7 +36,7 @@ public abstract class Database {
 			}
 		}
 		catch (final SQLException e) {
-			e.printStackTrace();
+			FileSystem.Log.logging(e);
 		}
 		
 	}
@@ -55,7 +56,7 @@ public abstract class Database {
 			}
 		}
 		catch (final SQLException e) {
-			e.printStackTrace();
+			FileSystem.Log.logging(e);
 		}
 		
 	}

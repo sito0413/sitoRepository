@@ -3,6 +3,7 @@ package frameWork.base.core.targetFilter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.state.State;
 
 public class Target {
@@ -26,6 +27,7 @@ public class Target {
 		}
 		catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException
 		        | InstantiationException e) {
+			FileSystem.Log.logging(e);
 			return false;
 		}
 	}

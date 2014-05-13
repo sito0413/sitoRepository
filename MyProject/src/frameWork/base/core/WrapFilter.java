@@ -2,6 +2,7 @@ package frameWork.base.core;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,47 +22,62 @@ import frameWork.base.core.state.Response;
 import frameWork.base.core.state.State;
 import frameWork.base.core.targetFilter.Target;
 import frameWork.base.core.targetFilter.TargetFilter;
+import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ViewCompiler;
-import frameWork.base.util.ThrowableUtil;
 
 @WebFilter("/*")
 public class WrapFilter implements Filter {
 	private boolean isMultipartContent;
 	
 	@Override
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+	public void doFilter(final ServletRequest request, final ServletResponse res, final FilterChain chain)
 	        throws IOException, ServletException {
-		final String requestURI = ((HttpServletRequest) request).getRequestURI();
-		final Response respons = new Response(response);
-		final String method = ((HttpServletRequest) request).getMethod();
+		final Response response = new Response(res);
 		final State state = new State((HttpServletRequest) request, isMultipartContent);
 		try {
-			final Target target = TargetFilter.parse(requestURI, method.toLowerCase());
-			if (target == null) {
-				response(FileSystem.Resource.getResource(requestURI), respons.getOutputStream());
-			}
-			else if (AuthorityChecker.check(target.className, target.methodName, state.getAuth())) {
-				if (target.invoke(state)) {
-					ViewCompiler.compile(respons, state);
+			if (!response(request, res, chain, ((HttpServletRequest) request).getRequestURI(),
+			        ((HttpServletRequest) request).getMethod().toLowerCase(), response, state)) {
+				if (!response(request, res, chain, FileSystem.Config.LOGIN_PATH, "get", response, state)) {
+					chain.doFilter(request, res);
 				}
-				else {
-					response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
-				}
-			}
-			else {
-				response(FileSystem.Resource.getResource(state.getPage()), respons.getOutputStream());
 			}
 		}
 		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
-			chain.doFilter(request, response);
-		}
-		if (!response.isCommitted()) {
-			chain.doFilter(request, response);
+			FileSystem.Log.logging(e);
+			chain.doFilter(request, res);
 		}
 	}
 	
-	private void response(final File resource, final OutputStream outputStream) {
+	private boolean response(final ServletRequest request, final ServletResponse res, final FilterChain chain,
+	        final String requestURI, final String method, final Response response, final State state)
+	        throws FileNotFoundException, IOException, ServletException, ScriptException {
+		final Target target = TargetFilter.parse(requestURI, method);
+		if (target == null) {
+			if (!response(FileSystem.Resource.getResource(requestURI), response.getOutputStream())) {
+				chain.doFilter(request, res);
+			}
+			return true;
+		}
+		else if (AuthorityChecker.check(target.className, target.methodName, state.getAuth())) {
+			if (target.invoke(state)) {
+				ViewCompiler.compile(response, state);
+			}
+			else if (!response(FileSystem.Data.getResource(state.getPage()), response.getOutputStream())) {
+				chain.doFilter(request, res);
+			}
+			return true;
+		}
+		else if (state.getRequest().getAttribute(FileSystem.Config.CALL_REQUEST_URI) == null) {
+			state.getRequest().setAttribute(FileSystem.Config.CALL_REQUEST_URI, target);
+			return false;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private boolean response(final File resource, final OutputStream outputStream) throws FileNotFoundException,
+	        IOException {
 		if (resource != null) {
 			try (InputStream inputStream = new FileInputStream(resource)) {
 				int i = -1;
@@ -72,10 +88,9 @@ public class WrapFilter implements Filter {
 				outputStream.flush();
 				outputStream.close();
 			}
-			catch (final IOException e) {
-				ThrowableUtil.throwable(e);
-			}
+			return true;
 		}
+		return false;
 	}
 	
 	@Override
@@ -85,7 +100,6 @@ public class WrapFilter implements Filter {
 	
 	@Override
 	public void init(final FilterConfig fConfig) throws ServletException {
-		// NOOP
 		try {
 			Class.forName("org.apache.commons.fileupload.FileItem");
 			Class.forName("org.apache.commons.fileupload.disk.DiskFileItemFactory");

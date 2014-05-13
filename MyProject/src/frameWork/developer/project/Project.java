@@ -18,6 +18,7 @@ import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.developer.SettingPanel;
 import frameWork.developer.authority.Authority;
 import frameWork.developer.database.Database;
+import frameWork.developer.info.Info;
 
 public class Project extends SettingPanel {
 	private JCheckBox authority;
@@ -100,6 +101,7 @@ public class Project extends SettingPanel {
 	private void create() {
 		new File("src").mkdirs();
 		new File("src/" + FileSystem.Config.PACKAGE_NAME).mkdirs();
+		Info.createFile();
 		if (authority.isSelected()) {
 			Authority.createFile();
 		}

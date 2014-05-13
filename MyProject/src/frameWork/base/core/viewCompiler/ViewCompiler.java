@@ -14,10 +14,9 @@ import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.state.Response;
 import frameWork.base.core.state.State;
 import frameWork.base.core.viewCompiler.parser.ParserBuffer;
-import frameWork.base.util.ThrowableUtil;
 
 public class ViewCompiler {
-	public static void compile(final Response response, final State state) {
+	public static void compile(final Response response, final State state) throws IOException, ScriptException {
 		try (final OutputStream responseOutputStream = response.getOutputStream()) {
 			final File targetFile = new File(FileSystem.Viewer, state.getPage().substring(1));
 			if (targetFile.exists()) {
@@ -33,13 +32,10 @@ public class ViewCompiler {
 				out.writeTo(responseOutputStream);
 			}
 		}
-		catch (final Throwable e) {
-			response.setContentLength(0);
-			ThrowableUtil.throwable(e);
-		}
 	}
 	
-	protected static void parse(final File targetFile, final Response response, final Scope scope) throws Throwable {
+	protected static void parse(final File targetFile, final Response response, final Scope scope)
+	        throws ScriptException, FileNotFoundException, IOException {
 		try (final CharArrayWriter writer = new CharArrayWriter()) {
 			final ScriptsBuffer scriptsBuffer = new ScriptsBuffer(
 			        new ParserBuffer(createCharBuffer(targetFile, writer)).toTextlets(scope, response));

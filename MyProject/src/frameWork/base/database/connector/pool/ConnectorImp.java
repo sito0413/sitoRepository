@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 
+import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.database.connector.DatabaseConnector;
-import frameWork.base.util.ThrowableUtil;
 
 class ConnectorImp implements DatabaseConnector {
 	private final Connection connection;
@@ -93,7 +93,7 @@ class ConnectorImp implements DatabaseConnector {
 			return ((resultSet != null) && resultSet.next());
 		}
 		catch (final SQLException e) {
-			ThrowableUtil.throwable(e);
+			FileSystem.Log.logging(e);
 			return false;
 		}
 	}

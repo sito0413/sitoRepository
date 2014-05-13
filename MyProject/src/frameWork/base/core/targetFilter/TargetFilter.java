@@ -20,7 +20,7 @@ public class TargetFilter {
 			}
 		}
 		catch (final ClassNotFoundException | NoSuchMethodException e) {
-			//NOOP
+			FileSystem.Log.logging(e);
 		}
 		return null;
 	}

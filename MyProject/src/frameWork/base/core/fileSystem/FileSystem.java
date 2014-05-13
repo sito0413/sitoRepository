@@ -9,10 +9,12 @@ public class FileSystem {
 	public static final String SystemID;
 	static final File Root;
 	public static Temp Temp;
-	public static FileElement Data;
+	public static FileElement Database;
+	public static Resource Data;
 	public static FileElement Viewer;
 	public static Resource Resource;
 	public static Config Config;
+	public static Log Log;
 	static {
 		File dir;
 		String systemIDString = "Temp";
@@ -65,9 +67,11 @@ public class FileSystem {
 		SystemID = systemIDString;
 		Root = dir;
 		Temp = new Temp(Root);
-		Data = new FileElement(Root, "data");
+		Database = new FileElement(Root, "database");
+		Data = new Resource(Root, "data");
 		Viewer = new FileElement(Root, "viewer");
-		Resource = new Resource(Root);
+		Resource = new Resource(Root, "resource");
 		Config = new Config(Root);
+		Log = new Log(Root);
 	}
 }

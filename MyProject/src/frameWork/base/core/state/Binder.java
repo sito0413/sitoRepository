@@ -2,7 +2,7 @@ package frameWork.base.core.state;
 
 import java.lang.reflect.Field;
 
-import frameWork.base.util.ThrowableUtil;
+import frameWork.base.core.fileSystem.FileSystem;
 
 public class Binder {
 	public void bind(final State state, final Object obj) {
@@ -41,7 +41,7 @@ public class Binder {
 						}
 					}
 					catch (final Exception e) {
-						ThrowableUtil.throwable(e);
+						FileSystem.Log.logging(e);
 					}
 					if (value != null) {
 						field.setAccessible(true);
@@ -51,8 +51,7 @@ public class Binder {
 			}
 		}
 		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
+			FileSystem.Log.logging(e);
 		}
 	}
-	
 }

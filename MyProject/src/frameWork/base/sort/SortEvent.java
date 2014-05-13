@@ -1,6 +1,6 @@
 package frameWork.base.sort;
 
-import frameWork.base.event.Event;
+import frameWork.base.core.event.Event;
 
 class SortEvent implements Event {
 	final Sort sort;

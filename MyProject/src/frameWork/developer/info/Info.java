@@ -21,6 +21,17 @@ import javax.swing.JTextField;
 import frameWork.developer.SettingPanel;
 
 public class Info extends SettingPanel {
+	public static void createFile() {
+		final Properties properties = new Properties();
+		properties.setProperty("Path", "C:/newwave/_system");
+		try (FileOutputStream os = new FileOutputStream(FILE_NAME)) {
+			properties.storeToXML(os, "");
+		}
+		catch (final IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
 	private static String FILE_NAME = "./src/info.xml";
 	private JTextField textField;
 	private JTextField txtCnewwavesystem;
@@ -70,7 +81,6 @@ public class Info extends SettingPanel {
 				gbc_txtCnewwavesystem.gridx = 1;
 				gbc_txtCnewwavesystem.gridy = 0;
 				this.panel.add(this.txtCnewwavesystem, gbc_txtCnewwavesystem);
-				this.txtCnewwavesystem.setText("C:/newwave/_system");
 			}
 			{
 				this.lblSdystemId = new JLabel("SYSTEM ID");
@@ -152,4 +162,5 @@ public class Info extends SettingPanel {
 	public String getListName() {
 		return "Info作成";
 	}
+	
 }

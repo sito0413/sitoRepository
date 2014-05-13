@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import frameWork.base.core.fileSystem.FileSystem;
-import frameWork.base.util.ThrowableUtil;
 
 class PooledConnection {
 	private final Driver driver;
@@ -44,7 +43,7 @@ class PooledConnection {
 			this.isDiscarded = false;
 		}
 		catch (final Exception e) {
-			ThrowableUtil.throwable(e);
+			FileSystem.Log.logging(e);
 		}
 	}
 	
@@ -57,7 +56,7 @@ class PooledConnection {
 				c.close();
 			}
 			catch (final Exception e) {
-				ThrowableUtil.throwable(e);
+				FileSystem.Log.logging(e);
 			}
 		}
 	}
@@ -89,7 +88,7 @@ class PooledConnection {
 				return true;
 			}
 			catch (final Exception e) {
-				ThrowableUtil.throwable(e);
+				FileSystem.Log.logging(e);
 			}
 		}
 		disconnect();
