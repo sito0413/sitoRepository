@@ -1,4 +1,4 @@
-package frameWork.base.util;
+package frameWork.base;
 
 public class HttpStatus {
 	public final static int NOT_SET_000 = 0;

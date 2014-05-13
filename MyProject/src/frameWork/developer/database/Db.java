@@ -16,10 +16,15 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import frameWork.developer.ExcelUtil;
-import frameWork.developer.SrcUtil;
+import frameWork.architect.ExcelUtil;
+import frameWork.architect.Literal;
+import frameWork.architect.SrcUtil;
+import frameWork.base.database.DatabaseManager;
 
 public class Db {
+	private static final String databases = "databases";
+	private static final String database = "database";
+	private static final String create = "create";
 	private static String FILE_NAME = "/データベース.xls";
 	private static String SHEET_NAME = "データベース";
 	private static int ROW_INDEX = 2;
@@ -46,48 +51,52 @@ public class Db {
 	}
 	
 	public static void createJavaFile() {
-		new File("src/frameWork/base/database").mkdirs();
-		try (final PrintWriter printWriter = new PrintWriter(new File(
-		        "src/frameWork/base/database/DatabaseManager.java"))) {
-			printWriter.println("package frameWork.base.database;");
+		new File(Literal.src + "/" + DatabaseManager.class.getPackage().getName().replace(".", "/")).mkdirs();
+		try (final PrintWriter printWriter = new PrintWriter(new File(Literal.src + "/"
+		        + DatabaseManager.class.getCanonicalName().replace(".", "/") + ".java"))) {
+			printWriter.println("package " + DatabaseManager.class.getPackage().getName() + ";");
 			printWriter.println("");
 			
-			printWriter.println("import java.math.BigDecimal;");
-			printWriter.println("import java.math.BigInteger;");
-			final List<Db> databases = Db.getDatabase();
-			for (final Db database : databases) {
-				final List<Table> tables = Table.getTable(database.name);
+			final List<Db> dbs = Db.getDatabase();
+			boolean flg = true;
+			for (final Db db : dbs) {
+				final List<Table> tables = Table.getTable(db.name);
+				flg &= tables.isEmpty();
 				for (final Table table : tables) {
-					printWriter.println("import frameWork.base.database.DatabaseManager." + database.name + "."
-					        + table.name + "." + table.name + "Row;");
+					printWriter.println("import " + DatabaseManager.class.getCanonicalName() + "." + db.name + "."
+					        + table.name + "." + table.name + frameWork.base.database.scheme.Row.class.getSimpleName()
+					        + ";");
 				}
 			}
-			printWriter.println("import frameWork.base.database.scheme.*;");
 			
 			printWriter.println("");
 			printWriter.println(SrcUtil.getComment(Database.ROOT + "配下のファイル群"));
-			printWriter.println("@SuppressWarnings(\"hiding\")");
-			printWriter.println("public final class DatabaseManager{");
-			for (final Db database : databases) {
-				database.createClass(printWriter);
+			if (!flg) {
+				printWriter.println("@SuppressWarnings(\"hiding\")");
 			}
-			for (final Db database : databases) {
+			printWriter.println("public final class " + DatabaseManager.class.getSimpleName() + "{");
+			for (final Db db : dbs) {
+				db.createClass(printWriter);
+			}
+			for (final Db db : dbs) {
 				printWriter.println("\t/**");
-				printWriter.println("\t * " + database.subName);
+				printWriter.println("\t * " + db.subName);
 				printWriter.println("\t */");
-				printWriter.println("\tpublic static final " + database.name + " " + database.name + " = new "
-				        + database.name + "();");
+				printWriter.println("\tpublic static final " + db.name + " " + db.name + " = new " + db.name + "();");
 				printWriter.println("");
 			}
-			printWriter.println("\tpublic static final Database[] databases = new Database[]{");
-			for (final Db database : databases) {
-				printWriter.println("\t\t" + database.name + ",");
+			printWriter.println("\tpublic static final "
+			        + frameWork.base.database.scheme.Database.class.getCanonicalName() + "[] " + databases + " = new "
+			        + frameWork.base.database.scheme.Database.class.getCanonicalName() + "[]{");
+			for (final Db db : dbs) {
+				printWriter.println("\t\t" + db.name + ",");
 			}
 			printWriter.println("\t};");
 			
-			printWriter.println("\tpublic final void create() {");
-			printWriter.println("\t\tfor (final Database database : databases) {");
-			printWriter.println("\t\t\tdatabase.create();");
+			printWriter.println("\tpublic final void " + create + "() {");
+			printWriter.println("\t\tfor (final " + frameWork.base.database.scheme.Database.class.getCanonicalName()
+			        + " " + database + " : " + databases + ") {");
+			printWriter.println("\t\t\t" + database + "." + create + "();");
 			printWriter.println("\t\t}");
 			printWriter.println("\t}");
 			
@@ -104,7 +113,8 @@ public class Db {
 		printWriter.println("\t/**");
 		printWriter.println("\t * " + subName);
 		printWriter.println("\t */");
-		printWriter.println("\tpublic static final class " + name + " extends Database{");
+		printWriter.println("\tpublic static final class " + name + " extends "
+		        + frameWork.base.database.scheme.Database.class.getCanonicalName() + "{");
 		printWriter.println("\t\t" + name + "(){");
 		printWriter.println("\t\t\tsuper(\"" + name + "\");");
 		printWriter.println("\t\t}");
@@ -121,8 +131,10 @@ public class Db {
 		}
 		
 		printWriter.println("\t\t@Override");
-		printWriter.println("\t\tpublic final Table<?>[] getTables(){");
-		printWriter.println("\t\t\treturn new Table<?>[]{");
+		printWriter.println("\t\tpublic final " + frameWork.base.database.scheme.Table.class.getCanonicalName()
+		        + "<?>[] getTables(){");
+		printWriter.println("\t\t\treturn new " + frameWork.base.database.scheme.Table.class.getCanonicalName()
+		        + "<?>[]{");
 		for (final Table table : tables) {
 			printWriter.println("\t\t\t\t" + table.name + ",");
 		}
@@ -146,10 +158,10 @@ public class Db {
 						final Row row = sheet.getRow(rowIndex);
 						if (!row.getCell(2).getStringCellValue().isEmpty()
 						        && hashSet.add(row.getCell(2).getStringCellValue())) {
-							final Db database = new Db(row.getCell(2).getStringCellValue(), row.getCell(3)
+							final Db db = new Db(row.getCell(2).getStringCellValue(), row.getCell(3)
 							        .getStringCellValue());
-							c.add(database);
-							Table.createFile(database.name);
+							c.add(db);
+							Table.createFile(db.name);
 						}
 						else {
 							break;

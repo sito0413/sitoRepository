@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import frameWork.base.core.authority.Authority;
 import frameWork.base.core.authority.AuthorityChecker;
-import frameWork.base.core.authority.Role;
 
 public class AuthorityCheckerTest {
 	static class TestClass1 {

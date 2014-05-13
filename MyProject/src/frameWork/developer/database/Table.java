@@ -16,10 +16,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import frameWork.architect.ExcelUtil;
 import frameWork.base.database.scheme.Type;
-import frameWork.developer.ExcelUtil;
 
 public class Table {
+	private static final String id = "id";
+	private static final String getFields = "getFields";
+	private static final String createRow = "createRow";
+	
 	private static String FILE_NAME = "/テーブル.xls";
 	private static String SHEET_NAME = "テーブル";
 	private static int ROW_INDEX = 3;
@@ -52,7 +56,9 @@ public class Table {
 		printWriter.println("\t\t/**");
 		printWriter.println("\t\t * " + subName);
 		printWriter.println("\t\t */");
-		printWriter.println("\t\tpublic static final class " + name + " extends Table<" + name + "Row >{");
+		printWriter.println("\t\tpublic static final class " + name + " extends "
+		        + frameWork.base.database.scheme.Table.class.getCanonicalName() + "<" + name
+		        + frameWork.base.database.scheme.Row.class.getSimpleName() + " >{");
 		printWriter.println("\t\t\t" + name + "(){");
 		printWriter.println("\t\t\t\tsuper(\"" + database + "\", \"" + name + "\");");
 		printWriter.println("\t\t\t}");
@@ -61,10 +67,11 @@ public class Table {
 		printWriter.println("\t\t\t/**");
 		printWriter.println("\t\t\t * " + subName);
 		printWriter.println("\t\t\t */");
-		printWriter.println("\t\t\tpublic static final class id extends Field<Integer>{");
+		printWriter.println("\t\t\tpublic static final class id extends "
+		        + frameWork.base.database.scheme.Field.class.getCanonicalName() + "<" + Type.INTEGER.getType() + ">{");
 		printWriter.println("\t\t\t\tid(){");
-		printWriter.println("\t\t\t\t\tsuper(\"" + database + "\", \"" + name + "\", \"id\", true, Type."
-		        + Type.INTEGER + ", false, true, \"0\");");
+		printWriter.println("\t\t\t\t\tsuper(\"" + database + "\", \"" + name + "\", \"id\", true, "
+		        + Type.class.getCanonicalName() + "." + Type.INTEGER + ", false, true, \"0\");");
 		printWriter.println("\t\t\t\t}");
 		printWriter.println("\t\t\t}");
 		
@@ -72,11 +79,13 @@ public class Table {
 			field.createClass(database, name, printWriter);
 		}
 		
-		printWriter.println("\t\t\tpublic static final class " + name + "Row extends Row{");
+		printWriter.println("\t\t\tpublic static final class " + name
+		        + frameWork.base.database.scheme.Row.class.getSimpleName() + " extends "
+		        + frameWork.base.database.scheme.Row.class.getCanonicalName() + "{");
 		printWriter.println("\t\t\t\t/**");
-		printWriter.println("\t\t\t\t * id");
+		printWriter.println("\t\t\t\t * " + id);
 		printWriter.println("\t\t\t\t */");
-		printWriter.println("\t\t\t\tpublic static final id id = new id();");
+		printWriter.println("\t\t\t\tpublic static final " + id + " " + id + " = new " + id + "();");
 		for (final Field field : fields) {
 			printWriter.println("\t\t\t\t/**");
 			printWriter.println(field.subName);
@@ -86,18 +95,20 @@ public class Table {
 		}
 		
 		printWriter.println("\t\t\t\t@Override");
-		printWriter.println("\t\t\t\tpublic final Field<?>[] getFields(){");
-		printWriter.println("\t\t\t\t\treturn new Field<?>[]{");
-		printWriter.println("\t\t\t\t\t\tid,");
+		printWriter.println("\t\t\t\tpublic final " + frameWork.base.database.scheme.Field.class.getCanonicalName()
+		        + "<?>[] " + getFields + "(){");
+		printWriter.println("\t\t\t\t\treturn new " + frameWork.base.database.scheme.Field.class.getCanonicalName()
+		        + "<?>[]{");
+		printWriter.println("\t\t\t\t\t\t" + id + ", ");
 		for (final Field field : fields) {
-			printWriter.println("\t\t\t\t\t\t" + field.name + ",");
+			printWriter.println("\t\t\t\t\t\t" + field.name + ", ");
 		}
 		printWriter.println("\t\t\t\t\t};");
 		printWriter.println("\t\t\t\t}");
 		printWriter.println("\t\t\t}");
 		
-		printWriter.println("\t\t\t/**id*/");
-		printWriter.println("\t\t\tpublic static final id id = new id();");
+		printWriter.println("\t\t\t/**" + id + "*/");
+		printWriter.println("\t\t\tpublic static final " + id + " " + id + " = new " + id + "();");
 		for (final Field field : fields) {
 			printWriter.println("\t\t\t/**");
 			printWriter.println(field.subName);
@@ -107,18 +118,22 @@ public class Table {
 		}
 		
 		printWriter.println("\t\t\t@Override");
-		printWriter.println("\t\t\tpublic final Field<?>[] getFields(){");
-		printWriter.println("\t\t\t\treturn new Field<?>[]{");
-		printWriter.println("\t\t\t\t\tid,");
+		printWriter.println("\t\t\tpublic final " + frameWork.base.database.scheme.Field.class.getCanonicalName()
+		        + "<?>[] " + getFields + "(){");
+		printWriter.println("\t\t\t\treturn new " + frameWork.base.database.scheme.Field.class.getCanonicalName()
+		        + "<?>[]{");
+		printWriter.println("\t\t\t\t\t" + id + ", ");
 		for (final Field field : fields) {
-			printWriter.println("\t\t\t\t\t" + field.name + ",");
+			printWriter.println("\t\t\t\t\t" + field.name + ", ");
 		}
 		printWriter.println("\t\t\t\t};");
 		printWriter.println("\t\t\t}");
 		
 		printWriter.println("\t\t\t@Override");
-		printWriter.println("\t\t\tpublic final " + name + "Row  createRow(){");
-		printWriter.println("\t\t\t\treturn new " + name + "Row ();");
+		printWriter.println("\t\t\tpublic final " + name + frameWork.base.database.scheme.Row.class.getSimpleName()
+		        + "  " + createRow + "(){");
+		printWriter.println("\t\t\t\treturn new " + name + frameWork.base.database.scheme.Row.class.getSimpleName()
+		        + "();");
 		printWriter.println("\t\t\t}");
 		
 		printWriter.println("\t\t}");

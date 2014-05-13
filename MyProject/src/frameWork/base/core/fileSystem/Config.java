@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
+import frameWork.architect.Literal;
 import frameWork.base.core.authority.Role;
 
 @SuppressWarnings("unused")
@@ -51,7 +52,7 @@ public class Config extends FileElement {
 		super(root, "config");
 		properties = new Properties();
 		try {
-			final File file = new File(this, "config.xml");
+			final File file = new File(this, Literal.config_xml);
 			if (!file.exists()) {
 				try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
 					properties.storeToXML(fileOutputStream, "");

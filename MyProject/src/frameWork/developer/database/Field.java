@@ -16,8 +16,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import frameWork.architect.ExcelUtil;
 import frameWork.base.database.scheme.Type;
-import frameWork.developer.ExcelUtil;
 
 public class Field {
 	private static String FILE_NAME = "/フィールド.xls";
@@ -58,11 +58,13 @@ public class Field {
 		printWriter.println("\t\t\t/**");
 		printWriter.println("\t\t\t * " + subName);
 		printWriter.println("\t\t\t */");
-		printWriter.println("\t\t\tpublic static final class " + name + " extends Field<" + ty.getType() + ">{");
+		printWriter.println("\t\t\tpublic static final class " + name + " extends "
+		        + frameWork.base.database.scheme.Field.class.getCanonicalName() + "<" + ty.getType() + ">{");
 		printWriter.println("\t\t\t\t" + name + "(){");
-		printWriter.println("\t\t\t\t\tsuper(\"" + database + "\", \"" + table + "\", \"" + name + "\", false, Type."
-		        + ty + ", " + ("○".equals(isUnique)) + ", " + (!"×".equals(isNullable)) + ", "
-		        + (defaultValue == null ? "null" : ("\"" + defaultValue + "\"")) + " );");
+		printWriter.println("\t\t\t\t\tsuper(\"" + database + "\", \"" + table + "\", \"" + name + "\", false, "
+		        + Type.class.getCanonicalName() + "." + ty + ", " + ("○".equals(isUnique)) + ", "
+		        + (!"×".equals(isNullable)) + ", " + (defaultValue == null ? "null" : ("\"" + defaultValue + "\""))
+		        + " );");
 		printWriter.println("\t\t\t\t}");
 		printWriter.println("\t\t\t}");
 	}

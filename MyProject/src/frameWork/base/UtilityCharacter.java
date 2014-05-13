@@ -1,4 +1,4 @@
-package frameWork.base.util;
+package frameWork.base;
 
 import java.util.ArrayList;
 import java.util.HashMap;

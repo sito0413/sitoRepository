@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import frameWork.base.UtilityCharacter;
 import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.viewCompiler.parser.Textlet;
 import frameWork.base.core.viewCompiler.script.SyntaxScript;
@@ -30,7 +31,6 @@ import frameWork.base.core.viewCompiler.script.syntax.expression.ConstructorScri
 import frameWork.base.core.viewCompiler.script.syntax.expression.DeclarationScript;
 import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
 import frameWork.base.core.viewCompiler.script.syntax.expression.OperatorScript;
-import frameWork.base.util.UtilityCharacter;
 
 @SuppressWarnings("rawtypes")
 public class ScriptsBuffer {

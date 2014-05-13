@@ -1,4 +1,4 @@
-package frameWork.developer.authority;
+package frameWork.developer.routing;
 
 import java.awt.Desktop;
 import java.awt.FlowLayout;
@@ -27,7 +27,7 @@ import frameWork.architect.SettingPanel;
 import frameWork.architect.SrcUtil;
 import frameWork.base.core.authority.Role;
 
-public class Authority extends SettingPanel {
+public class Routing extends SettingPanel {
 	private static final String FILE_NAME = Literal.authority + "/権限.xls";
 	private static final String SHEET_NAME = "権限";
 	
@@ -50,7 +50,7 @@ public class Authority extends SettingPanel {
 		}
 	}
 	
-	public Authority() {
+	public Routing() {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		final JButton btnNewButton_1 = new JButton("権限作成");
 		btnNewButton_1.addActionListener(new ActionListener() {

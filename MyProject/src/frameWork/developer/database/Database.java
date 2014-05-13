@@ -18,13 +18,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import frameWork.developer.SettingPanel;
+import frameWork.architect.Literal;
+import frameWork.architect.SettingPanel;
 
 @SuppressWarnings({
         "rawtypes", "unchecked"
 })
 public class Database extends SettingPanel {
-	static String ROOT = "database";
+	static String ROOT = Literal.database;
 	private JList databaseList;
 	private JList tableList;
 	private JList fieldList;

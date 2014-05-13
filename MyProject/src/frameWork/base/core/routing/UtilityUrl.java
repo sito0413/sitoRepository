@@ -1,4 +1,4 @@
-package frameWork.base.util;
+package frameWork.base.core.routing;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

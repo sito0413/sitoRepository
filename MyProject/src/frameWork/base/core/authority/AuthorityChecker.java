@@ -2,6 +2,7 @@ package frameWork.base.core.authority;
 
 import java.lang.reflect.Method;
 
+
 public class AuthorityChecker {
 	
 	public static <T> boolean check(final Class<T> c, final Method method, final Role... authStrings) {

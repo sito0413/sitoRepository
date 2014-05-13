@@ -1,8 +1,9 @@
-package frameWork.base.core.state;
+package frameWork.base.core.binder;
 
 import java.lang.reflect.Field;
 
 import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.State;
 
 public class Binder {
 	public void bind(final State state, final Object obj) {

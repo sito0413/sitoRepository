@@ -18,21 +18,24 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import frameWork.developer.SettingPanel;
+import frameWork.architect.Literal;
+import frameWork.architect.SettingPanel;
 
 public class Info extends SettingPanel {
 	public static void createFile() {
-		final Properties properties = new Properties();
-		properties.setProperty("Path", "C:/newwave/_system");
-		try (FileOutputStream os = new FileOutputStream(FILE_NAME)) {
-			properties.storeToXML(os, "");
-		}
-		catch (final IOException e1) {
-			e1.printStackTrace();
+		final File file = new File(Literal.src + "/" + Literal.info_xml);
+		if (!file.exists()) {
+			final Properties properties = new Properties();
+			properties.setProperty(Literal.Path, "C:/newwave/_system");
+			try (FileOutputStream os = new FileOutputStream(Literal.src + "/" + Literal.info_xml)) {
+				properties.storeToXML(os, "");
+			}
+			catch (final IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
-	private static String FILE_NAME = "./src/info.xml";
 	private JTextField textField;
 	private JTextField txtCnewwavesystem;
 	private JLabel lblPath;
@@ -65,7 +68,7 @@ public class Info extends SettingPanel {
 			};
 			this.panel.setLayout(gbl_panel);
 			{
-				this.lblPath = new JLabel("PATH");
+				this.lblPath = new JLabel(Literal.Path);
 				final GridBagConstraints gbc_lblPath = new GridBagConstraints();
 				gbc_lblPath.fill = GridBagConstraints.HORIZONTAL;
 				gbc_lblPath.insets = new Insets(0, 0, 5, 5);
@@ -83,7 +86,7 @@ public class Info extends SettingPanel {
 				this.panel.add(this.txtCnewwavesystem, gbc_txtCnewwavesystem);
 			}
 			{
-				this.lblSdystemId = new JLabel("SYSTEM ID");
+				this.lblSdystemId = new JLabel(Literal.SystemID);
 				final GridBagConstraints gbc_lblSdystemId = new GridBagConstraints();
 				gbc_lblSdystemId.fill = GridBagConstraints.HORIZONTAL;
 				gbc_lblSdystemId.insets = new Insets(0, 0, 0, 5);
@@ -107,7 +110,7 @@ public class Info extends SettingPanel {
 			final FlowLayout flowLayout = (FlowLayout) this.panel_1.getLayout();
 			flowLayout.setAlignment(FlowLayout.LEFT);
 			add(this.panel_1, BorderLayout.NORTH);
-			final JButton btnNewButton = new JButton("info.xml作成");
+			final JButton btnNewButton = new JButton(Literal.info_xml + "作成");
 			this.panel_1.add(btnNewButton);
 			btnNewButton.addActionListener(new ActionListener() {
 				@Override
@@ -124,11 +127,11 @@ public class Info extends SettingPanel {
 	
 	private void create(final String path, final String systemID) {
 		final Properties properties = new Properties();
-		properties.setProperty("Path", path);
+		properties.setProperty(Literal.Path, path);
 		if (!systemID.isEmpty()) {
-			properties.setProperty("SystemID", systemID);
+			properties.setProperty(Literal.SystemID, systemID);
 		}
-		try (FileOutputStream os = new FileOutputStream(FILE_NAME)) {
+		try (FileOutputStream os = new FileOutputStream(Literal.src + "/" + Literal.info_xml)) {
 			properties.storeToXML(os, "");
 		}
 		catch (final IOException e1) {
@@ -140,15 +143,15 @@ public class Info extends SettingPanel {
 	public void update() {
 		final Properties properties = new Properties();
 		try {
-			final File file = new File(FILE_NAME);
+			final File file = new File(Literal.src + "/" + Literal.info_xml);
 			if (file.exists()) {
 				try (FileInputStream fileInputStream = new FileInputStream(file)) {
 					properties.loadFromXML(fileInputStream);
-					if (properties.getProperty("Path") != null) {
-						txtCnewwavesystem.setText(properties.getProperty("Path"));
+					if (properties.getProperty(Literal.Path) != null) {
+						txtCnewwavesystem.setText(properties.getProperty(Literal.Path));
 					}
-					if (properties.getProperty("SystemID") != null) {
-						textField.setText(properties.getProperty("SystemID"));
+					if (properties.getProperty(Literal.SystemID) != null) {
+						textField.setText(properties.getProperty(Literal.SystemID));
 					}
 				}
 			}

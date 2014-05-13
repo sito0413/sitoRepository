@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public enum Type {
-	TEXT("String"), INTEGER("BigInteger"), DOUBLE("BigDecimal"), ;
+	TEXT("String"), INTEGER(BigInteger.class.getCanonicalName()), DOUBLE(BigDecimal.class.getCanonicalName()), ;
 	public static Type parse(final String type) {
 		if (Type.TEXT.toString().equals(type)) {
 			return TEXT;

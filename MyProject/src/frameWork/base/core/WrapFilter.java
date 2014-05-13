@@ -51,6 +51,7 @@ public class WrapFilter implements Filter {
 	private boolean response(final ServletRequest request, final ServletResponse res, final FilterChain chain,
 	        final String requestURI, final String method, final Response response, final State state)
 	        throws FileNotFoundException, IOException, ServletException, ScriptException {
+		
 		final Target target = TargetFilter.parse(requestURI, method);
 		if (target == null) {
 			if (!response(FileSystem.Resource.getResource(requestURI), response.getOutputStream())) {
