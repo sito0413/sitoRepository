@@ -1,6 +1,8 @@
 package frameWork.developer.authority;
 
+import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +16,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.AbstractListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,9 +35,14 @@ import frameWork.architect.SettingPanel;
 import frameWork.architect.SrcUtil;
 import frameWork.base.core.authority.Role;
 
+@SuppressWarnings({
+        "rawtypes", "unchecked"
+})
 public class Authority extends SettingPanel {
 	private static final String FILE_NAME = Literal.authority + "/権限.xls";
 	private static final String SHEET_NAME = "権限";
+	private List<String> __list = new ArrayList<>();
+	private JList list_1;
 	
 	public static void createFile() {
 		new File(Literal.authority).mkdirs();
@@ -51,25 +64,63 @@ public class Authority extends SettingPanel {
 	}
 	
 	public Authority() {
-		setLayout(new FlowLayout(FlowLayout.LEFT));
-		final JButton btnNewButton_1 = new JButton("権限作成");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				create();
-			}
-		});
+		initialize();
+	}
+	
+	private void initialize() {
 		{
+			setLayout(new BorderLayout(10, 0));
+		}
+		{
+			final JPanel panel = new JPanel();
+			final FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+			flowLayout.setAlignment(FlowLayout.LEFT);
+			add(panel, BorderLayout.NORTH);
+			final JButton btnNewButton_1 = new JButton("権限作成");
+			panel.add(btnNewButton_1);
 			final JButton button = new JButton("権限編集");
+			panel.add(button);
 			button.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					edit();
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							update();
+						}
+					});
 				}
+				
 			});
-			add(button);
+			btnNewButton_1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					create();
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							update();
+						}
+					});
+				}
+				
+			});
 		}
-		add(btnNewButton_1);
+		{
+			final JScrollPane scrollPane = new JScrollPane();
+			add(scrollPane, BorderLayout.CENTER);
+			{
+				list_1 = new JList();
+				list_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				list_1.setSelectedIndex(0);
+				scrollPane.setViewportView(list_1);
+			}
+		}
+		{
+			final JLabel label = new JLabel("");
+			add(label, BorderLayout.WEST);
+		}
 	}
 	
 	public List<List<String>> getRoles() {
@@ -143,6 +194,28 @@ public class Authority extends SettingPanel {
 		catch (final IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void update() {
+		__list = new ArrayList<>();
+		for (final List<String> role : getRoles()) {
+			__list.add(role.get(0) + " - " + role.get(1));
+		}
+		__list.add("匿名ロール【システムデフォルト】 - " + Role.ANONYMOUS);
+		__list.add("ユーザーロール【システムデフォルト】 - " + Role.USER);
+		list_1.setModel(new AbstractListModel() {
+			
+			@Override
+			public int getSize() {
+				return __list.size();
+			}
+			
+			@Override
+			public Object getElementAt(final int index) {
+				return __list.get(index);
+			}
+		});
 	}
 	
 	@Override

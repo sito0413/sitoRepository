@@ -20,7 +20,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import frameWork.architect.SettingPanel;
-import frameWork.base.core.fileSystem.FileSystem;
 
 public class FileBrowser extends SettingPanel implements TreeSelectionListener {
 	private final FileSystemView fileSystemView;
@@ -30,9 +29,10 @@ public class FileBrowser extends SettingPanel implements TreeSelectionListener {
 	private final FileTableModel fileTableModel;
 	
 	public FileBrowser() {
+		final File dir = new File("");
 		fileSystemView = FileSystemView.getFileSystemView();
 		fileTableModel = new FileTableModel(fileSystemView);
-		final DefaultMutableTreeNode node = createTreeNode(FileSystem.Root);
+		final DefaultMutableTreeNode node = createTreeNode(dir);
 		initialize();
 		tree.setModel(new DefaultTreeModel(node));
 		tree.setRootVisible(false);
@@ -41,8 +41,8 @@ public class FileBrowser extends SettingPanel implements TreeSelectionListener {
 		tree.addTreeSelectionListener(this);
 		table.setModel(fileTableModel);
 		showChildren(node);
-		titel.setText(fileSystemView.getSystemDisplayName(FileSystem.Root));
-		titel.setIcon(fileSystemView.getSystemIcon(FileSystem.Root));
+		titel.setText(fileSystemView.getSystemDisplayName(dir));
+		titel.setIcon(fileSystemView.getSystemIcon(dir));
 	}
 	
 	private void initialize() {

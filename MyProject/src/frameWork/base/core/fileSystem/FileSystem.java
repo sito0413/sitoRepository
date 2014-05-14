@@ -2,6 +2,7 @@ package frameWork.base.core.fileSystem;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
@@ -23,10 +24,12 @@ public class FileSystem {
 		try {
 			File path;
 			final Properties properties = new Properties();
-			final URLConnection connection = FileSystem.class.getClassLoader().getResource(Literal.info_xml)
-			        .openConnection();
-			if (connection != null) {
-				properties.loadFromXML(connection.getInputStream());
+			final URL url = FileSystem.class.getClassLoader().getResource(Literal.info_xml);
+			if (url != null) {
+				final URLConnection connection = url.openConnection();
+				if (connection != null) {
+					properties.loadFromXML(connection.getInputStream());
+				}
 			}
 			final String pathString = properties.getProperty(Literal.Path);
 			if (pathString != null) {
@@ -73,7 +76,7 @@ public class FileSystem {
 		Temp = new Temp(Root);
 		Database = new FileElement(Root, "database");
 		Data = new Resource(Root, "data");
-		Viewer = new FileElement(Root, "viewer");
+		Viewer = new FileElement(Root, Literal.viewer);
 		Resource = new Resource(Root, "resource");
 		Config = new Config(Root);
 		Log = new Log(Root);

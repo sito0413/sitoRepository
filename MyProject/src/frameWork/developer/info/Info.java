@@ -1,6 +1,7 @@
 package frameWork.developer.info;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -26,8 +27,8 @@ public class Info extends SettingPanel {
 		final File file = new File(Literal.src + "/" + Literal.info_xml);
 		if (!file.exists()) {
 			final Properties properties = new Properties();
-			properties.setProperty(Literal.Path, "C:/newwave/_system");
-			try (FileOutputStream os = new FileOutputStream(Literal.src + "/" + Literal.info_xml)) {
+			properties.setProperty(Literal.Path, new File(Literal.system).getAbsolutePath());
+			try (FileOutputStream os = new FileOutputStream(file)) {
 				properties.storeToXML(os, "");
 			}
 			catch (final IOException e1) {
@@ -116,7 +117,14 @@ public class Info extends SettingPanel {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					create(txtCnewwavesystem.getText(), textField.getText());
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							update();
+						}
+					});
 				}
+				
 			});
 		}
 		{
@@ -126,16 +134,31 @@ public class Info extends SettingPanel {
 	}
 	
 	private void create(final String path, final String systemID) {
-		final Properties properties = new Properties();
-		properties.setProperty(Literal.Path, path);
-		if (!systemID.isEmpty()) {
-			properties.setProperty(Literal.SystemID, systemID);
+		{
+			final Properties properties = new Properties();
+			properties.setProperty(Literal.Path, new File(Literal.system).getAbsolutePath());
+			properties.setProperty(Literal.SystemID, systemID.isEmpty() ? Literal.Temp : systemID);
+			final File file = new File(Literal.src + "/" + Literal.info_xml);
+			file.getParentFile().mkdirs();
+			try (FileOutputStream os = new FileOutputStream(file)) {
+				properties.storeToXML(os, "");
+			}
+			catch (final IOException e1) {
+				e1.printStackTrace();
+			}
 		}
-		try (FileOutputStream os = new FileOutputStream(Literal.src + "/" + Literal.info_xml)) {
-			properties.storeToXML(os, "");
-		}
-		catch (final IOException e1) {
-			e1.printStackTrace();
+		{
+			final Properties properties = new Properties();
+			properties.setProperty(Literal.Path, path);
+			properties.setProperty(Literal.SystemID, systemID.isEmpty() ? Literal.Temp : systemID);
+			final File file = new File("info/" + Literal.info_xml);
+			file.getParentFile().mkdirs();
+			try (FileOutputStream os = new FileOutputStream(file)) {
+				properties.storeToXML(os, "");
+			}
+			catch (final IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -143,17 +166,40 @@ public class Info extends SettingPanel {
 	public void update() {
 		final Properties properties = new Properties();
 		try {
-			final File file = new File(Literal.src + "/" + Literal.info_xml);
-			if (file.exists()) {
-				try (FileInputStream fileInputStream = new FileInputStream(file)) {
-					properties.loadFromXML(fileInputStream);
-					if (properties.getProperty(Literal.Path) != null) {
-						txtCnewwavesystem.setText(properties.getProperty(Literal.Path));
+			final File file1 = new File(Literal.src + "/" + Literal.info_xml);
+			if (file1.exists()) {
+				try (FileInputStream fileInputStream1 = new FileInputStream(file1)) {
+					properties.loadFromXML(fileInputStream1);
+					if ((properties.getProperty(Literal.SystemID) == null)
+					        || properties.getProperty(Literal.SystemID).isEmpty()) {
+						txtCnewwavesystem.setText("C:/newwave/_system");
+						textField.setText(Literal.Temp);
 					}
-					if (properties.getProperty(Literal.SystemID) != null) {
-						textField.setText(properties.getProperty(Literal.SystemID));
+					else {
+						final File file2 = new File("info/" + Literal.info_xml);
+						if (file2.exists()) {
+							try (FileInputStream fileInputStream2 = new FileInputStream(file2)) {
+								properties.loadFromXML(fileInputStream2);
+								if (properties.getProperty(Literal.Path) != null) {
+									txtCnewwavesystem.setText(properties.getProperty(Literal.Path));
+								}
+								if (properties.getProperty(Literal.SystemID) != null) {
+									textField.setText(properties.getProperty(Literal.SystemID));
+								}
+							}
+						}
+						else {
+							file2.getParentFile().mkdirs();
+							txtCnewwavesystem.setText("C:/newwave/_system");
+							textField.setText(properties.getProperty(Literal.SystemID));
+						}
 					}
 				}
+			}
+			else {
+				file1.getParentFile().mkdirs();
+				txtCnewwavesystem.setText("C:/newwave/_system");
+				textField.setText(Literal.Temp);
 			}
 		}
 		catch (final Exception e) {

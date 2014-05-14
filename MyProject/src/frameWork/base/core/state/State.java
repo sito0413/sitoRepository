@@ -22,6 +22,7 @@ public class State {
 	private final Map<String, File> fileMap;
 	private String page;
 	private boolean isViewCompiler;
+	private boolean isLogin;
 	
 	public State(final HttpServletRequest request, final boolean isMultipartContent) {
 		this.context = new ContextAttributeMap(request.getServletContext());
@@ -32,9 +33,13 @@ public class State {
 		
 		this.auth = (Role[]) session.getAttribute(FileSystem.Config.CALL_AUTH);
 		if (auth == null) {
+			isLogin = false;
 			setAuth(new Role[] {
 				FileSystem.Config.DEFAULT_ROLE
 			});
+		}
+		else {
+			isLogin = true;
 		}
 		if (isMultipartContent && org.apache.commons.fileupload.servlet.ServletFileUpload.isMultipartContent(request)) {
 			try {
@@ -121,6 +126,10 @@ public class State {
 	
 	public boolean isViewCompiler() {
 		return isViewCompiler;
+	}
+	
+	public boolean isLogin() {
+		return isLogin;
 	}
 	
 	public void setViewCompiler(final boolean isViewCompiler) {

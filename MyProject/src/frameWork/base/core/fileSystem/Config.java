@@ -12,7 +12,6 @@ import frameWork.base.core.authority.Role;
 @SuppressWarnings("unused")
 public class Config extends FileElement {
 	private final Properties properties;
-	public final String PACKAGE_NAME;
 	public final String DATABASE_DRIVER_CLASS;
 	public final String DATABASE_URL;
 	public final int MAX_UPLOADFILE_SIZE;
@@ -21,7 +20,6 @@ public class Config extends FileElement {
 	//TODO
 	public final Role DEFAULT_ROLE = Role.ANONYMOUS;
 	public final String CALL_AUTH = "@AUTH";
-	public final String VIEW_EXTENSION = "." + "jsp";
 	public final String VIEW_OUTPUT_METHOD = "out.write";
 	public final boolean IS_VAR_USEABLE = true;
 	public final int VIEWER_WRITER = 5012;
@@ -47,10 +45,12 @@ public class Config extends FileElement {
 	public final boolean MAIL_SMTP_AUTH = true;
 	public final String MAIL_SMTP_USER = "sito0413";
 	public final String MAIL_SMTP_PASSWORD = "inates0820";
+	public final File Routing;
 	
 	public Config(final File root) {
-		super(root, "config");
+		super(root, Literal.config);
 		properties = new Properties();
+		
 		try {
 			final File file = new File(this, Literal.config_xml);
 			if (!file.exists()) {
@@ -65,7 +65,6 @@ public class Config extends FileElement {
 		catch (final Exception e) {
 			e.printStackTrace();
 		}
-		PACKAGE_NAME = getString("packageName", "controller");
 		DATABASE_DRIVER_CLASS = getString("DatabaseDriverClassName", "org.sqlite.JDBC");
 		DATABASE_URL = getString("DatabaseURL",
 		        "jdbc:sqlite:" + FileSystem.Database.getAbsolutePath().replace('\\', '/') + "/");
@@ -73,6 +72,16 @@ public class Config extends FileElement {
 		
 		VIEW_CHAREET = getString("ViewChareet", "UTF-8");
 		VIEW_SRC_READ_BUFFER_SIZE = getInteger("ViewSrcReadBufferSize", 5120);
+		
+		Routing = new File(this, Literal.routing_xml);
+		if (!Routing.exists()) {
+			try (FileOutputStream fileOutputStream = new FileOutputStream(Routing)) {
+				new Properties().storeToXML(fileOutputStream, "");
+			}
+			catch (final Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private String get(final String key) {

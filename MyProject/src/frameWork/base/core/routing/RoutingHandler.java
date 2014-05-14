@@ -1,8 +1,8 @@
-package frameWork.base.core.targetFilter;
+package frameWork.base.core.routing;
 
 import frameWork.base.core.state.State;
 
-public interface TargetHandler {
+public interface RoutingHandler {
 	void get(State state);
 	
 	void post(State state);

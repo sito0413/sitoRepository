@@ -2,6 +2,7 @@ package frameWork.developer;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -129,9 +130,15 @@ public class DeveloperTab extends Tab {
 		Info.createFile();
 		Authority.createFile();
 		Database.createFile();
-		info.update();
-		authority.update();
-		database.update();
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				info.update();
+				authority.update();
+				database.update();
+				routing.update();
+			}
+		});
 	}
 	
 	@Override

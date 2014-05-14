@@ -6,7 +6,7 @@ import java.util.logging.LogRecord;
 public final class LogFormatter extends Formatter {
 	@Override
 	public synchronized String format(final LogRecord record) {
-		final StringBuilder message = new StringBuilder(String.format("%<tT.%<tL", record.getMillis())).append(' ')
+		final StringBuilder message = new StringBuilder(String.format("%tT", record.getMillis())).append(' ')
 		        .append(record.getMessage()).append('\r').append('\n');
 		final Throwable throwable = record.getThrown();
 		if (throwable != null) {

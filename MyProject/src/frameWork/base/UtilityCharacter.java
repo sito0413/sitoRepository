@@ -10,7 +10,7 @@ public class UtilityCharacter {
 	static {
 		final List<String[]> charList = new ArrayList<>();
 		charList.add(new String[] {
-			"0', '０"
+		        "0", "０"
 		});
 		charList.add(new String[] {
 		        "1", "１"

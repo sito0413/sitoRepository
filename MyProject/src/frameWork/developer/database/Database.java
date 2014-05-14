@@ -1,6 +1,7 @@
 package frameWork.developer.database;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -59,7 +60,12 @@ public class Database extends SettingPanel {
 						@Override
 						public void actionPerformed(final ActionEvent e) {
 							Db.createJavaFile();
-							update();
+							EventQueue.invokeLater(new Runnable() {
+								@Override
+								public void run() {
+									update();
+								}
+							});
 						}
 					});
 				}
