@@ -4,5 +4,22 @@
 		<mkdir dir="./src"/>
 		<echo file="./src/info.xml" message="&lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; standalone=&quot;no&quot;?&gt;&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;Path&quot;&gt;C:/newwave/_system&lt;/entry&gt;&lt;/properties&gt;" encoding="Shift_JIS"/>
 	</target>
+	<target name="compile" >
+		<mkdir dir="war"/>
+		<delete dir="WebContent/WEB-INF/classes"/>
+		<mkdir dir="WebContent/WEB-INF/classes"/>
+		<path id="classpath">
+			<fileset dir="lib" includes="servlet-api-3.0.jar"/>
+			<fileset dir="lib" includes="framework.jar"/>
+			<fileset dir="lib" includes="sqljdbc4.jar"/>
+		</path>
+		<javac destdir="WebContent/WEB-INF/classes" encoding="utf-8">
+			<classpath refid="classpath" />
+			<src path="./src" />
+		</javac>
+		<copy file="lib/config.properties" tofile="WebContent/WEB-INF/classes/viewer/config.properties" overwrite="true"/>
+		<war destfile="war/kousyu.war" needxmlfile='false' >
+			<fileset dir="WebContent" excludes="**/web.xml" />
+		</war>
+	</target>
 </project>
-
