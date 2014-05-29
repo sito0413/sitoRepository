@@ -2,7 +2,9 @@ package frameWork.architect;
 
 import java.io.File;
 
-public class Literal {
+import frameWork.base.core.authority.Role;
+
+public interface Literal {
 	public static final String database = "database";
 	public static final String info_xml = "info.xml";
 	public static final String Root = new File("").getAbsolutePath();
@@ -17,4 +19,7 @@ public class Literal {
 	public static final String config = "config";
 	public static final String viewer = "viewer";
 	public static final String system = "system";
+	public static final String Developer = "Developer";
+	public static final String routing = "routing";
+	public static final Role DefaultRole = Role.ANONYMOUS;
 }

@@ -15,6 +15,7 @@ public class FileSystem {
 	public static FileElement Database;
 	public static Resource Data;
 	public static FileElement Viewer;
+	public static FileElement Print;
 	public static Resource Resource;
 	public static Config Config;
 	public static Log Log;
@@ -77,6 +78,7 @@ public class FileSystem {
 		Database = new FileElement(Root, "database");
 		Data = new Resource(Root, "data");
 		Viewer = new FileElement(Root, Literal.viewer);
+		Print = new FileElement(Root, "Print");
 		Resource = new Resource(Root, "resource");
 		Config = new Config(Root);
 		Log = new Log(Root);

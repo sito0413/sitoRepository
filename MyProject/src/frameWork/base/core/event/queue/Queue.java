@@ -76,7 +76,7 @@ class Queue {
 		if (!timerFlg) {
 			putEvent(timer);
 		}
-		timer.add(event);
+		timer.timerList.add(event);
 	}
 	
 }

@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import frameWork.base.core.authority.Authority;
-import frameWork.base.core.authority.AuthorityChecker;
+import frameWork.architect.Literal;
 
 public class AuthorityCheckerTest {
 	static class TestClass1 {
@@ -16,7 +15,8 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest1() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass1.class, TestClass1.class.getMethod("test"), Role.USER));
+			assertFalse(AuthorityChecker.check(TestClass1.class, TestClass1.class.getMethod("test"),
+			        Literal.DefaultRole));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -32,7 +32,8 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest2() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass2.class, TestClass2.class.getMethod("test"), Role.USER));
+			assertFalse(AuthorityChecker.check(TestClass2.class, TestClass2.class.getMethod("test"),
+			        Literal.DefaultRole));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -48,7 +49,8 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest3() {
 		try {
-			assertFalse(AuthorityChecker.check(TestClass3.class, TestClass3.class.getMethod("test"), Role.USER));
+			assertFalse(AuthorityChecker.check(TestClass3.class, TestClass3.class.getMethod("test"),
+			        Literal.DefaultRole));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());
@@ -65,7 +67,8 @@ public class AuthorityCheckerTest {
 	@Test
 	public void checkTest4() {
 		try {
-			assertTrue(AuthorityChecker.check(TestClass4.class, TestClass4.class.getMethod("test"), Role.USER));
+			assertTrue(AuthorityChecker
+			        .check(TestClass4.class, TestClass4.class.getMethod("test"), Literal.DefaultRole));
 		}
 		catch (NoSuchMethodException | SecurityException e) {
 			fail(e.getMessage());

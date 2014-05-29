@@ -17,7 +17,6 @@ import javax.print.attribute.standard.MediaSizeName;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,6 +24,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import frameWork.ExcelUtil;
 import frameWork.base.print.ReportException;
 import frameWork.base.print.element.BorderInfo;
 import frameWork.base.print.element.HorizontalAlignment;
@@ -131,8 +131,8 @@ public class ExcelReader implements Reader {
 						page.addCell(new frameWork.base.print.element.Cell(rowIndex, columnIndex, left, top,
 						        columnWidth, rowHeight, width, height, createFont(worksheet.getWorkbook().getFontAt(
 						                style.getFontIndex())), createHorizontalAlignment(style.getAlignment()),
-						        createVerticalAlignment(style.getVerticalAlignment()), createCellValue(cell),
-						        borderInfos, 1));
+						        createVerticalAlignment(style.getVerticalAlignment()), ExcelUtil
+						                .getStringCellValue(cell), borderInfos, 1));
 					}
 					// レフト位置更新.
 					left += columnWidth;
@@ -142,27 +142,6 @@ public class ExcelReader implements Reader {
 			top += rowHeight;
 		}
 		return page;
-	}
-	
-	private String createCellValue(final Cell cell) {
-		switch ( cell.getCellType() ) {
-			case Cell.CELL_TYPE_STRING :
-				return cell.getStringCellValue();
-			case Cell.CELL_TYPE_NUMERIC :
-				if (DateUtil.isCellDateFormatted(cell)) {
-					return ("" + cell.getDateCellValue());
-				}
-				return ("" + cell.getNumericCellValue());
-			case Cell.CELL_TYPE_BOOLEAN :
-				return ("" + cell.getBooleanCellValue());
-			case Cell.CELL_TYPE_FORMULA :
-				return cell.getCellFormula();
-			case Cell.CELL_TYPE_ERROR :
-				return ("Error:" + cell.getErrorCellValue());
-			case Cell.CELL_TYPE_BLANK :
-				return "";
-		}
-		return null;
 	}
 	
 	private java.awt.Font createFont(final Font fontAt) {

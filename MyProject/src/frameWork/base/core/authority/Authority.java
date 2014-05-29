@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authority {
 	Role[] allowRole() default {
-		Role.USER
+		Role.ANONYMOUS
 	};
 }

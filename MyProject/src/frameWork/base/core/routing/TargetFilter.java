@@ -1,7 +1,6 @@
 package frameWork.base.core.routing;
 
 public class TargetFilter {
-	
 	public static String[] getClassName(final String target, final char c) {
 		if (target == null) {
 			return null;

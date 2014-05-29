@@ -9,7 +9,7 @@ import frameWork.base.core.fileSystem.FileSystem;
 
 class Timer implements Event {
 	private final Queue queue;
-	private final TimerEventList timerList;
+	final TimerEventList timerList;
 	private final TimerEventStack runningList;
 	
 	Timer(final Queue queue) {
@@ -41,9 +41,5 @@ class Timer implements Event {
 			}
 		}
 		queue.putEvent(this);
-	}
-	
-	void add(final TimerEvent event) {
-		timerList.add(event);
 	}
 }
