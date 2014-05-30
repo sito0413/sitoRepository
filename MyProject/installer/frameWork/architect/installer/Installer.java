@@ -2,6 +2,7 @@ package frameWork.architect.installer;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -80,7 +81,6 @@ public class Installer implements Runnable {
 						final URL jar = FileSystem.class.getResource("/frameWork/architect/jar/" + name);
 						final URLConnection jarConnection = jar.openConnection();
 						final byte[] buffer = new byte[1024 * 1024];
-						final File temp = File.createTempFile("temp", ".dat");
 						try (InputStream is = jarConnection.getInputStream()) {
 							int total = 0;
 							int r = -1;
@@ -90,7 +90,6 @@ public class Installer implements Runnable {
 							components.add(new InstallComponent(name + " (" + (total / 1024) + "Kb)",
 							        "/frameWork/architect/jar/" + name, total));
 						}
-						temp.delete();
 					}
 				}
 			}
@@ -109,12 +108,61 @@ public class Installer implements Runnable {
 	
 	@Override
 	public void run() {
-		progress.setMaximum(installComponents.size() + 1);
+		progress.setMaximum(installComponents.size() + 3);
 		try {
+			final File dir = new File(installDir + File.separator + "WebContent" + File.separator + "WEB-INF"
+			        + File.separator + "lib");
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
 			for (int i = 0; i < installComponents.size(); i++) {
-				progress.message("インストール　" + installComponents.get(i));
-				System.out.println(installDir + File.separator + installComponents.get(i));
-				progress.advance(1);
+				final URL jar = FileSystem.class.getResource(installComponents.get(i));
+				final URLConnection jarConnection = jar.openConnection();
+				final byte[] buffer = new byte[1024 * 1024];
+				try (InputStream is = jarConnection.getInputStream()) {
+					final String[] fileNames = installComponents.get(i).split("/");
+					final File file = new File(dir, fileNames[fileNames.length - 1]);
+					progress.message("インストール　" + file.getAbsolutePath());
+					int r = -1;
+					try (FileOutputStream fo = new FileOutputStream(file)) {
+						while ((r = is.read(buffer)) != -1) {
+							fo.write(buffer, 0, r);
+						}
+					}
+					progress.advance(1);
+				}
+			}
+			{
+				final URL jar = FileSystem.class.getResource("/frameWork/architect/jar/framework.jar");
+				final URLConnection jarConnection = jar.openConnection();
+				final byte[] buffer = new byte[1024 * 1024];
+				try (InputStream is = jarConnection.getInputStream()) {
+					final File file = new File(dir, "framework.jar");
+					progress.message("インストール　" + file.getAbsolutePath());
+					int r = -1;
+					try (FileOutputStream fo = new FileOutputStream(file)) {
+						while ((r = is.read(buffer)) != -1) {
+							fo.write(buffer, 0, r);
+						}
+					}
+					progress.advance(1);
+				}
+			}
+			{
+				final URL jar = FileSystem.class.getResource("/frameWork/architect/jar/manager.jar");
+				final URLConnection jarConnection = jar.openConnection();
+				final byte[] buffer = new byte[1024 * 1024];
+				try (InputStream is = jarConnection.getInputStream()) {
+					final File file = new File(dir, "manager.jar");
+					progress.message("インストール　" + file.getAbsolutePath());
+					int r = -1;
+					try (FileOutputStream fo = new FileOutputStream(file)) {
+						while ((r = is.read(buffer)) != -1) {
+							fo.write(buffer, 0, r);
+						}
+					}
+					progress.advance(1);
+				}
 			}
 			progress.message("インストール後　処理");
 			OperatingSystem.getOperatingSystem().perform(this, installDir, installComponents, "framework.jar");

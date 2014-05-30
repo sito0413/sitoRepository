@@ -1,17 +1,30 @@
 <?xml version="1.0"?>
-<project xmlns:jacoco="antlib:org.jacoco.ant" name="Example Ant Build with JaCoCo" default="rebuild">
+<project xmlns:jacoco="antlib:org.jacoco.ant" name="フレームワークBUILD" default="rebuild">
 	<tstamp>
 		<format property="NOW" pattern="yyyyMMddHHmmss" />
 	</tstamp>
 	<property name="src.dir" location="./src"/>
-	<property name="architect.dir" location="./manager/frameWork/architect"/>
-	<property name="jar.dir" location="./installer/frameWork/architect/jar"/>
+	<property name="lib.dir" location="./lib"/>
+	<property name="manager.dir" location="./manager"/>
+	<property name="architect.dir" location="${manager.dir}/frameWork/architect"/>
+	<property name="architect.info" location="${architect.dir}/info.xml"/>
+
+
+	<property name="installer.dir" location="./installer"/>
+	<property name="jar.dir" location="${installer.dir}/frameWork/architect/jar"/>
+	<property name="jar.info" location="${jar.dir}/info.xml"/>
+
 	<property name="result.dir" location="./target"/>
-	<property name="result.classes.dir" location="${result.dir}/classes"/>
+	<property name="result.classes1.dir" location="${result.dir}/classes1"/>
+	<property name="result.classes2.dir" location="${result.dir}/classes2"/>
+	<property name="result.classes3.dir" location="${result.dir}/classes3"/>
+
 	<property name="result.report.dir" location="${result.dir}/jacoco"/>
 	<property name="result.exec.file" location="${result.dir}/jacoco.exec"/>
 	<property name="result.test.dir" location="${result.dir}/test"/>
 	<property name="result.test.class.dir" location="${result.test.dir}/classes"/>
+
+	<property name="result.jar.dir" location="./jar"/>
 
 	<!--  Step 1: Import JaCoCo Ant tasks  -->
 	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
@@ -20,64 +33,48 @@
 
 	<target name="clean">
 		<delete dir="${result.dir}"/>
+		<delete dir="${jar.dir}"/>
+		<!--  要修正  -->
+		<delete dir="${result.dir}"/>
+		<delete dir="${result.dir}"/>
 	</target>
 
-	<target name="compile">
-		<mkdir dir="${result.classes.dir}"/>
-        <path id="classpath">
-        	<fileset dir="./lib" includes="*.jar"/>
+	<target name="compile1" depends="clean">
+		<mkdir dir="${result.classes1.dir}"/>
+        <path id="compile1Classpath">
+        	<fileset dir="${lib.dir}" includes="*.jar"/>
         </path>
-        <javac  srcdir="${src.dir}" destdir="${result.classes.dir}" debug="true" includeantruntime="false">
-			<classpath refid="classpath" />
+        <javac  srcdir="${src.dir}" destdir="${result.classes1.dir}" debug="true" includeantruntime="false">
+			<classpath refid="compile1Classpath" />
         </javac>
-
-		<fileset id="test" dir="./lib" includes="/**/*.jar"/>
-		<pathconvert pathsep="&#xA;" property="filelist" refid="test" />
-		<echo file="${jar.dir}/info.xml" message="&lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; standalone=&quot;no&quot;?&gt;&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;Path&quot;&gt;${filelist}&lt;/entry&gt;&lt;/properties&gt;" encoding="Shift_JIS"/>
-		<echo file="${architect.dir}/info.xml" message="&lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; standalone=&quot;no&quot;?&gt;&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;Ver&quot;&gt;${NOW}&lt;/entry&gt;&lt;/properties&gt;" encoding="Shift_JIS"/>
-		<copy todir="${jar.dir}" >
-	    	<fileset dir="./lib" includes="/**/*.jar"/>
-	    </copy>
 		<jar jarfile="${jar.dir}/framework.jar">
-			<fileset dir="${result.classes.dir}" includes="**/*.class" />
-			<fileset dir="./src" includes="**/*.png" />
-			<fileset dir="./src" includes="**/*.java" />
-			<fileset dir="./src" includes="**/*.ttf" />
-			<fileset dir="./src" includes="**/*.xml" />
+			<fileset dir="${result.classes1.dir}" includes="**/*.class" />
+			<fileset dir="${src.dir}" includes="**/*.png" />
+			<fileset dir="${src.dir}" includes="**/*.java" />
+			<fileset dir="${src.dir}" includes="**/*.ttf" />
+			<fileset dir="${src.dir}" includes="**/*.xml" />
 		</jar>
-
-
-		<mkdir dir="./jar"/>
-		<jar jarfile="./jar/framework.jar">
-			<fileset dir="${result.classes.dir}" includes="**/*.class" />
-			<fileset dir="./src" includes="**/*.png" />
-			<fileset dir="./src" includes="**/*.java" />
-			<fileset dir="./src" includes="**/*.ttf" />
-			<fileset dir="./src" includes="**/*.jar" />
-			<fileset dir="./src" includes="**/*.xml" />
-		</jar>
-		<mkdir dir="./jar/${NOW}"/>
-		<copy todir="./jar/${NOW}" >
-	    	<fileset dir="./jar" includes="framework.jar"/>
+		<copy todir="${jar.dir}" >
+	    	<fileset dir="${lib.dir}" includes="*.jar"/>
 	    </copy>
 	</target>
 
 	<!--  Step 2: Wrap test execution with the JaCoCo coverage task-->
-	<target name="test" depends="compile">
+	<target name="test" depends="compile1">
 		<mkdir dir="${result.test.dir}"/>
 		<mkdir dir="${result.test.class.dir}"/>
-		<path id="classpath">
+		<path id="testClasspath">
 			<fileset dir="${jar.dir}" includes="*.jar"/>
 		</path>
 		<javac srcdir="./test" destdir="${result.test.class.dir}" encoding="utf-8">
-			<classpath refid="classpath" />
+			<classpath refid="testClasspath" />
 		</javac>
 		<jacoco:coverage destfile="${result.exec.file}">
 		    <junit fork="true" forkmode="once">
 				<formatter type="xml" />
 				<classpath>
 					<path path="${result.test.class.dir}" />
-					<fileset dir="${jar.dir}" includes="/**/*.jar"/>
+					<fileset dir="${jar.dir}" includes="*.jar"/>
 				</classpath>
 				<batchtest todir="${architect.dir}">
 					<fileset dir="./test">
@@ -87,6 +84,7 @@
 		    </junit>
 		</jacoco:coverage>
 	</target>
+
 	<!--  Step 3: Create coverage report  -->
 	<target name="report" depends="test">
 		<jacoco:report>
@@ -95,7 +93,7 @@
 			</executiondata>
 			<structure name="カバレッジ">
 				<classfiles>
-					<fileset dir="${result.classes.dir}"/>
+					<fileset dir="${result.classes1.dir}"/>
 				</classfiles>
 			<sourcefiles encoding="UTF-8">
 				<fileset dir="${src.dir}"/>
@@ -107,5 +105,53 @@
 		</jacoco:report>
 	</target>
 
-	<target name="rebuild" depends="clean,compile,test,report"/>
+	<target name="compile2" depends="report">
+		<mkdir dir="${result.classes2.dir}"/>
+        <path id="compile2Classpath">
+        	<fileset dir="${jar.dir}" includes="*.jar"/>
+        </path>
+        <javac  srcdir="${manager.dir}" destdir="${result.classes2.dir}" debug="true" includeantruntime="false">
+			<classpath refid="compile2Classpath" />
+        </javac>
+
+		<echo file="${architect.info}" message="&lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; standalone=&quot;no&quot;?&gt;&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;Ver&quot;&gt;${NOW}&lt;/entry&gt;&lt;/properties&gt;" encoding="Shift_JIS"/>
+
+		<jar jarfile="${jar.dir}/manager.jar">
+			<fileset dir="${result.classes1.dir}" includes="**/*.class" />
+			<fileset dir="${manager.dir}" includes="**/*.png" />
+			<fileset dir="${manager.dir}" includes="**/*.java" />
+			<fileset dir="${manager.dir}" includes="**/*.ttf" />
+			<fileset dir="${manager.dir}" includes="**/*.xml" />
+		</jar>
+	</target>
+
+	<target name="compile3" depends="compile2">
+		<mkdir dir="${result.classes3.dir}"/>
+        <path id="compileClasspath3">
+          	<fileset dir="${jar.dir}" includes="*.jar"/>
+         </path>
+        <javac  srcdir="${installer.dir}" destdir="${result.classes3.dir}" debug="true" includeantruntime="false">
+			<classpath refid="compileClasspath3" />
+        </javac>
+
+		<fileset id="test" dir="${lib.dir}" includes="/**/*.jar"/>
+		<pathconvert pathsep="&#xA;" property="filelist" refid="test" />
+		<echo file="${jar.info}" message="&lt;?xml version=&quot;1.0&quot; encoding=&quot;Shift_JIS&quot; standalone=&quot;no&quot;?&gt;&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;Path&quot;&gt;${filelist}&lt;/entry&gt;&lt;/properties&gt;" encoding="Shift_JIS"/>
+
+		<mkdir dir="${result.jar.dir}"/>
+		<jar jarfile="${result.jar.dir}/installer.jar">
+			<fileset dir="${result.classes3.dir}" includes="**/*.class" />
+			<fileset dir="${installer.dir}" includes="**/*.png" />
+			<fileset dir="${installer.dir}" includes="**/*.java" />
+			<fileset dir="${installer.dir}" includes="**/*.ttf" />
+			<fileset dir="${installer.dir}" includes="**/*.jar" />
+			<fileset dir="${installer.dir}" includes="**/*.xml" />
+			<fileset dir="${manager.dir}" includes="**/*.xml" />
+		</jar>
+		<mkdir dir="${result.jar.dir}/${NOW}"/>
+		<copy todir="${result.jar.dir}/${NOW}" >
+	    	<fileset dir="${result.jar.dir}" includes="installer.jar"/>
+	    </copy>
+	</target>
+	<target name="rebuild" depends="clean,compile1,test,report,compile2,compile3"/>
 </project>

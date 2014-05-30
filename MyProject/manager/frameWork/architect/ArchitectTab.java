@@ -28,8 +28,8 @@ public class ArchitectTab extends TabPanel {
 				textPane.setEditable(false);
 				try {
 					final TestHandler handler = new TestHandler();
-					final URL url = FileSystem.class.getResource("/frameWork/architect/TEST-"
-					        + frameWork.base.AllTests.class.getCanonicalName() + ".xml");
+					final URL url = FileSystem.class
+					        .getResource("/frameWork/architect/TEST-frameWork.base.AllTests.xml");
 					if (url != null) {
 						final URLConnection connection = url.openConnection();
 						if (connection != null) {
