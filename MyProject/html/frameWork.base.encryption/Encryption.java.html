@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Encryption.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.encryption</a> &gt; <span class="el_source">Encryption.java</span></div><h1>Encryption.java</h1><pre class="source lang-java linenums">package frameWork.base.encryption;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
+import frameWork.base.core.fileSystem.FileSystem;
+
+@SuppressWarnings(&quot;nls&quot;)
+<span class="nc" id="L16">public class Encryption {</span>
+	private final static String ALGORITHM = &quot;Blowfish&quot;;
+	private final static String KEY;
+	
+	static {
+<span class="nc" id="L21">		String keyBuffer = FileSystem.Config.ENCRYPTION_KEY;</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">		while (keyBuffer.getBytes().length &lt; 16) {</span>
+<span class="nc" id="L23">			keyBuffer += &quot; &quot;;</span>
+		}
+<span class="nc" id="L25">		KEY = keyBuffer;</span>
+<span class="nc" id="L26">	}</span>
+	
+	/**
+	 * 暗号化する
+	 *
+	 * @param String
+	 *            暗号化する文字列
+	 * @return String 暗号化された文字列
+	 * @throws NoSuchPaddingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeyException
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws Exception
+	 */
+	public static String encrypt(final String text) {
+		try {
+<span class="nc" id="L43">			final SecretKeySpec sksSpec = new SecretKeySpec(KEY.getBytes(), 0, 16, ALGORITHM);</span>
+<span class="nc" id="L44">			final Cipher cipher = Cipher.getInstance(ALGORITHM);</span>
+<span class="nc" id="L45">			cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, sksSpec);</span>
+<span class="nc" id="L46">			final byte[] data = cipher.doFinal(text.getBytes());</span>
+<span class="nc" id="L47">			return Base64.encode(data);</span>
+		}
+<span class="nc" id="L49">		catch (final NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException</span>
+		        | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException exp) {
+<span class="nc" id="L51">			throw new IllegalStateException(exp);</span>
+		}
+	}
+	
+	/**
+	 * 複合化する
+	 *
+	 * @param String
+	 *            暗号化された文字列
+	 * @return String 複合化された文字列
+	 * @throws Exception
+	 */
+	public static String decrypt(final String strBase64) {
+		try {
+<span class="nc" id="L65">			final byte[] encrypted = Base64.decode(strBase64);</span>
+<span class="nc" id="L66">			final SecretKeySpec sksSpec = new SecretKeySpec(KEY.getBytes(), 0, 16, ALGORITHM);</span>
+<span class="nc" id="L67">			final Cipher cipher = Cipher.getInstance(ALGORITHM);</span>
+<span class="nc" id="L68">			cipher.init(Cipher.DECRYPT_MODE, sksSpec);</span>
+<span class="nc" id="L69">			return new String(cipher.doFinal(encrypted));</span>
+		}
+<span class="nc" id="L71">		catch (final NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException</span>
+		        | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException exp) {
+<span class="nc" id="L73">			throw new IllegalStateException(exp);</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

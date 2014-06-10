@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PDF.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.print.writer.pdf</a> &gt; <span class="el_source">PDF.java</span></div><h1>PDF.java</h1><pre class="source lang-java linenums">package frameWork.base.print.writer.pdf;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import frameWork.base.print.writer.pdf.PDF.Mainbody.Obj;
+import frameWork.base.print.writer.pdf.PDF.Mainbody.Page;
+
+@SuppressWarnings(&quot;nls&quot;)
+<span class="nc" id="L10">public class PDF {</span>
+	public static void main(final String[] args) {
+<span class="nc" id="L12">		final PDF pdf = new PDF();</span>
+<span class="nc" id="L13">		pdf.mainbody.addPage(new Page());</span>
+<span class="nc" id="L14">		System.out.println(pdf);</span>
+<span class="nc" id="L15">	}</span>
+	
+<span class="nc" id="L17">	Header header = new Header();</span>
+<span class="nc" id="L18">	Mainbody mainbody = new Mainbody();</span>
+	
+<span class="nc" id="L20">	static class Mainbody {</span>
+		static class Obj {
+			private final String value;
+<span class="nc" id="L23">			int index = 0;</span>
+			
+<span class="nc" id="L25">			public Obj() {</span>
+<span class="nc" id="L26">				this.value = &quot;&quot;;</span>
+<span class="nc" id="L27">			}</span>
+			
+<span class="nc" id="L29">			public Obj(final String value) {</span>
+<span class="nc" id="L30">				this.value = value;</span>
+<span class="nc" id="L31">			}</span>
+			
+			String getValue() {
+<span class="nc" id="L34">				return value;</span>
+			}
+			
+			@Override
+			public String toString() {
+<span class="nc" id="L39">				return index + &quot; 0 obj&quot; + &quot;\r\n&quot; + value + &quot;\r\n&quot; + &quot;endobj&quot; + &quot;\r\n&quot;;</span>
+			}
+			
+			public String toByteCode() {
+<span class="nc" id="L43">				return index + &quot; 0 obj&quot; + &quot;\r\n&quot; + getValue() + &quot;\r\n&quot; + &quot;endobj&quot; + &quot;\r\n&quot;;</span>
+			}
+			
+			public void setIndex(final int index) {
+<span class="nc" id="L47">				this.index = index;</span>
+<span class="nc" id="L48">			}</span>
+			
+			public int getIndex() {
+<span class="nc" id="L51">				return index;</span>
+			}
+		}
+		
+		static class Page extends Obj {
+<span class="nc" id="L56">			List&lt;Obj&gt; objList = new ArrayList&lt;&gt;();</span>
+			
+<span class="nc" id="L58">			public Page() {</span>
+<span class="nc" id="L59">				objList.add(new Obj(</span>
+				        &quot;&lt;&lt;\r\n/Font\r\n&lt;&lt;\r\n/Fo\r\n&lt;&lt;\r\n/BaseFont /Times-Italic\r\n/Subtype /Type1\r\n/Type /Font\r\n&gt;&gt;\r\n&gt;&gt;\r\n&gt;&gt;&quot;));
+<span class="nc" id="L61">				objList.add(new Obj(&quot;&lt;&lt;&quot; + &quot;\r\n&quot; + &quot;/Length 65&quot; + &quot;\r\n&quot; + &quot;&gt;&gt;&quot; + &quot;\r\n&quot; + &quot;stream&quot; + &quot;\r\n&quot;</span>
+				        + &quot;1. 0. 0. 1. 50. 700. cm&quot; + &quot;\r\n&quot; + &quot;BT&quot; + &quot;\r\n&quot; + &quot; /FO 14. Tf&quot; + &quot;\r\n&quot;
+				        + &quot; (Hello, World) Tj&quot; + &quot;\r\n&quot; + &quot;ET&quot; + &quot;\r\n&quot; + &quot;endstream&quot;));
+<span class="nc" id="L64">			}</span>
+			
+			@Override
+			String getValue() {
+<span class="nc" id="L68">				return &quot;&lt;&lt;&quot; + &quot;\r\n&quot; + &quot;/Parent 2 0 R&quot; + &quot;\r\n&quot; + &quot;/Resources 4 0 R&quot; + &quot;\r\n&quot;</span>
+				        + &quot;/MediaBox [0 0 612 792]&quot; + &quot;\r\n&quot; + &quot;/Contents [5 0 R]&quot; + &quot;\r\n&quot; + &quot;/Type /Pages&quot; + &quot;\r\n&quot;
+				        + &quot;&gt;&gt;&quot;;
+			}
+		}
+		
+<span class="nc" id="L74">		int index = 3;</span>
+<span class="nc" id="L75">		Catalog catalog = new Catalog();</span>
+<span class="nc" id="L76">		Pages pages = new Pages();</span>
+		
+		public void addPage(final Page page) {
+<span class="nc" id="L79">			pages.addPage(page);</span>
+<span class="nc" id="L80">			page.setIndex(index++);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">			for (final Obj obj : page.objList) {</span>
+<span class="nc" id="L82">				obj.setIndex(index++);</span>
+<span class="nc" id="L83">			}</span>
+<span class="nc" id="L84">		}</span>
+		
+		public String toByteCode() {
+<span class="nc" id="L87">			final StringBuilder builder = new StringBuilder();</span>
+<span class="nc" id="L88">			builder.append(catalog.toByteCode());</span>
+<span class="nc" id="L89">			builder.append(pages.toByteCode());</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">			for (final Page page : pages.pageList) {</span>
+<span class="nc" id="L91">				builder.append(page.toByteCode());</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">				for (final Obj obj : page.objList) {</span>
+<span class="nc" id="L93">					builder.append(obj.toByteCode());</span>
+<span class="nc" id="L94">				}</span>
+<span class="nc" id="L95">			}</span>
+<span class="nc" id="L96">			return builder.toString();</span>
+		}
+	}
+	
+	class CrossReferenceTable {
+		private final Header header;
+		private final Mainbody mainbody;
+		
+<span class="nc" id="L104">		public CrossReferenceTable(final Header header, final Mainbody mainbody) {</span>
+<span class="nc" id="L105">			this.header = header;</span>
+<span class="nc" id="L106">			this.mainbody = mainbody;</span>
+<span class="nc" id="L107">		}</span>
+		
+		@Override
+		public String toString() {
+<span class="nc" id="L111">			final StringBuilder builder = new StringBuilder(&quot;xref\r\n0 &quot;).append(mainbody.index).append(&quot;\r\n&quot;)</span>
+			        .append(String.format(&quot;%010d&quot;, 0)).append(&quot; 65535 f&quot;).append(&quot;\r\n&quot;);
+<span class="nc" id="L113">			int offset = header.toByteCode().getBytes().length;</span>
+			
+<span class="nc" id="L115">			builder.append(String.format(&quot;%010d&quot;, offset)).append(&quot; 00000 n&quot;).append(&quot;\r\n&quot;);</span>
+<span class="nc" id="L116">			offset += mainbody.catalog.toByteCode().getBytes().length;</span>
+<span class="nc" id="L117">			builder.append(String.format(&quot;%010d&quot;, offset)).append(&quot; 00000 n&quot;).append(&quot;\r\n&quot;);</span>
+<span class="nc" id="L118">			offset += mainbody.pages.toByteCode().getBytes().length;</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">			for (final Page page : mainbody.pages.pageList) {</span>
+<span class="nc" id="L120">				builder.append(String.format(&quot;%010d&quot;, offset)).append(&quot; 00000 n&quot;).append(&quot;\r\n&quot;);</span>
+<span class="nc" id="L121">				offset += page.toString().getBytes().length;</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">				for (final Obj obj : page.objList) {</span>
+<span class="nc" id="L123">					builder.append(String.format(&quot;%010d&quot;, offset)).append(&quot; 00000 n&quot;).append(&quot;\r\n&quot;);</span>
+<span class="nc" id="L124">					offset += obj.toString().getBytes().length;</span>
+<span class="nc" id="L125">				}</span>
+<span class="nc" id="L126">			}</span>
+<span class="nc" id="L127">			return builder.toString();</span>
+		}
+	}
+	
+<span class="nc" id="L131">	class Trailer {</span>
+		private final CrossReferenceTable crossReferenceTable;
+		
+<span class="nc" id="L134">		public Trailer(final CrossReferenceTable crossReferenceTable) {</span>
+<span class="nc" id="L135">			this.crossReferenceTable = crossReferenceTable;</span>
+<span class="nc" id="L136">		}</span>
+		
+		@Override
+		public String toString() {
+<span class="nc" id="L140">			return &quot;trailer&quot; + &quot;\r\n&quot; + &quot;&lt;&lt;&quot; + &quot;\r\n&quot; + &quot;/Root &quot; + crossReferenceTable.mainbody.catalog.index + &quot; 0 R&quot;</span>
+			        + &quot;\r\n&quot; + &quot;/Size &quot; + (crossReferenceTable.mainbody.index) + &quot;\r\n&quot; + &quot;&gt;&gt;&quot; + &quot;\r\n&quot; + &quot;startxref&quot;
+			        + &quot;\r\n&quot; + crossReferenceTable.toString().getBytes().length + &quot;\r\n&quot; + &quot;%%EOF&quot; + &quot;\r\n&quot;;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		// TODO 自動生成されたメソッド・スタブ
+<span class="nc" id="L149">		final CrossReferenceTable crossReferenceTable = new CrossReferenceTable(header, mainbody);</span>
+<span class="nc" id="L150">		return header.toByteCode() + mainbody.toByteCode() + crossReferenceTable.toString()</span>
+		        + new Trailer(crossReferenceTable).toString();
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import frameWork.base.HttpStatus;
 import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.routing.Router;
+import frameWork.base.core.state.ImpOfState;
 import frameWork.base.core.state.Response;
-import frameWork.base.core.state.State;
 
 @WebFilter("/*")
 public class WrapFilter implements Filter {
@@ -28,7 +28,8 @@ public class WrapFilter implements Filter {
 		final HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 		try {
 			((HttpServletResponse) servletResponse).setStatus(Router.routing(httpServletRequest.getRequestURI(),
-			        httpServletRequest.getMethod().toLowerCase(), new Response(servletResponse), new State(
+			        httpServletRequest.getMethod().toLowerCase(),
+			        new Response(servletResponse, servletResponse.getOutputStream()), new ImpOfState(
 			                (HttpServletRequest) servletRequest, isMultipartContent)));
 		}
 		catch (final Exception e) {

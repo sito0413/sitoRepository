@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Cell.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.print.element</a> &gt; <span class="el_source">Cell.java</span></div><h1>Cell.java</h1><pre class="source lang-java linenums">package frameWork.base.print.element;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
+import java.text.AttributedString;
+import java.util.List;
+
+/**
+ * セルパネル&lt;br&gt;
+ */
+public class Cell {
+	
+	public static String getKey(final int rowIndex, final int columnIndex) {
+<span class="nc" id="L19">		return rowIndex + &quot;*&quot; + columnIndex;</span>
+	}
+	
+<span class="nc" id="L22">	private final String LINE_SEPARATOR = &quot;\n&quot;;</span>
+	
+	private String text;
+	private HorizontalAlignment horizontalAlignment;
+	private VerticalAlignment verticalAlignment;
+	private Font font;
+	private boolean visible;
+	
+	private int x;
+	private int y;
+	private int width;
+	private int height;
+	private int textWidth;
+	private int textHeight;
+	
+	private final int rowIndex;
+	private final int columnIndex;
+	private final int rowsCount;
+	private final String key;
+	private final CellBorder borderInfos;
+	
+	public Cell(final int rowIndex, final int columnIndex, final int x, final int y, final int width, final int height,
+	        final int textWidth, final int textHeight, final Font font, final HorizontalAlignment horizontalAlignment,
+	        final VerticalAlignment verticalAlignment, final String value, final List&lt;BorderInfo&gt; borderInfos,
+<span class="nc" id="L46">	        final double scaleRate) {</span>
+		// 行列設定.
+<span class="nc" id="L48">		this.rowIndex = rowIndex;</span>
+<span class="nc" id="L49">		this.columnIndex = columnIndex;</span>
+		
+		// 配置設定.
+<span class="nc" id="L52">		this.width = width;</span>
+<span class="nc" id="L53">		this.height = height;</span>
+<span class="nc" id="L54">		this.textWidth = textWidth;</span>
+<span class="nc" id="L55">		this.textHeight = textHeight;</span>
+<span class="nc" id="L56">		this.x = x;</span>
+<span class="nc" id="L57">		this.y = y;</span>
+		
+		// フォント設定.
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		if (scaleRate != 1d) {</span>
+<span class="nc" id="L61">			float newFontSize = font.getSize2D();</span>
+<span class="nc" id="L62">			newFontSize *= scaleRate;</span>
+<span class="nc" id="L63">			this.font = font.deriveFont(newFontSize);</span>
+<span class="nc" id="L64">		}</span>
+		else {
+<span class="nc" id="L66">			this.font = font;</span>
+		}
+		
+		// 文字配置設定.
+<span class="nc" id="L70">		this.horizontalAlignment = horizontalAlignment;</span>
+<span class="nc" id="L71">		this.verticalAlignment = verticalAlignment;</span>
+		
+		// 変数キー情報取得.
+		// 値設定.
+<span class="nc" id="L75">		String k = null;</span>
+<span class="nc" id="L76">		int rc = 0;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">		if (value != null) {</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">			if (value.startsWith(VariableConstants.KEY_STRING)) {</span>
+<span class="nc" id="L79">				k = value;</span>
+<span class="nc" id="L80">				rc = 1;</span>
+<span class="nc" id="L81">				final int openIndex = value.indexOf(VariableConstants.LEFT_PARENTHESES);</span>
+<span class="nc" id="L82">				final int closeIndex = value.indexOf(VariableConstants.RIGHT_PARENTHESES, openIndex + 1);</span>
+<span class="nc bnc" id="L83" title="All 4 branches missed.">				if ((openIndex &gt;= 0) &amp;&amp; (closeIndex &gt;= 0)) {</span>
+					try {
+<span class="nc" id="L85">						rc = Integer.parseInt(value.substring(openIndex + 1, closeIndex));</span>
+<span class="nc" id="L86">						k = value.substring(0, openIndex);</span>
+					}
+<span class="nc" id="L88">					catch (final NumberFormatException exp) {</span>
+<span class="nc" id="L89">						exp.printStackTrace();</span>
+<span class="nc" id="L90">					}</span>
+				}
+			}
+<span class="nc" id="L93">			this.key = k;</span>
+<span class="nc" id="L94">			this.rowsCount = rc;</span>
+<span class="nc" id="L95">			this.text = value.replace(&quot;\r\n&quot;, &quot;\n&quot;).replace(&quot;\r&quot;, &quot;\n&quot;);</span>
+		}
+		else {
+<span class="nc" id="L98">			this.key = null;</span>
+<span class="nc" id="L99">			this.rowsCount = 0;</span>
+<span class="nc" id="L100">			this.text = &quot;&quot;;</span>
+		}
+		
+<span class="nc" id="L103">		this.visible = true;</span>
+<span class="nc" id="L104">		this.borderInfos = new CellBorder(borderInfos);</span>
+<span class="nc" id="L105">	}</span>
+	
+	// --------------------------------------------------
+	/**
+	 * テキストを取得します&lt;br&gt;
+	 */
+	public String getText() {
+<span class="nc" id="L112">		return text;</span>
+	}
+	
+	/**
+	 * テキストを設定します&lt;br&gt;
+	 */
+	public void setText(final String text) {
+<span class="nc" id="L119">		this.text = text;</span>
+<span class="nc" id="L120">	}</span>
+	
+	// --------------------------------------------------
+	
+	/**
+	 * テキストの横配置を取得します&lt;br&gt;
+	 */
+	public HorizontalAlignment getHorizontalAlignment() {
+<span class="nc" id="L128">		return horizontalAlignment;</span>
+	}
+	
+	/**
+	 * テキストの横配置を設定します&lt;br&gt;
+	 */
+	public void setHorizontalAlignment(final HorizontalAlignment alignment) {
+<span class="nc" id="L135">		horizontalAlignment = alignment;</span>
+<span class="nc" id="L136">	}</span>
+	
+	/**
+	 * テキストの縦配置を取得します&lt;br&gt;
+	 */
+	public VerticalAlignment getVerticalAlignment() {
+<span class="nc" id="L142">		return verticalAlignment;</span>
+	}
+	
+	/**
+	 * テキストの縦配置を設定します&lt;br&gt;
+	 */
+	public void setVerticalAlignment(final VerticalAlignment alignment) {
+<span class="nc" id="L149">		verticalAlignment = alignment;</span>
+<span class="nc" id="L150">	}</span>
+	
+	/**
+	 * 最大行数を取得します&lt;br&gt;
+	 */
+	public int getRowsCount() {
+<span class="nc" id="L156">		return rowsCount;</span>
+	}
+	
+	// --------------------------------------------------
+	/**
+	 * 行インデックスを取得します&lt;br&gt;
+	 */
+	public int getRowIndex() {
+<span class="nc" id="L164">		return this.rowIndex;</span>
+	}
+	
+	/**
+	 * 列インデックスを取得します&lt;br&gt;
+	 */
+	public int getColumnIndex() {
+<span class="nc" id="L171">		return this.columnIndex;</span>
+	}
+	
+	/**
+	 * 変数キーを取得します&lt;br&gt;
+	 */
+	public String getKey() {
+<span class="nc" id="L178">		return this.key;</span>
+	}
+	
+	public boolean isVisible() {
+<span class="nc" id="L182">		return visible;</span>
+	}
+	
+	public void setVisible(final boolean flag) {
+<span class="nc" id="L186">		visible = flag;</span>
+<span class="nc" id="L187">	}</span>
+	
+	/**
+	 * フォントを取得します&lt;br&gt;
+	 */
+	public Font getFont() {
+<span class="nc" id="L193">		return font;</span>
+	}
+	
+	/**
+	 * フォントを設定します&lt;br&gt;
+	 */
+	public void setFont(final Font font) {
+<span class="nc" id="L200">		this.font = font;</span>
+<span class="nc" id="L201">	}</span>
+	
+	public int getWidth() {
+<span class="nc" id="L204">		return width;</span>
+	}
+	
+	public void setWidth(final int width) {
+<span class="nc" id="L208">		this.width = width;</span>
+<span class="nc" id="L209">	}</span>
+	
+	public int getHeight() {
+<span class="nc" id="L212">		return height;</span>
+	}
+	
+	public void setHeight(final int height) {
+<span class="nc" id="L216">		this.height = height;</span>
+<span class="nc" id="L217">	}</span>
+	
+	public int getTextWidth() {
+<span class="nc" id="L220">		return textWidth;</span>
+	}
+	
+	public void setTextWidth(final int textWidth) {
+<span class="nc" id="L224">		this.textWidth = textWidth;</span>
+<span class="nc" id="L225">	}</span>
+	
+	public int getTextHeight() {
+<span class="nc" id="L228">		return textHeight;</span>
+	}
+	
+	public void setTextHeight(final int textHeight) {
+<span class="nc" id="L232">		this.textHeight = textHeight;</span>
+<span class="nc" id="L233">	}</span>
+	
+	public int getX() {
+<span class="nc" id="L236">		return x;</span>
+	}
+	
+	public void setX(final int x) {
+<span class="nc" id="L240">		this.x = x;</span>
+<span class="nc" id="L241">	}</span>
+	
+	public int getY() {
+<span class="nc" id="L244">		return y;</span>
+	}
+	
+	public void setY(final int y) {
+<span class="nc" id="L248">		this.y = y;</span>
+<span class="nc" id="L249">	}</span>
+	
+	public CellBorder getBorderInfos() {
+<span class="nc" id="L252">		return borderInfos;</span>
+	}
+	
+	void paint(final Graphics2D g) {
+<span class="nc bnc" id="L256" title="All 2 branches missed.">		if (visible) {</span>
+<span class="nc" id="L257">			final int textX = this.x;</span>
+<span class="nc" id="L258">			int textY = this.y;</span>
+<span class="nc" id="L259">			final float wrappingWidth = textWidth;</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">			if (!text.isEmpty()) {</span>
+<span class="nc" id="L261">				final AttributedString as = new AttributedString(text);</span>
+<span class="nc" id="L262">				as.addAttribute(TextAttribute.FONT, font);</span>
+<span class="nc" id="L263">				as.addAttribute(TextAttribute.FOREGROUND, Color.BLACK);</span>
+<span class="nc" id="L264">				as.addAttribute(TextAttribute.BACKGROUND, new Color(0, 0, 0, 0));</span>
+				
+<span class="nc" id="L266">				final FontRenderContext context = g.getFontRenderContext();</span>
+<span class="nc" id="L267">				final LineBreakMeasurer measurer = new LineBreakMeasurer(as.getIterator(), context);</span>
+				int position;
+<span class="nc" id="L269">				int textYoffset = 1;</span>
+<span class="nc bnc" id="L270" title="All 4 branches missed.">				if ((verticalAlignment == VerticalAlignment.CENTER) || (verticalAlignment == VerticalAlignment.BOTTOM)) {</span>
+					@SuppressWarnings(&quot;hiding&quot;)
+<span class="nc" id="L272">					int textHeight = 0;</span>
+					// 文字列の最後まで
+<span class="nc bnc" id="L274" title="All 2 branches missed.">					while ((position = measurer.getPosition()) &lt; text.length()) {</span>
+						TextLayout layout;
+<span class="nc" id="L276">						final int indexOf = text.indexOf(LINE_SEPARATOR, position);</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">						if (position &lt; indexOf) {</span>
+<span class="nc" id="L278">							layout = measurer.nextLayout(wrappingWidth, indexOf, false);</span>
+						}
+						else {
+<span class="nc" id="L281">							layout = measurer.nextLayout(wrappingWidth);</span>
+						}
+						
+<span class="nc bnc" id="L284" title="All 2 branches missed.">						if (layout == null) {</span>
+<span class="nc" id="L285">							break;</span>
+						}
+<span class="nc" id="L287">						textHeight += (layout.getAscent() + layout.getDescent() + layout.getLeading());</span>
+<span class="nc" id="L288">					}</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">					if (verticalAlignment == VerticalAlignment.CENTER) {</span>
+<span class="nc" id="L290">						textYoffset += (this.textHeight - textHeight) / 2;</span>
+					}
+<span class="nc bnc" id="L292" title="All 2 branches missed.">					else if (verticalAlignment == VerticalAlignment.BOTTOM) {</span>
+<span class="nc" id="L293">						textYoffset += (this.textHeight - textHeight);</span>
+					}
+				}
+<span class="nc" id="L296">				textY += textYoffset;</span>
+<span class="nc" id="L297">				measurer.setPosition(0);</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">				while ((position = measurer.getPosition()) &lt; text.length()) {</span>
+					TextLayout layout;
+<span class="nc" id="L300">					final int indexOf = text.indexOf(LINE_SEPARATOR, position);</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">					if (position &lt; indexOf) {</span>
+<span class="nc" id="L302">						layout = measurer.nextLayout(wrappingWidth, indexOf, false);</span>
+					}
+					else {
+<span class="nc" id="L305">						layout = measurer.nextLayout(wrappingWidth);</span>
+					}
+					
+<span class="nc bnc" id="L308" title="All 2 branches missed.">					if (layout == null) {</span>
+<span class="nc" id="L309">						break;</span>
+					}
+					
+<span class="nc" id="L312">					textY += layout.getAscent();</span>
+<span class="nc" id="L313">					final int offset = 1;</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">					if (horizontalAlignment == HorizontalAlignment.CENTER) {</span>
+<span class="nc" id="L315">						layout.draw(g, textX + ((wrappingWidth - layout.getAdvance()) / 2), textY);</span>
+					}
+<span class="nc bnc" id="L317" title="All 2 branches missed.">					else if (horizontalAlignment == HorizontalAlignment.LEFT) {</span>
+<span class="nc" id="L318">						layout.draw(g, textX + offset, textY);</span>
+					}
+<span class="nc bnc" id="L320" title="All 2 branches missed.">					else if (horizontalAlignment == HorizontalAlignment.RIGHT) {</span>
+<span class="nc" id="L321">						layout.draw(g, (textX + (wrappingWidth - layout.getAdvance() - offset)), textY);</span>
+					}
+<span class="nc bnc" id="L323" title="All 2 branches missed.">					else if (horizontalAlignment == HorizontalAlignment.TRAILING) {</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">						final float dx = layout.isLeftToRight() ? (wrappingWidth - layout.getAdvance() - offset)</span>
+						        : offset;
+<span class="nc" id="L326">						layout.draw(g, textX + dx, textY);</span>
+<span class="nc" id="L327">					}</span>
+					else {
+<span class="nc bnc" id="L329" title="All 2 branches missed.">						final float dx = layout.isLeftToRight() ? offset</span>
+						        : (wrappingWidth - layout.getAdvance() - offset);
+<span class="nc" id="L331">						layout.draw(g, textX + dx, textY);</span>
+					}
+<span class="nc" id="L333">					textY += layout.getDescent() + layout.getLeading();</span>
+<span class="nc" id="L334">				}</span>
+			}
+<span class="nc" id="L336">			this.borderInfos.paintBorder(g, x, y, width, height);</span>
+		}
+<span class="nc" id="L338">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

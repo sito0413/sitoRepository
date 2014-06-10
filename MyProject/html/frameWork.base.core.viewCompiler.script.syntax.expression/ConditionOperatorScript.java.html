@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ConditionOperatorScript.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler.script.syntax.expression</a> &gt; <span class="el_source">ConditionOperatorScript.java</span></div><h1>ConditionOperatorScript.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler.script.syntax.expression;
+
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+
+public class ConditionOperatorScript extends ExpressionScript {
+	private final ExpressionScript logic;
+	private final ExpressionScript expressionScript1;
+	private final ExpressionScript expressionScript2;
+	
+	public ConditionOperatorScript(final ExpressionScript logic, final ExpressionScript expressionScript1,
+<span class="nc" id="L13">	        final ExpressionScript expressionScript2) {</span>
+<span class="nc" id="L14">		this.logic = logic;</span>
+<span class="nc" id="L15">		this.expressionScript1 = expressionScript1;</span>
+<span class="nc" id="L16">		this.expressionScript2 = expressionScript2;</span>
+<span class="nc" id="L17">	}</span>
+	
+	@Override
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+<span class="nc" id="L21">		return logic.execute(scope).condition(scope, expressionScript1, expressionScript2);</span>
+	}
+	
+	@Override
+	public String toNameString() {
+<span class="nc" id="L26">		return logic.toNameString() + &quot;?&quot; + expressionScript1.toNameString() + &quot;:&quot; + expressionScript2.toNameString();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

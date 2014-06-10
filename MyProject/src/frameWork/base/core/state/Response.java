@@ -1,6 +1,5 @@
 package frameWork.base.core.state;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.servlet.ServletResponse;
@@ -9,9 +8,9 @@ public class Response {
 	private final ServletResponse response;
 	private final OutputStream outputStream;
 	
-	public Response(final ServletResponse response) throws IOException {
+	public Response(final ServletResponse response, final OutputStream outputStream) {
 		this.response = response;
-		this.outputStream = response.getOutputStream();
+		this.outputStream = outputStream;
 	}
 	
 	public void setContentLength(final int i) {

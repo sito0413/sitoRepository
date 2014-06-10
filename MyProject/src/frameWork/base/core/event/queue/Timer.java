@@ -25,8 +25,7 @@ class Timer implements Event {
 				timerList.remove(timerEvent);
 			}
 			else {
-				final long now = System.currentTimeMillis();
-				if ((now > timerEvent.nextTime()) && !runningList.contains(timerEvent)) {
+				if ((System.currentTimeMillis() > timerEvent.nextTime()) && !runningList.contains(timerEvent)) {
 					runningList.add(timerEvent);
 					queue.putEvent(new CallTimerEvent(timerEvent, runningList));
 				}

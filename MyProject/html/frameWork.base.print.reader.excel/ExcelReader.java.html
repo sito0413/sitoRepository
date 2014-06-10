@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ExcelReader.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.print.reader.excel</a> &gt; <span class="el_source">ExcelReader.java</span></div><h1>ExcelReader.java</h1><pre class="source lang-java linenums">package frameWork.base.print.reader.excel;
+
+import java.awt.Dimension;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.print.attribute.Size2DSyntax;
+import javax.print.attribute.standard.MediaSize;
+import javax.print.attribute.standard.MediaSizeName;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+
+import frameWork.ExcelUtil;
+import frameWork.base.print.ReportException;
+import frameWork.base.print.element.BorderInfo;
+import frameWork.base.print.element.HorizontalAlignment;
+import frameWork.base.print.element.LineStyleType;
+import frameWork.base.print.element.LineWeight;
+import frameWork.base.print.element.Page;
+import frameWork.base.print.element.PositionType;
+import frameWork.base.print.element.VerticalAlignment;
+import frameWork.base.print.reader.Reader;
+
+/**
+ * 帳票レイアウトXMLファイル読込&lt;br&gt;
+ */
+<span class="nc" id="L41">public class ExcelReader implements Reader {</span>
+	
+	@Override
+	public final synchronized Page readSheet(final URI uri, final String sheetName) throws ReportException {
+<span class="nc" id="L45">		try (FileInputStream fi = new FileInputStream(new File(uri))) {</span>
+<span class="nc" id="L46">			final Workbook book = read(fi);</span>
+<span class="nc" id="L47">			final Sheet worksheet = book.getSheet(sheetName);</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			if (worksheet == null) {</span>
+<span class="nc" id="L49">				throw new ReportException();</span>
+			}
+			// セル配置.
+<span class="nc" id="L52">			return createPage(worksheet);</span>
+<span class="nc bnc" id="L53" title="All 8 branches missed.">		}</span>
+<span class="nc" id="L54">		catch (final Exception e) {</span>
+<span class="nc" id="L55">			throw new ReportException(e);</span>
+		}
+	}
+	
+	private HSSFWorkbook read(final FileInputStream fi) throws ReportException {
+		try {
+<span class="nc" id="L61">			return new HSSFWorkbook(fi);</span>
+		}
+<span class="nc" id="L63">		catch (final IOException e) {</span>
+<span class="nc" id="L64">			throw new ReportException(&quot;Excelの読み込み処理に失敗しました&quot;, e);</span>
+		}
+	}
+	
+	// --------------------------------------------------
+	
+	// ページコンテンツを生成します&lt;br&gt;
+	private Page createPage(final Sheet worksheet) {
+<span class="nc" id="L72">		final Dimension pageSize = inquirePageSize(worksheet.getPrintSetup());</span>
+<span class="nc" id="L73">		final Page page = new Page((int) Math.ceil(inchesToPixels(worksheet.getMargin(Sheet.LeftMargin))),</span>
+		        (int) Math.ceil(inchesToPixels(worksheet.getMargin(Sheet.TopMargin))),
+		        (int) Math.ceil(inchesToPixels(worksheet.getMargin(Sheet.RightMargin))),
+		        (int) Math.ceil(inchesToPixels(worksheet.getMargin(Sheet.BottomMargin))), pageSize.width,
+		        pageSize.height);
+<span class="nc" id="L78">		final Map&lt;String, CellRangeAddress&gt; cellRangeAddressMap = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">		for (int i = 0; i &lt; worksheet.getNumMergedRegions(); i++) {</span>
+<span class="nc" id="L80">			final CellRangeAddress range = worksheet.getMergedRegion(i);</span>
+<span class="nc" id="L81">			cellRangeAddressMap.put(range.getFirstRow() + &quot;-&quot; + range.getFirstColumn(), range);</span>
+		}
+		
+		// セルパネル配置原点.
+<span class="nc" id="L85">		int top = 0;</span>
+<span class="nc" id="L86">		final int rowMax = worksheet.getLastRowNum();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">		for (int rowIndex = 0; rowIndex &lt;= rowMax; rowIndex++) {</span>
+<span class="nc" id="L88">			final Row row = worksheet.getRow(rowIndex);</span>
+<span class="nc" id="L89">			int rowHeight = pointsToPixelsHeight(worksheet.getDefaultRowHeight());</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">			if (row != null) {</span>
+<span class="nc" id="L91">				rowHeight = pointsToPixelsHeight(row.getHeight());</span>
+<span class="nc" id="L92">				int left = 0;</span>
+<span class="nc" id="L93">				final int colMax = row.getLastCellNum();</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">				for (int columnIndex = 0; columnIndex &lt;= colMax; columnIndex++) {</span>
+<span class="nc" id="L95">					final int columnWidth = pointsToPixelsWidth(worksheet.getColumnWidth(columnIndex));</span>
+<span class="nc" id="L96">					final Cell cell = row.getCell(columnIndex);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">					if (cell != null) {</span>
+						// セル情報あり.
+<span class="nc" id="L99">						final CellRangeAddress address = cellRangeAddressMap.get(rowIndex + &quot;-&quot; + columnIndex);</span>
+						// セル幅算出.
+<span class="nc" id="L101">						int width = columnWidth;</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">						if (address != null) {</span>
+<span class="nc" id="L103">							width = 0;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">							for (int i = address.getFirstColumn(); i &lt;= address.getLastColumn(); i++) {</span>
+<span class="nc" id="L105">								width += pointsToPixelsWidth(worksheet.getColumnWidth(i));</span>
+							}
+						}
+						// セル高さ算出.
+<span class="nc" id="L109">						int height = rowHeight;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">						if (address != null) {</span>
+<span class="nc" id="L111">							height = 0;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">							for (int i = address.getFirstRow(); i &lt;= address.getLastRow(); i++) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">								if (worksheet.getRow(i) != null) {</span>
+<span class="nc" id="L114">									height += pointsToPixelsHeight(worksheet.getRow(i).getHeight());</span>
+								}
+								else {
+<span class="nc" id="L117">									height += pointsToPixelsHeight(worksheet.getDefaultRowHeight());</span>
+								}
+							}
+						}
+						// 属性取得 (セル → 行 → 列 → シート(標準) の順に検索).
+<span class="nc" id="L122">						final CellStyle style = cell.getCellStyle();</span>
+						// セルパネル生成.
+<span class="nc" id="L124">						final List&lt;BorderInfo&gt; borderInfos = new ArrayList&lt;&gt;();</span>
+						// 罫線追加.
+<span class="nc" id="L126">						createBorderInfo(borderInfos, PositionType.TOP, style.getBorderTop());</span>
+<span class="nc" id="L127">						createBorderInfo(borderInfos, PositionType.LEFT, style.getBorderLeft());</span>
+<span class="nc" id="L128">						createBorderInfo(borderInfos, PositionType.RIGHT, style.getBorderRight());</span>
+<span class="nc" id="L129">						createBorderInfo(borderInfos, PositionType.BOTTOM, style.getBorderBottom());</span>
+						
+<span class="nc" id="L131">						page.addCell(new frameWork.base.print.element.Cell(rowIndex, columnIndex, left, top,</span>
+						        columnWidth, rowHeight, width, height, createFont(worksheet.getWorkbook().getFontAt(
+						                style.getFontIndex())), createHorizontalAlignment(style.getAlignment()),
+						        createVerticalAlignment(style.getVerticalAlignment()), ExcelUtil
+						                .getStringCellValue(cell), borderInfos, 1));
+					}
+					// レフト位置更新.
+<span class="nc" id="L138">					left += columnWidth;</span>
+				}
+			}
+			// トップ位置更新.
+<span class="nc" id="L142">			top += rowHeight;</span>
+		}
+<span class="nc" id="L144">		return page;</span>
+	}
+	
+	private java.awt.Font createFont(final Font fontAt) {
+<span class="nc" id="L148">		int style = java.awt.Font.PLAIN;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">		if (fontAt.getBoldweight() == Font.BOLDWEIGHT_BOLD) {</span>
+<span class="nc" id="L150">			style |= java.awt.Font.BOLD;</span>
+		}
+<span class="nc bnc" id="L152" title="All 2 branches missed.">		if (fontAt.getItalic()) {</span>
+<span class="nc" id="L153">			style |= java.awt.Font.ITALIC;</span>
+		}
+<span class="nc" id="L155">		return new java.awt.Font(fontAt.getFontName(), style, pointsToPixels(fontAt.getFontHeight()));</span>
+	}
+	
+	private VerticalAlignment createVerticalAlignment(final short alignment) {
+<span class="nc bnc" id="L159" title="All 4 branches missed.">		switch ( alignment ) {</span>
+			case CellStyle.VERTICAL_CENTER :
+			case CellStyle.VERTICAL_JUSTIFY :
+<span class="nc" id="L162">				return VerticalAlignment.CENTER;</span>
+			case CellStyle.VERTICAL_TOP :
+<span class="nc" id="L164">				return VerticalAlignment.TOP;</span>
+			case CellStyle.VERTICAL_BOTTOM :
+<span class="nc" id="L166">				return VerticalAlignment.BOTTOM;</span>
+			default :
+<span class="nc" id="L168">				return VerticalAlignment.CENTER;</span>
+		}
+	}
+	
+	private HorizontalAlignment createHorizontalAlignment(final short alignment) {
+<span class="nc bnc" id="L173" title="All 4 branches missed.">		switch ( alignment ) {</span>
+			case CellStyle.ALIGN_CENTER :
+			case CellStyle.ALIGN_CENTER_SELECTION :
+			case CellStyle.ALIGN_JUSTIFY :
+<span class="nc" id="L177">				return HorizontalAlignment.CENTER;</span>
+			case CellStyle.ALIGN_LEFT :
+<span class="nc" id="L179">				return HorizontalAlignment.LEFT;</span>
+			case CellStyle.ALIGN_RIGHT :
+<span class="nc" id="L181">				return HorizontalAlignment.RIGHT;</span>
+			case CellStyle.ALIGN_GENERAL :
+			case CellStyle.ALIGN_FILL :
+			default :
+<span class="nc" id="L185">				return HorizontalAlignment.LEFT;</span>
+		}
+	}
+	
+	private void createBorderInfo(final List&lt;BorderInfo&gt; borderInfos, final PositionType position, final short border) {
+<span class="nc bnc" id="L190" title="All 15 branches missed.">		switch ( border ) {</span>
+			case CellStyle.BORDER_NONE :
+<span class="nc" id="L192">				break;</span>
+			case CellStyle.BORDER_THIN :
+<span class="nc" id="L194">				borderInfos.add(new BorderInfo(position, LineStyleType.CONTINUOUS, LineWeight.THIN));</span>
+<span class="nc" id="L195">				break;</span>
+			case CellStyle.BORDER_MEDIUM :
+<span class="nc" id="L197">				borderInfos.add(new BorderInfo(position, LineStyleType.CONTINUOUS, LineWeight.MEDIUM));</span>
+<span class="nc" id="L198">				break;</span>
+			case CellStyle.BORDER_DASHED :
+<span class="nc" id="L200">				borderInfos.add(new BorderInfo(position, LineStyleType.CONTINUOUS, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L201">				break;</span>
+			case CellStyle.BORDER_HAIR :
+<span class="nc" id="L203">				borderInfos.add(new BorderInfo(position, LineStyleType.CONTINUOUS, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L204">				break;</span>
+			case CellStyle.BORDER_THICK :
+<span class="nc" id="L206">				borderInfos.add(new BorderInfo(position, LineStyleType.CONTINUOUS, LineWeight.THICK));</span>
+<span class="nc" id="L207">				break;</span>
+			case CellStyle.BORDER_DOUBLE :
+<span class="nc" id="L209">				borderInfos.add(new BorderInfo(position, LineStyleType.DOUBLE, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L210">				break;</span>
+			case CellStyle.BORDER_DOTTED :
+<span class="nc" id="L212">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L213">				break;</span>
+			case CellStyle.BORDER_MEDIUM_DASHED :
+<span class="nc" id="L215">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L216">				break;</span>
+			case CellStyle.BORDER_DASH_DOT :
+<span class="nc" id="L218">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L219">				break;</span>
+			case CellStyle.BORDER_MEDIUM_DASH_DOT :
+<span class="nc" id="L221">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L222">				break;</span>
+			case CellStyle.BORDER_DASH_DOT_DOT :
+<span class="nc" id="L224">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L225">				break;</span>
+			case CellStyle.BORDER_MEDIUM_DASH_DOT_DOT :
+<span class="nc" id="L227">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L228">				break;</span>
+			case CellStyle.BORDER_SLANTED_DASH_DOT :
+<span class="nc" id="L230">				borderInfos.add(new BorderInfo(position, LineStyleType.DOTTED, LineWeight.HAIRLINE));</span>
+<span class="nc" id="L231">				break;</span>
+			default :
+				break;
+		}
+<span class="nc" id="L235">	}</span>
+	
+	private Dimension inquirePageSize(final PrintSetup printSetup) {
+<span class="nc" id="L238">		MediaSizeName mediaSizeName = MediaSizeName.ISO_A4;</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">		if (printSetup.getPaperSize() == PrintSetup.A4_PAPERSIZE) {</span>
+<span class="nc" id="L240">			mediaSizeName = MediaSizeName.ISO_A4;</span>
+		}
+<span class="nc bnc" id="L242" title="All 2 branches missed.">		if (printSetup.getPaperSize() == PrintSetup.A3_PAPERSIZE) {</span>
+<span class="nc" id="L243">			mediaSizeName = MediaSizeName.ISO_A3;</span>
+		}
+		
+		// 定数定義.
+<span class="nc" id="L247">		final int shortEdgeIndex = 0;</span>
+<span class="nc" id="L248">		final int longEdgeIndex = 1;</span>
+<span class="nc" id="L249">		final int unit = Size2DSyntax.MM;</span>
+		// 用紙辺長さ取得.
+<span class="nc" id="L251">		final MediaSize paperSize = MediaSize.getMediaSizeForName(mediaSizeName);</span>
+<span class="nc" id="L252">		final float[] edgeLength = paperSize.getSize(unit);</span>
+<span class="nc" id="L253">		final int shortEdge = (int) Math.floor(millimetersToPixels(edgeLength[shortEdgeIndex]));</span>
+<span class="nc" id="L254">		final int longEdge = (int) Math.floor(millimetersToPixels(edgeLength[longEdgeIndex]));</span>
+		// ページサイズ算出.
+		int width;
+		int height;
+<span class="nc bnc" id="L258" title="All 2 branches missed.">		if (printSetup.getLandscape()) {</span>
+<span class="nc" id="L259">			width = longEdge;</span>
+<span class="nc" id="L260">			height = shortEdge;</span>
+		}
+		else {
+<span class="nc" id="L263">			width = shortEdge;</span>
+<span class="nc" id="L264">			height = longEdge;</span>
+		}
+<span class="nc" id="L266">		return new Dimension(width, height);</span>
+	}
+	
+	static double inchesToPixels(final double inches) {
+<span class="nc" id="L270">		return inches * 72;</span>
+	}
+	
+	private int pointsToPixelsWidth(final int width) {
+<span class="nc" id="L274">		return width / 40;</span>
+	}
+	
+	static int pointsToPixelsHeight(final int height) {
+<span class="nc" id="L278">		return height / 20;</span>
+	}
+	
+	static int pointsToPixels(final int height) {
+<span class="nc" id="L282">		return height / 20;</span>
+	}
+	
+	static double millimetersToPixels(final double millimeters) {
+<span class="nc" id="L286">		return (millimeters * 72) / 25.4d;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

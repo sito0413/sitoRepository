@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ViewCompiler.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler</a> &gt; <span class="el_source">ViewCompiler.java</span></div><h1>ViewCompiler.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler;
+
+import java.io.CharArrayWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.CharBuffer;
+
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.Response;
+import frameWork.base.core.state.State;
+import frameWork.base.core.viewCompiler.parser.ParserBuffer;
+
+<span class="nc" id="L18">public class ViewCompiler {</span>
+	public static void compile(final Response response, final State state) throws IOException, ScriptException {
+<span class="nc" id="L20">		try (final OutputStream responseOutputStream = response.getOutputStream()) {</span>
+<span class="nc" id="L21">			final File targetFile = new File(FileSystem.Viewer, state.getPage().substring(1));</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">			if (targetFile.exists()) {</span>
+<span class="nc" id="L23">				final ViewerWriter out = new ViewerWriter();</span>
+<span class="nc" id="L24">				response.setContentType(&quot;text/html;charset=&quot; + FileSystem.Config.VIEW_CHAREET);</span>
+<span class="nc" id="L25">				final Scope scope = new Scope();</span>
+<span class="nc" id="L26">				scope.put(&quot;out&quot;, out);</span>
+<span class="nc" id="L27">				scope.put(&quot;session&quot;, state.getSession());</span>
+<span class="nc" id="L28">				scope.put(&quot;application&quot;, state.getContext());</span>
+<span class="nc" id="L29">				scope.put(&quot;request&quot;, state.getRequest());</span>
+<span class="nc" id="L30">				parse(targetFile, response, scope);</span>
+<span class="nc" id="L31">				response.setContentLength(out.size());</span>
+<span class="nc" id="L32">				out.writeTo(responseOutputStream);</span>
+			}
+<span class="nc bnc" id="L34" title="All 8 branches missed.">		}</span>
+<span class="nc" id="L35">	}</span>
+	
+	protected static void parse(final File targetFile, final Response response, final Scope scope)
+	        throws ScriptException, FileNotFoundException, IOException {
+<span class="nc" id="L39">		try (final CharArrayWriter writer = new CharArrayWriter()) {</span>
+<span class="nc" id="L40">			final ScriptsBuffer scriptsBuffer = new ScriptsBuffer(</span>
+			        new ParserBuffer(createCharBuffer(targetFile, writer)).toTextlets(scope, response));
+<span class="nc" id="L42">			scriptsBuffer.execute(scope);</span>
+<span class="nc bnc" id="L43" title="All 8 branches missed.">		}</span>
+<span class="nc" id="L44">	}</span>
+	
+	private static CharBuffer createCharBuffer(final File targetFile, final CharArrayWriter writer)
+	        throws FileNotFoundException, IOException {
+		try {
+<span class="nc" id="L49">			writerWrite(targetFile, writer, FileSystem.Config.VIEW_CHAREET);</span>
+		}
+<span class="nc" id="L51">		catch (final UnsupportedEncodingException e) {</span>
+<span class="nc" id="L52">			writerWrite(targetFile, writer, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L53">		}</span>
+<span class="nc" id="L54">		return CharBuffer.wrap(writer.toString());</span>
+	}
+	
+	private static void writerWrite(final File targetFile, final CharArrayWriter writer, final String viewChareet)
+	        throws UnsupportedEncodingException, FileNotFoundException, IOException {
+<span class="nc" id="L59">		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(targetFile), viewChareet)) {</span>
+<span class="nc" id="L60">			final char buf[] = new char[FileSystem.Config.VIEW_SRC_READ_BUFFER_SIZE];</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">			for (int i = 0; (i = reader.read(buf)) != -1;) {</span>
+<span class="nc" id="L62">				writer.write(buf, 0, i);</span>
+			}
+<span class="nc bnc" id="L64" title="All 8 branches missed.">		}</span>
+<span class="nc" id="L65">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

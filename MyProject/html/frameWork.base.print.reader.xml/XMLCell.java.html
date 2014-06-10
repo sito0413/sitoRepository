@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>XMLCell.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.print.reader.xml</a> &gt; <span class="el_source">XMLCell.java</span></div><h1>XMLCell.java</h1><pre class="source lang-java linenums">package frameWork.base.print.reader.xml;
+
+import static frameWork.base.print.reader.xml.UnitConversion.*;
+import static frameWork.base.print.reader.xml.XMLConstants.*;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+/**
+ * セル&lt;br&gt;
+ *
+ * @version 1.0.0
+ * @作成者 津田&lt;br&gt;
+ * @作成日 2009/06/18
+ * @最終更新者 若井&lt;br&gt;
+ * @最終更新日 2009/10/22
+ */
+class XMLCell {
+	
+	/** 位置 */
+	final int index;
+	
+	/** 下方向への結合数 */
+	final int mergeDown;
+	
+	/** 右方向への結合数 */
+	final int mergeAccross;
+	
+	/** スタイルID */
+	final String styleId;
+	
+	/** セルの値 */
+	final String value;
+	
+<span class="nc" id="L35">	XMLCell(final int idx, final Element cellElement) {</span>
+		// インデックス
+<span class="nc" id="L37">		index = (parseInt(cellElement.getAttribute(ATTR_INDEX), idx + 1));</span>
+		// 縦結合.
+<span class="nc" id="L39">		mergeDown = (parseInt(cellElement.getAttribute(ATTR_MERGEDOWN), 0));</span>
+		// 横結合.
+<span class="nc" id="L41">		mergeAccross = (parseInt(cellElement.getAttribute(ATTR_MERGEACROSS), 0));</span>
+		// スタイルID
+<span class="nc" id="L43">		styleId = (cellElement.getAttribute(ATTR_STYLEID));</span>
+		// 値.
+<span class="nc" id="L45">		final NodeList dataNodeList = cellElement.getElementsByTagName(ELM_DATA);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if (dataNodeList.getLength() &gt; 0) {</span>
+<span class="nc" id="L47">			this.value = dataNodeList.item(0).getTextContent();</span>
+		}
+		else {
+<span class="nc" id="L50">			this.value = null;</span>
+		}
+<span class="nc" id="L52">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

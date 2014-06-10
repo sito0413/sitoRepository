@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TimerEventStack.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.event.timerEvent</a> &gt; <span class="el_source">TimerEventStack.java</span></div><h1>TimerEventStack.java</h1><pre class="source lang-java linenums">package frameWork.base.core.event.timerEvent;
+
+import frameWork.base.core.event.TimerEvent;
+
+public class TimerEventStack {
+	private transient TimerEventNode head;
+	private transient TimerEventNode last;
+	
+<span class="fc" id="L9">	public TimerEventStack() {</span>
+<span class="fc" id="L10">		this.last = this.head = new TimerEventNode(null);</span>
+<span class="fc" id="L11">	}</span>
+	
+	public boolean contains(final TimerEvent o) {
+<span class="fc bfc" id="L14" title="All 2 branches covered.">		if (o == null) {</span>
+<span class="fc" id="L15">			return false;</span>
+		}
+<span class="fc" id="L17">		TimerEventNode node = head.next;</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">		while (node != null) {</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">			if (o.equals(node.item)) {</span>
+<span class="fc" id="L20">				return true;</span>
+			}
+<span class="fc" id="L22">			node = node.next;</span>
+		}
+<span class="fc" id="L24">		return false;</span>
+	}
+	
+	public void add(final TimerEvent e) {
+<span class="fc" id="L28">		final TimerEventNode node = new TimerEventNode(e);</span>
+<span class="fc" id="L29">		last.next = node;</span>
+<span class="fc" id="L30">		last = node;</span>
+<span class="fc" id="L31">	}</span>
+	
+	void remove(final TimerEvent o) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		if (o == null) {</span>
+<span class="fc" id="L35">			return;</span>
+		}
+<span class="fc" id="L37">		TimerEventNode preNode = head;</span>
+<span class="fc" id="L38">		TimerEventNode node = head.next;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		while (node != null) {</span>
+<span class="fc" id="L40">			synchronized (this) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">				if (o.equals(node.item)) {</span>
+<span class="fc" id="L42">					preNode.next = node.next;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">					if (last == node) {</span>
+<span class="fc" id="L44">						last = preNode;</span>
+					}
+<span class="fc" id="L46">					return;</span>
+				}
+<span class="pc" id="L48">			}</span>
+<span class="fc" id="L49">			preNode = node;</span>
+<span class="fc" id="L50">			node = node.next;</span>
+		}
+<span class="fc" id="L52">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

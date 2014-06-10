@@ -35,8 +35,8 @@ import frameWork.ExcelUtil;
 import frameWork.SrcUtil;
 import frameWork.architect.Literal;
 import frameWork.base.core.authority.Authority;
+import frameWork.base.core.routing.Router;
 import frameWork.base.core.routing.RoutingHandler;
-import frameWork.base.core.routing.TargetFilter;
 import frameWork.base.core.state.State;
 import frameWork.developer.Constant;
 import frameWork.manager.tab.TabPanel;
@@ -194,7 +194,7 @@ public class Routing extends TabPanel {
 			file.getParentFile().mkdirs();
 		}
 		for (final List<String> list : roles) {
-			final String[] value = TargetFilter.getClassName(list.get(1), '/');
+			final String[] value = Router.getClassName(list.get(1), '/');
 			if (value == null) {
 				continue;
 			}
@@ -293,7 +293,7 @@ public class Routing extends TabPanel {
 			
 			__list = new ArrayList<>();
 			for (final List<String> list : getRouting()) {
-				final String[] value = TargetFilter.getClassName(list.get(1), '.');
+				final String[] value = Router.getClassName(list.get(1), '.');
 				if (value == null) {
 					continue;
 				}

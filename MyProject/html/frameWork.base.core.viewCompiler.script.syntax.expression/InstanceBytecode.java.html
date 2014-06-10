@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>InstanceBytecode.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler.script.syntax.expression</a> &gt; <span class="el_source">InstanceBytecode.java</span></div><h1>InstanceBytecode.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler.script.syntax.expression;
+
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.Bytecode;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+
+@SuppressWarnings(&quot;rawtypes&quot;)
+public class InstanceBytecode extends ExpressionScript implements Bytecode {
+<span class="nc" id="L10">	public static final InstanceBytecode ONE = new InstanceBytecode(int.class, 1);</span>
+<span class="nc" id="L11">	public static final InstanceBytecode ZERO = new InstanceBytecode(int.class, 0);</span>
+	private Class type;
+	private Object value;
+	
+<span class="nc" id="L15">	public InstanceBytecode(final Class type, final Object value) {</span>
+<span class="nc" id="L16">		this.type = type;</span>
+<span class="nc" id="L17">		this.value = value;</span>
+<span class="nc" id="L18">	}</span>
+	
+	@Override
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+<span class="nc" id="L22">		return this;</span>
+	}
+	
+	@Override
+	public Object get() {
+<span class="nc" id="L27">		return value;</span>
+	}
+	
+	public Class&lt;?&gt; type() {
+<span class="nc bnc" id="L31" title="All 2 branches missed.">		if (value == null) {</span>
+<span class="nc" id="L32">			return type;</span>
+		}
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		else if (value instanceof Long) {</span>
+<span class="nc" id="L35">			return long.class;</span>
+		}
+<span class="nc bnc" id="L37" title="All 2 branches missed.">		else if (value instanceof Integer) {</span>
+<span class="nc" id="L38">			return int.class;</span>
+		}
+<span class="nc bnc" id="L40" title="All 2 branches missed.">		else if (value instanceof Short) {</span>
+<span class="nc" id="L41">			return short.class;</span>
+		}
+<span class="nc bnc" id="L43" title="All 2 branches missed.">		else if (value instanceof Byte) {</span>
+<span class="nc" id="L44">			return byte.class;</span>
+		}
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		else if (value instanceof Character) {</span>
+<span class="nc" id="L47">			return char.class;</span>
+		}
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		else if (value instanceof Double) {</span>
+<span class="nc" id="L50">			return double.class;</span>
+		}
+<span class="nc bnc" id="L52" title="All 2 branches missed.">		else if (value instanceof Float) {</span>
+<span class="nc" id="L53">			return float.class;</span>
+		}
+<span class="nc bnc" id="L55" title="All 2 branches missed.">		else if (value instanceof Boolean) {</span>
+<span class="nc" id="L56">			return boolean.class;</span>
+		}
+<span class="nc" id="L58">		return value.getClass();</span>
+	}
+	
+	public InstanceBytecode condition(final Scope scope, final ExpressionScript expressionScript1,
+	        final ExpressionScript expressionScript2) throws ScriptException {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">		if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">			return ((Boolean) value) ? expressionScript1.execute(scope) : expressionScript2.execute(scope);</span>
+		}
+<span class="nc" id="L66">		throw ScriptException.illegalStateException();</span>
+	}
+	
+	public InstanceBytecode operation(final String op) throws ScriptException {
+<span class="nc bnc" id="L70" title="All 18 branches missed.">		switch ( op ) {</span>
+			case &quot;!&quot; :
+<span class="nc bnc" id="L72" title="All 2 branches missed.">				if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">					return new InstanceBytecode(boolean.class, !(Boolean) value);</span>
+				}
+				break;
+			case &quot;~&quot; :
+<span class="nc bnc" id="L77" title="All 2 branches missed.">				if (value instanceof Long) {</span>
+<span class="nc" id="L78">					return new InstanceBytecode(long.class, ~(Long) value);</span>
+				}
+<span class="nc bnc" id="L80" title="All 2 branches missed.">				else if (value instanceof Integer) {</span>
+<span class="nc" id="L81">					return new InstanceBytecode(int.class, ~(Integer) value);</span>
+				}
+<span class="nc bnc" id="L83" title="All 2 branches missed.">				else if (value instanceof Short) {</span>
+<span class="nc" id="L84">					return new InstanceBytecode(int.class, ~(Short) value);</span>
+				}
+<span class="nc bnc" id="L86" title="All 2 branches missed.">				else if (value instanceof Byte) {</span>
+<span class="nc" id="L87">					return new InstanceBytecode(int.class, ~(Byte) value);</span>
+				}
+<span class="nc bnc" id="L89" title="All 2 branches missed.">				else if (value instanceof Character) {</span>
+<span class="nc" id="L90">					return new InstanceBytecode(int.class, ~(Character) value);</span>
+				}
+				break;
+			case &quot;++&quot; :
+<span class="nc bnc" id="L94" title="All 2 branches missed.">				if (value instanceof Long) {</span>
+<span class="nc" id="L95">					final InstanceBytecode bytecode = new InstanceBytecode(long.class, value);</span>
+<span class="nc" id="L96">					value = ((Long) value) + 1;</span>
+<span class="nc" id="L97">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L99" title="All 2 branches missed.">				else if (value instanceof Integer) {</span>
+<span class="nc" id="L100">					final InstanceBytecode bytecode = new InstanceBytecode(int.class, value);</span>
+<span class="nc" id="L101">					value = ((Integer) value) + 1;</span>
+<span class="nc" id="L102">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L104" title="All 2 branches missed.">				else if (value instanceof Short) {</span>
+<span class="nc" id="L105">					final InstanceBytecode bytecode = new InstanceBytecode(short.class, value);</span>
+<span class="nc" id="L106">					value = ((Short) value) + 1;</span>
+<span class="nc" id="L107">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L109" title="All 2 branches missed.">				else if (value instanceof Byte) {</span>
+<span class="nc" id="L110">					final InstanceBytecode bytecode = new InstanceBytecode(byte.class, value);</span>
+<span class="nc" id="L111">					value = ((Byte) value) + 1;</span>
+<span class="nc" id="L112">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L114" title="All 2 branches missed.">				else if (value instanceof Character) {</span>
+<span class="nc" id="L115">					final InstanceBytecode bytecode = new InstanceBytecode(char.class, value);</span>
+<span class="nc" id="L116">					value = ((Character) value) - 1;</span>
+<span class="nc" id="L117">					return bytecode;</span>
+				}
+				break;
+			case &quot;--&quot; :
+<span class="nc bnc" id="L121" title="All 2 branches missed.">				if (value instanceof Long) {</span>
+<span class="nc" id="L122">					final InstanceBytecode bytecode = new InstanceBytecode(long.class, value);</span>
+<span class="nc" id="L123">					value = ((Long) value) - 1;</span>
+<span class="nc" id="L124">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L126" title="All 2 branches missed.">				else if (value instanceof Integer) {</span>
+<span class="nc" id="L127">					final InstanceBytecode bytecode = new InstanceBytecode(int.class, value);</span>
+<span class="nc" id="L128">					value = ((Integer) value) - 1;</span>
+<span class="nc" id="L129">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L131" title="All 2 branches missed.">				else if (value instanceof Short) {</span>
+<span class="nc" id="L132">					final InstanceBytecode bytecode = new InstanceBytecode(short.class, value);</span>
+<span class="nc" id="L133">					value = ((Short) value) - 1;</span>
+<span class="nc" id="L134">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L136" title="All 2 branches missed.">				else if (value instanceof Byte) {</span>
+<span class="nc" id="L137">					final InstanceBytecode bytecode = new InstanceBytecode(byte.class, value);</span>
+<span class="nc" id="L138">					value = ((Byte) value) - 1;</span>
+<span class="nc" id="L139">					return bytecode;</span>
+				}
+<span class="nc bnc" id="L141" title="All 2 branches missed.">				else if (value instanceof Character) {</span>
+<span class="nc" id="L142">					final InstanceBytecode bytecode = new InstanceBytecode(char.class, value);</span>
+<span class="nc" id="L143">					value = ((Character) value) - 1;</span>
+<span class="nc" id="L144">					return bytecode;</span>
+				}
+				break;
+		}
+<span class="nc" id="L148">		throw ScriptException.illegalStateException();</span>
+	}
+	
+	public InstanceBytecode operation(final String op, final ExpressionScript expressionScript2, final Scope scope)
+	        throws ScriptException {
+<span class="nc bnc" id="L153" title="All 67 branches missed.">		switch ( op ) {</span>
+			case &quot;=&quot; :
+<span class="nc" id="L155">				final InstanceBytecode bytecode = expressionScript2.execute(scope);</span>
+<span class="nc" id="L156">				type = bytecode.type();</span>
+<span class="nc" id="L157">				value = bytecode.get();</span>
+<span class="nc" id="L158">				return bytecode;</span>
+				
+			case &quot;||&quot; :
+<span class="nc bnc" id="L161" title="All 2 branches missed.">				if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">					if ((Boolean) value) {</span>
+<span class="nc" id="L163">						return new InstanceBytecode(boolean.class, true);</span>
+					}
+<span class="nc" id="L165">					return expressionScript2.execute(scope);</span>
+				}
+				break;
+			case &quot;&amp;&amp;&quot; :
+<span class="nc bnc" id="L169" title="All 2 branches missed.">				if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">					if (!(Boolean) value) {</span>
+<span class="nc" id="L171">						return new InstanceBytecode(boolean.class, false);</span>
+					}
+<span class="nc" id="L173">					return expressionScript2.execute(scope);</span>
+				}
+				break;
+			
+			case &quot;&lt;&quot; :
+			case &quot;&gt;&quot; :
+			case &quot;&lt;=&quot; :
+			case &quot;&gt;=&quot; :
+			case &quot;==&quot; :
+			case &quot;!=&quot; :
+<span class="nc" id="L183">				return new InstanceBytecode(boolean.class, expressionScript2.execute(scope).logic(op, value));</span>
+				
+			case &quot;|&quot; :
+			case &quot;&amp;&quot; :
+			case &quot;^&quot; :
+			case &quot;+&quot; :
+			case &quot;-&quot; :
+			case &quot;/&quot; :
+			case &quot;*&quot; :
+			case &quot;%&quot; :
+			case &quot;&lt;&lt;&quot; :
+			case &quot;&gt;&gt;&quot; :
+			case &quot;&gt;&gt;&gt;&quot; :
+<span class="nc" id="L196">				return expressionScript2.execute(scope).operation(op, value);</span>
+			default :
+				break;
+		}
+<span class="nc" id="L200">		throw ScriptException.illegalStateException();</span>
+	}
+	
+	public boolean logic(final String op, final Object obj) throws ScriptException {
+<span class="nc bnc" id="L204" title="All 2 branches missed.">		if (value instanceof Long) {</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L206">				return logic(op, (Long) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L208" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L209">				return logic(op, (Integer) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L211" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L212">				return logic(op, (Short) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L215">				return logic(op, (Byte) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L217" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L218">				return logic(op, (Character) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L220" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L221">				return logic(op, (Double) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L223" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L224">				return logic(op, (Float) obj, (Long) value);</span>
+			}
+		}
+<span class="nc bnc" id="L227" title="All 2 branches missed.">		else if (value instanceof Integer) {</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L229">				return logic(op, (Long) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L231" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L232">				return logic(op, (Integer) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L234" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L235">				return logic(op, (Short) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L237" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L238">				return logic(op, (Byte) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L240" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L241">				return logic(op, (Character) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L243" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L244">				return logic(op, (Double) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L246" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L247">				return logic(op, (Float) obj, (Integer) value);</span>
+			}
+		}
+<span class="nc bnc" id="L250" title="All 2 branches missed.">		else if (value instanceof Short) {</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L252">				return logic(op, (Long) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L254" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L255">				return logic(op, (Integer) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L257" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L258">				return logic(op, (Short) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L260" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L261">				return logic(op, (Byte) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L263" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L264">				return logic(op, (Character) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L266" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L267">				return logic(op, (Double) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L269" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L270">				return logic(op, (Float) obj, (Short) value);</span>
+			}
+		}
+<span class="nc bnc" id="L273" title="All 2 branches missed.">		else if (value instanceof Byte) {</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L275">				return logic(op, (Long) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L277" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L278">				return logic(op, (Integer) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L280" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L281">				return logic(op, (Short) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L283" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L284">				return logic(op, (Byte) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L286" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L287">				return logic(op, (Character) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L289" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L290">				return logic(op, (Double) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L292" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L293">				return logic(op, (Float) obj, (Byte) value);</span>
+			}
+		}
+<span class="nc bnc" id="L296" title="All 2 branches missed.">		else if (value instanceof Character) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L298">				return logic(op, (Long) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L300" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L301">				return logic(op, (Integer) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L303" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L304">				return logic(op, (Short) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L306" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L307">				return logic(op, (Byte) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L309" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L310">				return logic(op, (Character) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L312" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L313">				return logic(op, (Double) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L315" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L316">				return logic(op, (Float) obj, (Character) value);</span>
+			}
+		}
+<span class="nc bnc" id="L319" title="All 2 branches missed.">		else if (value instanceof Double) {</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L321">				return logic(op, (Long) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L323" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L324">				return logic(op, (Integer) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L326" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L327">				return logic(op, (Short) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L329" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L330">				return logic(op, (Byte) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L332" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L333">				return logic(op, (Character) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L335" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L336">				return logic(op, (Double) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L338" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L339">				return logic(op, (Float) obj, (Double) value);</span>
+			}
+		}
+<span class="nc bnc" id="L342" title="All 2 branches missed.">		else if (value instanceof Float) {</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L344">				return logic(op, (Long) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L346" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L347">				return logic(op, (Integer) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L349" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L350">				return logic(op, (Short) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L352" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L353">				return logic(op, (Byte) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L355" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L356">				return logic(op, (Character) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L358" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L359">				return logic(op, (Double) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L361" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L362">				return logic(op, (Float) obj, (Float) value);</span>
+			}
+		}
+<span class="nc bnc" id="L365" title="All 2 branches missed.">		else if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">			if (obj instanceof Boolean) {</span>
+<span class="nc" id="L367">				return logic(op, (Boolean) obj, (Boolean) value);</span>
+			}
+		}
+		//NOT ELSE
+		{
+<span class="nc" id="L372">			final Object value1 = obj;</span>
+<span class="nc" id="L373">			final Object value2 = value;</span>
+<span class="nc bnc" id="L374" title="All 10 branches missed.">			switch ( op ) {</span>
+				case &quot;==&quot; :
+<span class="nc bnc" id="L376" title="All 2 branches missed.">					return value1 == value2;</span>
+				case &quot;!=&quot; :
+<span class="nc bnc" id="L378" title="All 2 branches missed.">					return value1 != value2;</span>
+				default :
+<span class="nc" id="L380">					throw ScriptException.illegalStateException();</span>
+			}
+		}
+	}
+	
+	private boolean logic(final String op, final boolean value1, final boolean value2) throws ScriptException {
+<span class="nc bnc" id="L386" title="All 10 branches missed.">		switch ( op ) {</span>
+			case &quot;==&quot; :
+<span class="nc bnc" id="L388" title="All 2 branches missed.">				return value1 == value2;</span>
+			case &quot;!=&quot; :
+<span class="nc bnc" id="L390" title="All 2 branches missed.">				return value1 != value2;</span>
+			default :
+<span class="nc" id="L392">				throw ScriptException.illegalStateException();</span>
+		}
+		
+	}
+	
+	private boolean logic(final String op, final double value1, final double value2) throws ScriptException {
+<span class="nc bnc" id="L398" title="All 26 branches missed.">		switch ( op ) {</span>
+			case &quot;&lt;&quot; :
+<span class="nc bnc" id="L400" title="All 2 branches missed.">				return value1 &lt; value2;</span>
+			case &quot;&gt;&quot; :
+<span class="nc bnc" id="L402" title="All 2 branches missed.">				return value1 &gt; value2;</span>
+			case &quot;&lt;=&quot; :
+<span class="nc bnc" id="L404" title="All 2 branches missed.">				return value1 &lt;= value2;</span>
+			case &quot;&gt;=&quot; :
+<span class="nc bnc" id="L406" title="All 2 branches missed.">				return value1 &gt;= value2;</span>
+			case &quot;==&quot; :
+<span class="nc bnc" id="L408" title="All 2 branches missed.">				return value1 == value2;</span>
+			case &quot;!=&quot; :
+<span class="nc bnc" id="L410" title="All 2 branches missed.">				return value1 != value2;</span>
+			default :
+<span class="nc" id="L412">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private boolean logic(final String op, final long value1, final long value2) throws ScriptException {
+<span class="nc bnc" id="L417" title="All 26 branches missed.">		switch ( op ) {</span>
+			case &quot;&lt;&quot; :
+<span class="nc bnc" id="L419" title="All 2 branches missed.">				return value1 &lt; value2;</span>
+			case &quot;&gt;&quot; :
+<span class="nc bnc" id="L421" title="All 2 branches missed.">				return value1 &gt; value2;</span>
+			case &quot;&lt;=&quot; :
+<span class="nc bnc" id="L423" title="All 2 branches missed.">				return value1 &lt;= value2;</span>
+			case &quot;&gt;=&quot; :
+<span class="nc bnc" id="L425" title="All 2 branches missed.">				return value1 &gt;= value2;</span>
+			case &quot;==&quot; :
+<span class="nc bnc" id="L427" title="All 2 branches missed.">				return value1 == value2;</span>
+			case &quot;!=&quot; :
+<span class="nc bnc" id="L429" title="All 2 branches missed.">				return value1 != value2;</span>
+			default :
+<span class="nc" id="L431">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	public InstanceBytecode operation(final String op, final Object obj) throws ScriptException {
+<span class="nc bnc" id="L436" title="All 2 branches missed.">		if (value instanceof Long) {</span>
+<span class="nc bnc" id="L437" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L438">				return operation(op, (Long) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L440" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L441">				return operation(op, (Integer) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L443" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L444">				return operation(op, (Short) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L446" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L447">				return operation(op, (Byte) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L449" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L450">				return operation(op, (Character) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L452" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L453">				return operation(op, (Double) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L455" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L456">				return operation(op, (Float) obj, (Long) value);</span>
+			}
+<span class="nc bnc" id="L458" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L459">				return operation(op, (String) obj, (Long) value);</span>
+			}
+		}
+<span class="nc bnc" id="L462" title="All 2 branches missed.">		else if (value instanceof Integer) {</span>
+<span class="nc bnc" id="L463" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L464">				return operation(op, (Long) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L466" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L467">				return operation(op, (Integer) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L469" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L470">				return operation(op, (Short) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L472" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L473">				return operation(op, (Byte) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L475" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L476">				return operation(op, (Character) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L478" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L479">				return operation(op, (Double) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L481" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L482">				return operation(op, (Float) obj, (Integer) value);</span>
+			}
+<span class="nc bnc" id="L484" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L485">				return operation(op, (String) obj, (Integer) value);</span>
+			}
+		}
+<span class="nc bnc" id="L488" title="All 2 branches missed.">		else if (value instanceof Short) {</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L490">				return operation(op, (Long) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L492" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L493">				return operation(op, (Integer) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L495" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L496">				return operation(op, (Short) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L498" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L499">				return operation(op, (Byte) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L501" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L502">				return operation(op, (Character) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L504" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L505">				return operation(op, (Double) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L507" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L508">				return operation(op, (Float) obj, (Short) value);</span>
+			}
+<span class="nc bnc" id="L510" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L511">				return operation(op, (String) obj, (Short) value);</span>
+			}
+		}
+<span class="nc bnc" id="L514" title="All 2 branches missed.">		else if (value instanceof Byte) {</span>
+<span class="nc bnc" id="L515" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L516">				return operation(op, (Long) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L518" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L519">				return operation(op, (Integer) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L521" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L522">				return operation(op, (Short) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L524" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L525">				return operation(op, (Byte) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L527" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L528">				return operation(op, (Character) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L530" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L531">				return operation(op, (Double) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L533" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L534">				return operation(op, (Float) obj, (Byte) value);</span>
+			}
+<span class="nc bnc" id="L536" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L537">				return operation(op, (String) obj, (Byte) value);</span>
+			}
+		}
+<span class="nc bnc" id="L540" title="All 2 branches missed.">		else if (value instanceof Character) {</span>
+<span class="nc bnc" id="L541" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L542">				return operation(op, (Long) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L544" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L545">				return operation(op, (Integer) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L547" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L548">				return operation(op, (Short) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L550" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L551">				return operation(op, (Byte) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L553" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L554">				return operation(op, (Character) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L556" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L557">				return operation(op, (Double) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L559" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L560">				return operation(op, (Float) obj, (Character) value);</span>
+			}
+<span class="nc bnc" id="L562" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L563">				return operation(op, (String) obj, (Character) value);</span>
+			}
+		}
+<span class="nc bnc" id="L566" title="All 2 branches missed.">		else if (value instanceof Double) {</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L568">				return operation(op, (Long) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L570" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L571">				return operation(op, (Integer) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L573" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L574">				return operation(op, (Short) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L576" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L577">				return operation(op, (Byte) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L579" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L580">				return operation(op, (Character) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L582" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L583">				return operation(op, (Double) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L585" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L586">				return operation(op, (Float) obj, (Double) value);</span>
+			}
+<span class="nc bnc" id="L588" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L589">				return operation(op, (String) obj, (Double) value);</span>
+			}
+		}
+<span class="nc bnc" id="L592" title="All 2 branches missed.">		else if (value instanceof Float) {</span>
+<span class="nc bnc" id="L593" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L594">				return operation(op, (Long) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L596" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L597">				return operation(op, (Integer) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L599" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L600">				return operation(op, (Short) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L602" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L603">				return operation(op, (Byte) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L605" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L606">				return operation(op, (Character) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L608" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L609">				return operation(op, (Double) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L611" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L612">				return operation(op, (Float) obj, (Float) value);</span>
+			}
+<span class="nc bnc" id="L614" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L615">				return operation(op, (String) obj, (Float) value);</span>
+			}
+		}
+<span class="nc bnc" id="L618" title="All 2 branches missed.">		else if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L619" title="All 2 branches missed.">			if (obj instanceof Boolean) {</span>
+<span class="nc" id="L620">				return operation(op, (Boolean) obj, (Boolean) value);</span>
+			}
+<span class="nc bnc" id="L622" title="All 2 branches missed.">			else if (obj instanceof String) {</span>
+<span class="nc" id="L623">				return operation(op, (String) obj, (Boolean) value);</span>
+			}
+		}
+<span class="nc bnc" id="L626" title="All 2 branches missed.">		else if (value instanceof String) {</span>
+<span class="nc bnc" id="L627" title="All 2 branches missed.">			if (obj instanceof Long) {</span>
+<span class="nc" id="L628">				return operation(op, (Long) obj, (String) value);</span>
+			}
+<span class="nc bnc" id="L630" title="All 2 branches missed.">			else if (obj instanceof Integer) {</span>
+<span class="nc" id="L631">				return operation(op, (Integer) obj, (String) value);</span>
+			}
+<span class="nc bnc" id="L633" title="All 2 branches missed.">			else if (obj instanceof Short) {</span>
+<span class="nc" id="L634">				return operation(op, (Short) obj, (String) value);</span>
+			}
+<span class="nc bnc" id="L636" title="All 2 branches missed.">			else if (obj instanceof Byte) {</span>
+<span class="nc" id="L637">				return operation(op, (Byte) obj, (String) value);</span>
+			}
+<span class="nc bnc" id="L639" title="All 2 branches missed.">			else if (obj instanceof Character) {</span>
+<span class="nc" id="L640">				return operation(op, (Character) obj, (String) value);</span>
+			}
+<span class="nc bnc" id="L642" title="All 2 branches missed.">			else if (obj instanceof Double) {</span>
+<span class="nc" id="L643">				return operation(op, (Double) obj, (String) value);</span>
+			}
+<span class="nc bnc" id="L645" title="All 2 branches missed.">			else if (obj instanceof Float) {</span>
+<span class="nc" id="L646">				return operation(op, (Float) obj, (String) value);</span>
+			}
+			else {
+<span class="nc" id="L649">				return operation(op, obj, (String) value);</span>
+			}
+		}
+		else {
+<span class="nc bnc" id="L653" title="All 2 branches missed.">			if (obj instanceof String) {</span>
+<span class="nc" id="L654">				return operation(op, (String) obj, value);</span>
+			}
+		}
+<span class="nc" id="L657">		throw ScriptException.illegalStateException();</span>
+	}
+	
+	private InstanceBytecode operation(final String op, final String value1, final Object value2)
+	        throws ScriptException {
+<span class="nc bnc" id="L662" title="All 6 branches missed.">		switch ( op ) {</span>
+			case &quot;+&quot; :
+<span class="nc" id="L664">				return new InstanceBytecode(String.class, value1 + value2);</span>
+			default :
+<span class="nc" id="L666">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private InstanceBytecode operation(final String op, final Object value1, final String value2)
+	        throws ScriptException {
+<span class="nc bnc" id="L672" title="All 6 branches missed.">		switch ( op ) {</span>
+			case &quot;+&quot; :
+<span class="nc" id="L674">				return new InstanceBytecode(String.class, value1 + value2);</span>
+			default :
+<span class="nc" id="L676">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private InstanceBytecode operation(final String op, final boolean value1, final boolean value2)
+	        throws ScriptException {
+<span class="nc bnc" id="L682" title="All 14 branches missed.">		switch ( op ) {</span>
+			case &quot;|&quot; :
+<span class="nc" id="L684">				return new InstanceBytecode(boolean.class, value1 | value2);</span>
+			case &quot;&amp;&quot; :
+<span class="nc" id="L686">				return new InstanceBytecode(boolean.class, value1 &amp; value2);</span>
+			case &quot;^&quot; :
+<span class="nc" id="L688">				return new InstanceBytecode(boolean.class, value1 ^ value2);</span>
+			default :
+<span class="nc" id="L690">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private InstanceBytecode operation(final String op, final float value1, final float value2) throws ScriptException {
+<span class="nc bnc" id="L695" title="All 22 branches missed.">		switch ( op ) {</span>
+			case &quot;+&quot; :
+<span class="nc" id="L697">				return new InstanceBytecode(float.class, value1 + value2);</span>
+			case &quot;-&quot; :
+<span class="nc" id="L699">				return new InstanceBytecode(float.class, value1 - value2);</span>
+			case &quot;/&quot; :
+<span class="nc" id="L701">				return new InstanceBytecode(float.class, value1 / value2);</span>
+			case &quot;*&quot; :
+<span class="nc" id="L703">				return new InstanceBytecode(float.class, value1 * value2);</span>
+			case &quot;%&quot; :
+<span class="nc" id="L705">				return new InstanceBytecode(float.class, value1 % value2);</span>
+			default :
+<span class="nc" id="L707">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private InstanceBytecode operation(final String op, final double value1, final double value2)
+	        throws ScriptException {
+<span class="nc bnc" id="L713" title="All 22 branches missed.">		switch ( op ) {</span>
+			case &quot;+&quot; :
+<span class="nc" id="L715">				return new InstanceBytecode(double.class, value1 + value2);</span>
+			case &quot;-&quot; :
+<span class="nc" id="L717">				return new InstanceBytecode(double.class, value1 - value2);</span>
+			case &quot;/&quot; :
+<span class="nc" id="L719">				return new InstanceBytecode(double.class, value1 / value2);</span>
+			case &quot;*&quot; :
+<span class="nc" id="L721">				return new InstanceBytecode(double.class, value1 * value2);</span>
+			case &quot;%&quot; :
+<span class="nc" id="L723">				return new InstanceBytecode(double.class, value1 % value2);</span>
+			default :
+<span class="nc" id="L725">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private InstanceBytecode operation(final String op, final int value1, final int value2) throws ScriptException {
+<span class="nc bnc" id="L730" title="All 46 branches missed.">		switch ( op ) {</span>
+			case &quot;+&quot; :
+<span class="nc" id="L732">				return new InstanceBytecode(int.class, value1 + value2);</span>
+			case &quot;-&quot; :
+<span class="nc" id="L734">				return new InstanceBytecode(int.class, value1 - value2);</span>
+			case &quot;/&quot; :
+<span class="nc" id="L736">				return new InstanceBytecode(int.class, value1 / value2);</span>
+			case &quot;*&quot; :
+<span class="nc" id="L738">				return new InstanceBytecode(int.class, value1 * value2);</span>
+			case &quot;%&quot; :
+<span class="nc" id="L740">				return new InstanceBytecode(int.class, value1 % value2);</span>
+			case &quot;|&quot; :
+<span class="nc" id="L742">				return new InstanceBytecode(int.class, value1 | value2);</span>
+			case &quot;&amp;&quot; :
+<span class="nc" id="L744">				return new InstanceBytecode(int.class, value1 &amp; value2);</span>
+			case &quot;^&quot; :
+<span class="nc" id="L746">				return new InstanceBytecode(int.class, value1 ^ value2);</span>
+			case &quot;&lt;&lt;&quot; :
+<span class="nc" id="L748">				return new InstanceBytecode(int.class, value1 &lt;&lt; value2);</span>
+			case &quot;&gt;&gt;&quot; :
+<span class="nc" id="L750">				return new InstanceBytecode(int.class, value1 &gt;&gt; value2);</span>
+			case &quot;&gt;&gt;&gt;&quot; :
+<span class="nc" id="L752">				return new InstanceBytecode(int.class, value1 &gt;&gt;&gt; value2);</span>
+			default :
+<span class="nc" id="L754">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	private InstanceBytecode operation(final String op, final long value1, final long value2) throws ScriptException {
+<span class="nc bnc" id="L759" title="All 46 branches missed.">		switch ( op ) {</span>
+			case &quot;+&quot; :
+<span class="nc" id="L761">				return new InstanceBytecode(long.class, value1 + value2);</span>
+			case &quot;-&quot; :
+<span class="nc" id="L763">				return new InstanceBytecode(long.class, value1 - value2);</span>
+			case &quot;/&quot; :
+<span class="nc" id="L765">				return new InstanceBytecode(long.class, value1 / value2);</span>
+			case &quot;*&quot; :
+<span class="nc" id="L767">				return new InstanceBytecode(long.class, value1 * value2);</span>
+			case &quot;%&quot; :
+<span class="nc" id="L769">				return new InstanceBytecode(long.class, value1 % value2);</span>
+			case &quot;|&quot; :
+<span class="nc" id="L771">				return new InstanceBytecode(long.class, value1 | value2);</span>
+			case &quot;&amp;&quot; :
+<span class="nc" id="L773">				return new InstanceBytecode(long.class, value1 &amp; value2);</span>
+			case &quot;^&quot; :
+<span class="nc" id="L775">				return new InstanceBytecode(long.class, value1 ^ value2);</span>
+			case &quot;&lt;&lt;&quot; :
+<span class="nc" id="L777">				return new InstanceBytecode(long.class, value1 &lt;&lt; value2);</span>
+			case &quot;&gt;&gt;&quot; :
+<span class="nc" id="L779">				return new InstanceBytecode(long.class, value1 &gt;&gt; value2);</span>
+			case &quot;&gt;&gt;&gt;&quot; :
+<span class="nc" id="L781">				return new InstanceBytecode(long.class, value1 &gt;&gt;&gt; value2);</span>
+			default :
+<span class="nc" id="L783">				throw ScriptException.illegalStateException();</span>
+		}
+	}
+	
+	@Override
+	public boolean isBreak() {
+<span class="nc" id="L789">		return false;</span>
+	}
+	
+	@Override
+	public boolean isContinue() {
+<span class="nc" id="L794">		return false;</span>
+	}
+	
+	public boolean getBoolean() throws ScriptException {
+<span class="nc bnc" id="L798" title="All 2 branches missed.">		if (value instanceof Boolean) {</span>
+<span class="nc" id="L799">			return ((Boolean) value);</span>
+		}
+<span class="nc" id="L801">		throw ScriptException.illegalStateException();</span>
+	}
+	
+	public int getInteger() throws ScriptException {
+<span class="nc bnc" id="L805" title="All 2 branches missed.">		if (value instanceof Integer) {</span>
+<span class="nc" id="L806">			return (Integer) value;</span>
+		}
+<span class="nc bnc" id="L808" title="All 2 branches missed.">		else if (value instanceof Short) {</span>
+<span class="nc" id="L809">			return (Short) value;</span>
+		}
+<span class="nc bnc" id="L811" title="All 2 branches missed.">		else if (value instanceof Byte) {</span>
+<span class="nc" id="L812">			return (Byte) value;</span>
+		}
+<span class="nc bnc" id="L814" title="All 2 branches missed.">		else if (value instanceof Character) {</span>
+<span class="nc" id="L815">			return (Character) value;</span>
+		}
+<span class="nc" id="L817">		throw ScriptException.illegalStateException();</span>
+	}
+	
+	@Override
+	public String toNameString() {
+<span class="nc" id="L822">		return String.valueOf(value);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

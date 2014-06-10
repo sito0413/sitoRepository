@@ -11,76 +11,92 @@ import frameWork.architect.Literal;
 public class FileSystem {
 	public static final String SystemID;
 	public static final File Root;
-	public static Temp Temp;
-	public static FileElement Database;
-	public static Resource Data;
-	public static FileElement Viewer;
-	public static FileElement Print;
-	public static Resource Resource;
-	public static Config Config;
-	public static Log Log;
+	public static final Temp Temp;
+	public static final FileElement Database;
+	public static final Resource Data;
+	public static final FileElement Viewer;
+	public static final FileElement Print;
+	public static final Resource Resource;
+	public static final Config Config;
+	public static final Log Log;
 	static {
 		File dir;
-		String systemIDString = Literal.Temp;
+		File path = null;
+		String systemIDString = null;
 		try {
-			File path;
-			final Properties properties = new Properties();
-			final URL url = FileSystem.class.getClassLoader().getResource(Literal.info_xml);
-			if (url != null) {
-				final URLConnection connection = url.openConnection();
-				if (connection != null) {
-					properties.loadFromXML(connection.getInputStream());
-				}
-			}
-			final String pathString = properties.getProperty(Literal.Path);
-			if (pathString != null) {
-				path = new File(pathString);
-				if (path.exists() && path.isFile()) {
-					path = new File(Literal.Root);
-					
-				}
-				else if (!path.exists()) {
-					path.mkdirs();
-				}
-			}
-			else {
-				path = new File(Literal.Root);
-			}
-			systemIDString = properties.getProperty(Literal.SystemID);
-			if (systemIDString != null) {
-				dir = new File(path, systemIDString);
-				if (dir.exists() && dir.isFile()) {
-					dir = new File(path, Literal.Temp);
-					if (!dir.exists()) {
-						dir.mkdirs();
-					}
-				}
-				else if (!dir.exists()) {
-					dir.mkdirs();
-				}
-			}
-			else {
-				dir = new File(path, Literal.Temp);
-			}
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
+			final Properties properties = loadFromXML(FileSystem.class.getClassLoader().getResource(Literal.info_xml));
+			path = loadPathDir(properties.getProperty(Literal.Path));
+			systemIDString = loadSystemID(properties.getProperty(Literal.SystemID));
 		}
 		catch (final IOException e) {
-			dir = new File(new File(Literal.Root), Literal.Temp);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
+			//NOOP
 		}
+		dir = loadRootDir(path, systemIDString);
+		
 		SystemID = systemIDString;
 		Root = dir;
 		Temp = new Temp(Root);
 		Database = new FileElement(Root, "database");
 		Data = new Resource(Root, "data");
 		Viewer = new FileElement(Root, Literal.viewer);
-		Print = new FileElement(Root, "Print");
+		Print = new FileElement(Root, "print");
 		Resource = new Resource(Root, "resource");
 		Config = new Config(Root);
 		Log = new Log(Root);
+	}
+	
+	static Properties loadFromXML(final URL url) throws IOException {
+		final Properties properties = new Properties();
+		if (url != null) {
+			final URLConnection connection = url.openConnection();
+			if (connection != null) {
+				properties.loadFromXML(connection.getInputStream());
+			}
+		}
+		return properties;
+	}
+	
+	static File loadRootDir(final File path, final String systemIDString) {
+		File dir;
+		if ((path != null) && (!path.exists() || path.isDirectory())) {
+			if (systemIDString != null) {
+				dir = new File(path, systemIDString);
+			}
+			else {
+				dir = new File(path, Literal.Temp);
+			}
+		}
+		else {
+			dir = new File(Literal.Root, Literal.Temp);
+		}
+		if (dir.exists() && dir.isFile()) {
+			dir = new File(path, Literal.Temp);
+			dir.mkdirs();
+		}
+		else if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		return dir;
+	}
+	
+	static File loadPathDir(final String pathString) {
+		if (pathString != null) {
+			File path = new File(pathString);
+			if (path.exists() && path.isFile()) {
+				path = new File(Literal.Root);
+			}
+			else if (!path.exists()) {
+				path.mkdirs();
+			}
+			return path;
+		}
+		return new File(Literal.Root);
+	}
+	
+	static String loadSystemID(final String systemIDString) {
+		if (systemIDString != null) {
+			return systemIDString;
+		}
+		return Literal.Temp;
 	}
 }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>WrapFilter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core</a> &gt; <span class="el_source">WrapFilter.java</span></div><h1>WrapFilter.java</h1><pre class="source lang-java linenums">package frameWork.base.core;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import frameWork.base.HttpStatus;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.routing.Router;
+import frameWork.base.core.state.ImpOfState;
+import frameWork.base.core.state.Response;
+
+@WebFilter(&quot;/*&quot;)
+<span class="nc" id="L22">public class WrapFilter implements Filter {</span>
+	private boolean isMultipartContent;
+	
+	@Override
+	public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+	        final FilterChain chain) throws IOException, ServletException {
+<span class="nc" id="L28">		final HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;</span>
+		try {
+<span class="nc" id="L30">			((HttpServletResponse) servletResponse).setStatus(Router.routing(httpServletRequest.getRequestURI(),</span>
+			        httpServletRequest.getMethod().toLowerCase(),
+			        new Response(servletResponse, servletResponse.getOutputStream()), new ImpOfState(
+			                (HttpServletRequest) servletRequest, isMultipartContent)));
+		}
+<span class="nc" id="L35">		catch (final Exception e) {</span>
+<span class="nc" id="L36">			FileSystem.Log.logging(e);</span>
+<span class="nc" id="L37">			((HttpServletResponse) servletResponse).setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);</span>
+<span class="nc" id="L38">			chain.doFilter(servletRequest, servletResponse);</span>
+<span class="nc" id="L39">		}</span>
+<span class="nc" id="L40">	}</span>
+	
+	@Override
+	public void destroy() {
+		// NOOP
+<span class="nc" id="L45">	}</span>
+	
+	@Override
+	public void init(final FilterConfig fConfig) throws ServletException {
+		try {
+<span class="nc" id="L50">			Class.forName(&quot;org.apache.commons.fileupload.FileItem&quot;);</span>
+<span class="nc" id="L51">			Class.forName(&quot;org.apache.commons.fileupload.disk.DiskFileItemFactory&quot;);</span>
+<span class="nc" id="L52">			Class.forName(&quot;org.apache.commons.fileupload.servlet.ServletFileUpload&quot;);</span>
+<span class="nc" id="L53">			isMultipartContent = true;</span>
+		}
+<span class="nc" id="L55">		catch (final Exception e) {</span>
+<span class="nc" id="L56">			isMultipartContent = false;</span>
+<span class="nc" id="L57">		}</span>
+<span class="nc" id="L58">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

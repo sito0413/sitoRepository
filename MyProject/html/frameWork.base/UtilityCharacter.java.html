@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>UtilityCharacter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base</a> &gt; <span class="el_source">UtilityCharacter.java</span></div><h1>UtilityCharacter.java</h1><pre class="source lang-java linenums">package frameWork.base;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+<span class="nc" id="L7">public class UtilityCharacter {</span>
+<span class="fc" id="L8">	static final HashMap&lt;String, String&gt; hzCharTbl = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L9">	static final HashMap&lt;String, String&gt; zhCharTbl = new HashMap&lt;&gt;();</span>
+	static {
+<span class="fc" id="L11">		final List&lt;String[]&gt; charList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L12">		charList.add(new String[] {</span>
+		        &quot;0&quot;, &quot;０&quot;
+		});
+<span class="fc" id="L15">		charList.add(new String[] {</span>
+		        &quot;1&quot;, &quot;１&quot;
+		});
+<span class="fc" id="L18">		charList.add(new String[] {</span>
+		        &quot;2&quot;, &quot;２&quot;
+		});
+<span class="fc" id="L21">		charList.add(new String[] {</span>
+		        &quot;3&quot;, &quot;３&quot;
+		});
+<span class="fc" id="L24">		charList.add(new String[] {</span>
+		        &quot;4&quot;, &quot;４&quot;
+		});
+<span class="fc" id="L27">		charList.add(new String[] {</span>
+		        &quot;5&quot;, &quot;５&quot;
+		});
+<span class="fc" id="L30">		charList.add(new String[] {</span>
+		        &quot;6&quot;, &quot;６&quot;
+		});
+<span class="fc" id="L33">		charList.add(new String[] {</span>
+		        &quot;7&quot;, &quot;７&quot;
+		});
+<span class="fc" id="L36">		charList.add(new String[] {</span>
+		        &quot;8&quot;, &quot;８&quot;
+		});
+<span class="fc" id="L39">		charList.add(new String[] {</span>
+		        &quot;9&quot;, &quot;９&quot;
+		});
+<span class="fc" id="L42">		charList.add(new String[] {</span>
+		        &quot;a&quot;, &quot;ａ&quot;
+		});
+<span class="fc" id="L45">		charList.add(new String[] {</span>
+		        &quot;b&quot;, &quot;ｂ&quot;
+		});
+<span class="fc" id="L48">		charList.add(new String[] {</span>
+		        &quot;c&quot;, &quot;ｃ&quot;
+		});
+<span class="fc" id="L51">		charList.add(new String[] {</span>
+		        &quot;d&quot;, &quot;ｄ&quot;
+		});
+<span class="fc" id="L54">		charList.add(new String[] {</span>
+		        &quot;e&quot;, &quot;ｅ&quot;
+		});
+<span class="fc" id="L57">		charList.add(new String[] {</span>
+		        &quot;f&quot;, &quot;ｆ&quot;
+		});
+<span class="fc" id="L60">		charList.add(new String[] {</span>
+		        &quot;g&quot;, &quot;ｇ&quot;
+		});
+<span class="fc" id="L63">		charList.add(new String[] {</span>
+		        &quot;h&quot;, &quot;ｈ&quot;
+		});
+<span class="fc" id="L66">		charList.add(new String[] {</span>
+		        &quot;i&quot;, &quot;ｉ&quot;
+		});
+<span class="fc" id="L69">		charList.add(new String[] {</span>
+		        &quot;j&quot;, &quot;ｊ&quot;
+		});
+<span class="fc" id="L72">		charList.add(new String[] {</span>
+		        &quot;k&quot;, &quot;ｋ&quot;
+		});
+<span class="fc" id="L75">		charList.add(new String[] {</span>
+		        &quot;l&quot;, &quot;ｌ&quot;
+		});
+<span class="fc" id="L78">		charList.add(new String[] {</span>
+		        &quot;m&quot;, &quot;ｍ&quot;
+		});
+<span class="fc" id="L81">		charList.add(new String[] {</span>
+		        &quot;n&quot;, &quot;ｎ&quot;
+		});
+<span class="fc" id="L84">		charList.add(new String[] {</span>
+		        &quot;o&quot;, &quot;ｏ&quot;
+		});
+<span class="fc" id="L87">		charList.add(new String[] {</span>
+		        &quot;p&quot;, &quot;ｐ&quot;
+		});
+<span class="fc" id="L90">		charList.add(new String[] {</span>
+		        &quot;q&quot;, &quot;ｑ&quot;
+		});
+<span class="fc" id="L93">		charList.add(new String[] {</span>
+		        &quot;r&quot;, &quot;ｒ&quot;
+		});
+<span class="fc" id="L96">		charList.add(new String[] {</span>
+		        &quot;s&quot;, &quot;ｓ&quot;
+		});
+<span class="fc" id="L99">		charList.add(new String[] {</span>
+		        &quot;t&quot;, &quot;ｔ&quot;
+		});
+<span class="fc" id="L102">		charList.add(new String[] {</span>
+		        &quot;u&quot;, &quot;ｕ&quot;
+		});
+<span class="fc" id="L105">		charList.add(new String[] {</span>
+		        &quot;v&quot;, &quot;ｖ&quot;
+		});
+<span class="fc" id="L108">		charList.add(new String[] {</span>
+		        &quot;w&quot;, &quot;ｗ&quot;
+		});
+<span class="fc" id="L111">		charList.add(new String[] {</span>
+		        &quot;x&quot;, &quot;ｘ&quot;
+		});
+<span class="fc" id="L114">		charList.add(new String[] {</span>
+		        &quot;y&quot;, &quot;ｙ&quot;
+		});
+<span class="fc" id="L117">		charList.add(new String[] {</span>
+		        &quot;z&quot;, &quot;ｚ&quot;
+		});
+<span class="fc" id="L120">		charList.add(new String[] {</span>
+		        &quot;A&quot;, &quot;Ａ&quot;
+		});
+<span class="fc" id="L123">		charList.add(new String[] {</span>
+		        &quot;B&quot;, &quot;Ｂ&quot;
+		});
+<span class="fc" id="L126">		charList.add(new String[] {</span>
+		        &quot;C&quot;, &quot;Ｃ&quot;
+		});
+<span class="fc" id="L129">		charList.add(new String[] {</span>
+		        &quot;D&quot;, &quot;Ｄ&quot;
+		});
+<span class="fc" id="L132">		charList.add(new String[] {</span>
+		        &quot;E&quot;, &quot;Ｅ&quot;
+		});
+<span class="fc" id="L135">		charList.add(new String[] {</span>
+		        &quot;F&quot;, &quot;Ｆ&quot;
+		});
+<span class="fc" id="L138">		charList.add(new String[] {</span>
+		        &quot;G&quot;, &quot;Ｇ&quot;
+		});
+<span class="fc" id="L141">		charList.add(new String[] {</span>
+		        &quot;H&quot;, &quot;Ｈ&quot;
+		});
+<span class="fc" id="L144">		charList.add(new String[] {</span>
+		        &quot;I&quot;, &quot;Ｉ&quot;
+		});
+<span class="fc" id="L147">		charList.add(new String[] {</span>
+		        &quot;J&quot;, &quot;Ｊ&quot;
+		});
+<span class="fc" id="L150">		charList.add(new String[] {</span>
+		        &quot;K&quot;, &quot;Ｋ&quot;
+		});
+<span class="fc" id="L153">		charList.add(new String[] {</span>
+		        &quot;L&quot;, &quot;Ｌ&quot;
+		});
+<span class="fc" id="L156">		charList.add(new String[] {</span>
+		        &quot;M&quot;, &quot;Ｍ&quot;
+		});
+<span class="fc" id="L159">		charList.add(new String[] {</span>
+		        &quot;N&quot;, &quot;Ｎ&quot;
+		});
+<span class="fc" id="L162">		charList.add(new String[] {</span>
+		        &quot;O&quot;, &quot;Ｏ&quot;
+		});
+<span class="fc" id="L165">		charList.add(new String[] {</span>
+		        &quot;P&quot;, &quot;Ｐ&quot;
+		});
+<span class="fc" id="L168">		charList.add(new String[] {</span>
+		        &quot;Q&quot;, &quot;Ｑ&quot;
+		});
+<span class="fc" id="L171">		charList.add(new String[] {</span>
+		        &quot;R&quot;, &quot;Ｒ&quot;
+		});
+<span class="fc" id="L174">		charList.add(new String[] {</span>
+		        &quot;S&quot;, &quot;Ｓ&quot;
+		});
+<span class="fc" id="L177">		charList.add(new String[] {</span>
+		        &quot;T&quot;, &quot;Ｔ&quot;
+		});
+<span class="fc" id="L180">		charList.add(new String[] {</span>
+		        &quot;U&quot;, &quot;Ｕ&quot;
+		});
+<span class="fc" id="L183">		charList.add(new String[] {</span>
+		        &quot;V&quot;, &quot;Ｖ&quot;
+		});
+<span class="fc" id="L186">		charList.add(new String[] {</span>
+		        &quot;W&quot;, &quot;Ｗ&quot;
+		});
+<span class="fc" id="L189">		charList.add(new String[] {</span>
+		        &quot;X&quot;, &quot;Ｘ&quot;
+		});
+<span class="fc" id="L192">		charList.add(new String[] {</span>
+		        &quot;Y&quot;, &quot;Ｙ&quot;
+		});
+<span class="fc" id="L195">		charList.add(new String[] {</span>
+		        &quot;Z&quot;, &quot;Ｚ&quot;
+		});
+<span class="fc" id="L198">		charList.add(new String[] {</span>
+		        &quot;ｱ&quot;, &quot;ア&quot;
+		});
+<span class="fc" id="L201">		charList.add(new String[] {</span>
+		        &quot;ｲ&quot;, &quot;イ&quot;
+		});
+<span class="fc" id="L204">		charList.add(new String[] {</span>
+		        &quot;ｳ&quot;, &quot;ウ&quot;
+		});
+<span class="fc" id="L207">		charList.add(new String[] {</span>
+		        &quot;ｴ&quot;, &quot;エ&quot;
+		});
+<span class="fc" id="L210">		charList.add(new String[] {</span>
+		        &quot;ｵ&quot;, &quot;オ&quot;
+		});
+<span class="fc" id="L213">		charList.add(new String[] {</span>
+		        &quot;ｶ&quot;, &quot;カ&quot;
+		});
+<span class="fc" id="L216">		charList.add(new String[] {</span>
+		        &quot;ｷ&quot;, &quot;キ&quot;
+		});
+<span class="fc" id="L219">		charList.add(new String[] {</span>
+		        &quot;ｸ&quot;, &quot;ク&quot;
+		});
+<span class="fc" id="L222">		charList.add(new String[] {</span>
+		        &quot;ｹ&quot;, &quot;ケ&quot;
+		});
+<span class="fc" id="L225">		charList.add(new String[] {</span>
+		        &quot;ｺ&quot;, &quot;コ&quot;
+		});
+<span class="fc" id="L228">		charList.add(new String[] {</span>
+		        &quot;ｻ&quot;, &quot;サ&quot;
+		});
+<span class="fc" id="L231">		charList.add(new String[] {</span>
+		        &quot;ｼ&quot;, &quot;シ&quot;
+		});
+<span class="fc" id="L234">		charList.add(new String[] {</span>
+		        &quot;ｽ&quot;, &quot;ス&quot;
+		});
+<span class="fc" id="L237">		charList.add(new String[] {</span>
+		        &quot;ｾ&quot;, &quot;セ&quot;
+		});
+<span class="fc" id="L240">		charList.add(new String[] {</span>
+		        &quot;ｿ&quot;, &quot;ソ&quot;
+		});
+<span class="fc" id="L243">		charList.add(new String[] {</span>
+		        &quot;ﾀ&quot;, &quot;タ&quot;
+		});
+<span class="fc" id="L246">		charList.add(new String[] {</span>
+		        &quot;ﾁ&quot;, &quot;チ&quot;
+		});
+<span class="fc" id="L249">		charList.add(new String[] {</span>
+		        &quot;ﾂ&quot;, &quot;ツ&quot;
+		});
+<span class="fc" id="L252">		charList.add(new String[] {</span>
+		        &quot;ﾃ&quot;, &quot;テ&quot;
+		});
+<span class="fc" id="L255">		charList.add(new String[] {</span>
+		        &quot;ﾄ&quot;, &quot;ト&quot;
+		});
+<span class="fc" id="L258">		charList.add(new String[] {</span>
+		        &quot;ﾅ&quot;, &quot;ナ&quot;
+		});
+<span class="fc" id="L261">		charList.add(new String[] {</span>
+		        &quot;ﾆ&quot;, &quot;ニ&quot;
+		});
+<span class="fc" id="L264">		charList.add(new String[] {</span>
+		        &quot;ﾇ&quot;, &quot;ヌ&quot;
+		});
+<span class="fc" id="L267">		charList.add(new String[] {</span>
+		        &quot;ﾈ&quot;, &quot;ネ&quot;
+		});
+<span class="fc" id="L270">		charList.add(new String[] {</span>
+		        &quot;ﾉ&quot;, &quot;ノ&quot;
+		});
+<span class="fc" id="L273">		charList.add(new String[] {</span>
+		        &quot;ﾊ&quot;, &quot;ハ&quot;
+		});
+<span class="fc" id="L276">		charList.add(new String[] {</span>
+		        &quot;ﾋ&quot;, &quot;ヒ&quot;
+		});
+<span class="fc" id="L279">		charList.add(new String[] {</span>
+		        &quot;ﾌ&quot;, &quot;フ&quot;
+		});
+<span class="fc" id="L282">		charList.add(new String[] {</span>
+		        &quot;ﾍ&quot;, &quot;ヘ&quot;
+		});
+<span class="fc" id="L285">		charList.add(new String[] {</span>
+		        &quot;ﾎ&quot;, &quot;ホ&quot;
+		});
+<span class="fc" id="L288">		charList.add(new String[] {</span>
+		        &quot;ﾏ&quot;, &quot;マ&quot;
+		});
+<span class="fc" id="L291">		charList.add(new String[] {</span>
+		        &quot;ﾐ&quot;, &quot;ミ&quot;
+		});
+<span class="fc" id="L294">		charList.add(new String[] {</span>
+		        &quot;ﾑ&quot;, &quot;ム&quot;
+		});
+<span class="fc" id="L297">		charList.add(new String[] {</span>
+		        &quot;ﾒ&quot;, &quot;メ&quot;
+		});
+<span class="fc" id="L300">		charList.add(new String[] {</span>
+		        &quot;ﾓ&quot;, &quot;モ&quot;
+		});
+<span class="fc" id="L303">		charList.add(new String[] {</span>
+		        &quot;ﾔ&quot;, &quot;ヤ&quot;
+		});
+<span class="fc" id="L306">		charList.add(new String[] {</span>
+		        &quot;ﾕ&quot;, &quot;ユ&quot;
+		});
+<span class="fc" id="L309">		charList.add(new String[] {</span>
+		        &quot;ﾖ&quot;, &quot;ヨ&quot;
+		});
+<span class="fc" id="L312">		charList.add(new String[] {</span>
+		        &quot;ﾗ&quot;, &quot;ラ&quot;
+		});
+<span class="fc" id="L315">		charList.add(new String[] {</span>
+		        &quot;ﾘ&quot;, &quot;リ&quot;
+		});
+<span class="fc" id="L318">		charList.add(new String[] {</span>
+		        &quot;ﾙ&quot;, &quot;ル&quot;
+		});
+<span class="fc" id="L321">		charList.add(new String[] {</span>
+		        &quot;ﾚ&quot;, &quot;レ&quot;
+		});
+<span class="fc" id="L324">		charList.add(new String[] {</span>
+		        &quot;ﾛ&quot;, &quot;ロ&quot;
+		});
+<span class="fc" id="L327">		charList.add(new String[] {</span>
+		        &quot;ﾜ&quot;, &quot;ワ&quot;
+		});
+<span class="fc" id="L330">		charList.add(new String[] {</span>
+		        &quot;ｦ&quot;, &quot;ヲ&quot;
+		});
+<span class="fc" id="L333">		charList.add(new String[] {</span>
+		        &quot;ﾝ&quot;, &quot;ン&quot;
+		});
+<span class="fc" id="L336">		charList.add(new String[] {</span>
+		        &quot;ｧ&quot;, &quot;ァ&quot;
+		});
+<span class="fc" id="L339">		charList.add(new String[] {</span>
+		        &quot;ｨ&quot;, &quot;ィ&quot;
+		});
+<span class="fc" id="L342">		charList.add(new String[] {</span>
+		        &quot;ｩ&quot;, &quot;ゥ&quot;
+		});
+<span class="fc" id="L345">		charList.add(new String[] {</span>
+		        &quot;ｪ&quot;, &quot;ェ&quot;
+		});
+<span class="fc" id="L348">		charList.add(new String[] {</span>
+		        &quot;ｫ&quot;, &quot;ォ&quot;
+		});
+<span class="fc" id="L351">		charList.add(new String[] {</span>
+		        &quot;ｯ&quot;, &quot;ッ&quot;
+		});
+<span class="fc" id="L354">		charList.add(new String[] {</span>
+		        &quot;ｬ&quot;, &quot;ャ&quot;
+		});
+<span class="fc" id="L357">		charList.add(new String[] {</span>
+		        &quot;ｭ&quot;, &quot;ュ&quot;
+		});
+<span class="fc" id="L360">		charList.add(new String[] {</span>
+		        &quot;ｮ&quot;, &quot;ョ&quot;
+		});
+<span class="fc" id="L363">		charList.add(new String[] {</span>
+		        &quot;ｰ&quot;, &quot;ー&quot;
+		});
+<span class="fc" id="L366">		charList.add(new String[] {</span>
+		        &quot;｡&quot;, &quot;。&quot;
+		});
+<span class="fc" id="L369">		charList.add(new String[] {</span>
+		        &quot;､&quot;, &quot;、&quot;
+		});
+<span class="fc" id="L372">		charList.add(new String[] {</span>
+		        &quot;･&quot;, &quot;・&quot;
+		});
+<span class="fc" id="L375">		charList.add(new String[] {</span>
+		        &quot;｢&quot;, &quot;「&quot;
+		});
+<span class="fc" id="L378">		charList.add(new String[] {</span>
+		        &quot;｣&quot;, &quot;」&quot;
+		});
+<span class="fc" id="L381">		charList.add(new String[] {</span>
+		        &quot;ﾞ&quot;, &quot;゛&quot;
+		});
+<span class="fc" id="L384">		charList.add(new String[] {</span>
+		        &quot;ﾟ&quot;, &quot;゜&quot;
+		});
+<span class="fc" id="L387">		charList.add(new String[] {</span>
+		        &quot;ｳﾞ&quot;, &quot;ヴ&quot;
+		});
+<span class="fc" id="L390">		charList.add(new String[] {</span>
+		        &quot;ｶﾞ&quot;, &quot;ガ&quot;
+		});
+<span class="fc" id="L393">		charList.add(new String[] {</span>
+		        &quot;ｷﾞ&quot;, &quot;ギ&quot;
+		});
+<span class="fc" id="L396">		charList.add(new String[] {</span>
+		        &quot;ｸﾞ&quot;, &quot;グ&quot;
+		});
+<span class="fc" id="L399">		charList.add(new String[] {</span>
+		        &quot;ｹﾞ&quot;, &quot;ゲ&quot;
+		});
+<span class="fc" id="L402">		charList.add(new String[] {</span>
+		        &quot;ｺﾞ&quot;, &quot;ゴ&quot;
+		});
+<span class="fc" id="L405">		charList.add(new String[] {</span>
+		        &quot;ｻﾞ&quot;, &quot;ザ&quot;
+		});
+<span class="fc" id="L408">		charList.add(new String[] {</span>
+		        &quot;ｼﾞ&quot;, &quot;ジ&quot;
+		});
+<span class="fc" id="L411">		charList.add(new String[] {</span>
+		        &quot;ｽﾞ&quot;, &quot;ズ&quot;
+		});
+<span class="fc" id="L414">		charList.add(new String[] {</span>
+		        &quot;ｾﾞ&quot;, &quot;ゼ&quot;
+		});
+<span class="fc" id="L417">		charList.add(new String[] {</span>
+		        &quot;ｿﾞ&quot;, &quot;ゾ&quot;
+		});
+<span class="fc" id="L420">		charList.add(new String[] {</span>
+		        &quot;ﾀﾞ&quot;, &quot;ダ&quot;
+		});
+<span class="fc" id="L423">		charList.add(new String[] {</span>
+		        &quot;ﾁﾞ&quot;, &quot;ヂ&quot;
+		});
+<span class="fc" id="L426">		charList.add(new String[] {</span>
+		        &quot;ﾂﾞ&quot;, &quot;ヅ&quot;
+		});
+<span class="fc" id="L429">		charList.add(new String[] {</span>
+		        &quot;ﾃﾞ&quot;, &quot;デ&quot;
+		});
+<span class="fc" id="L432">		charList.add(new String[] {</span>
+		        &quot;ﾄﾞ&quot;, &quot;ド&quot;
+		});
+<span class="fc" id="L435">		charList.add(new String[] {</span>
+		        &quot;ﾊﾞ&quot;, &quot;バ&quot;
+		});
+<span class="fc" id="L438">		charList.add(new String[] {</span>
+		        &quot;ﾋﾞ&quot;, &quot;ビ&quot;
+		});
+<span class="fc" id="L441">		charList.add(new String[] {</span>
+		        &quot;ﾌﾞ&quot;, &quot;ブ&quot;
+		});
+<span class="fc" id="L444">		charList.add(new String[] {</span>
+		        &quot;ﾍﾞ&quot;, &quot;ベ&quot;
+		});
+<span class="fc" id="L447">		charList.add(new String[] {</span>
+		        &quot;ﾎﾞ&quot;, &quot;ボ&quot;
+		});
+<span class="fc" id="L450">		charList.add(new String[] {</span>
+		        &quot;ﾊﾟ&quot;, &quot;パ&quot;
+		});
+<span class="fc" id="L453">		charList.add(new String[] {</span>
+		        &quot;ﾋﾟ&quot;, &quot;ピ&quot;
+		});
+<span class="fc" id="L456">		charList.add(new String[] {</span>
+		        &quot;ﾌﾟ&quot;, &quot;プ&quot;
+		});
+<span class="fc" id="L459">		charList.add(new String[] {</span>
+		        &quot;ﾍﾟ&quot;, &quot;ペ&quot;
+		});
+<span class="fc" id="L462">		charList.add(new String[] {</span>
+		        &quot;ﾎﾟ&quot;, &quot;ポ&quot;
+		});
+<span class="fc bfc" id="L465" title="All 2 branches covered.">		for (final String[] strings : charList) {</span>
+<span class="fc" id="L466">			hzCharTbl.put(strings[0], strings[1]);</span>
+<span class="fc" id="L467">			zhCharTbl.put(strings[1], strings[0]);</span>
+			
+<span class="fc" id="L469">		}</span>
+<span class="fc" id="L470">	}</span>
+	
+	public static String toHankaku(final String s) {
+<span class="fc" id="L473">		final StringBuffer sbBuf = new StringBuffer();</span>
+<span class="fc" id="L474">		String strKey = new String(); // HashMapのKEY</span>
+<span class="fc" id="L475">		String strChar1 = &quot;&quot;; // １文字目</span>
+<span class="fc" id="L476">		char c1 = ' '; // １文字目</span>
+		int i;
+<span class="fc bfc" id="L478" title="All 2 branches covered.">		for (i = 0; i &lt; s.length(); i++) {</span>
+<span class="fc" id="L479">			c1 = s.charAt(i);</span>
+<span class="fc" id="L480">			strChar1 = &quot;&quot;;</span>
+<span class="fc" id="L481">			strKey = String.valueOf(c1);</span>
+<span class="fc" id="L482">			strChar1 = zhCharTbl.get(strKey);</span>
+<span class="fc bfc" id="L483" title="All 2 branches covered.">			if (strChar1 == null) {</span>
+<span class="fc" id="L484">				sbBuf.append(c1);</span>
+			}
+			else {
+<span class="fc" id="L487">				sbBuf.append(strChar1);</span>
+			}
+		}
+<span class="fc" id="L490">		return sbBuf.toString();</span>
+	}
+	
+	public static String toZenkaku(final String s) {
+<span class="fc" id="L494">		final StringBuffer sbBuf = new StringBuffer();</span>
+		
+<span class="fc" id="L496">		String strKey = new String(); // HashMapのKEY</span>
+<span class="fc" id="L497">		String strChar1 = &quot;&quot;; // １文字目</span>
+<span class="fc" id="L498">		char c1 = ' '; // １文字目</span>
+<span class="fc" id="L499">		char c2 = ' '; // ２文字目</span>
+		int i;
+<span class="fc bfc" id="L501" title="All 2 branches covered.">		for (i = 0; i &lt; s.length(); i++) {</span>
+<span class="fc" id="L502">			c1 = ' ';</span>
+<span class="fc" id="L503">			c2 = ' ';</span>
+<span class="fc" id="L504">			c1 = s.charAt(i);</span>
+<span class="fc bfc" id="L505" title="All 2 branches covered.">			if ((i + 1) &lt; s.length()) {</span>
+<span class="fc" id="L506">				c2 = s.charAt(i + 1);</span>
+			}
+<span class="fc" id="L508">			strChar1 = &quot;&quot;;</span>
+<span class="fc bfc" id="L509" title="All 4 branches covered.">			if ((c2 == 'ﾞ') || (c2 == 'ﾟ')) {</span>
+<span class="fc" id="L510">				strKey = String.valueOf(c1) + String.valueOf(c2);</span>
+<span class="fc" id="L511">				strChar1 = hzCharTbl.get(strKey);</span>
+<span class="fc bfc" id="L512" title="All 2 branches covered.">				if (strChar1 == null) {</span>
+<span class="fc" id="L513">					strKey = String.valueOf(c1);</span>
+<span class="fc" id="L514">					strChar1 = hzCharTbl.get(strKey);</span>
+<span class="fc bfc" id="L515" title="All 2 branches covered.">					if (strChar1 == null) {</span>
+<span class="fc" id="L516">						sbBuf.append(c1);</span>
+					}
+					else {
+<span class="fc" id="L519">						sbBuf.append(strChar1);</span>
+					}
+				}
+				else {
+<span class="fc" id="L523">					sbBuf.append(strChar1);</span>
+<span class="fc" id="L524">					i++;</span>
+				}
+			}
+			else {
+<span class="fc" id="L528">				strKey = String.valueOf(c1);</span>
+<span class="fc" id="L529">				strChar1 = hzCharTbl.get(strKey);</span>
+<span class="fc bfc" id="L530" title="All 2 branches covered.">				if (strChar1 == null) {</span>
+<span class="fc" id="L531">					sbBuf.append(c1);</span>
+				}
+				else {
+<span class="fc" id="L534">					sbBuf.append(strChar1);</span>
+				}
+			}
+		}
+<span class="fc" id="L538">		return sbBuf.toString();</span>
+	}
+	
+	public static boolean isWhitespace(final char ch) {
+<span class="fc bfc" id="L542" title="All 8 branches covered.">		return (ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r');</span>
+	}
+	
+	public static boolean isAlpha(final char ch) {
+<span class="fc bfc" id="L546" title="All 10 branches covered.">		return ((ch &gt;= 'a') &amp;&amp; (ch &lt;= 'z')) || ((ch &gt;= 'A') &amp;&amp; (ch &lt;= 'Z')) || (ch == '_');</span>
+	}
+	
+	public static boolean isNumeric(final char ch) {
+<span class="fc bfc" id="L550" title="All 4 branches covered.">		return (ch &gt;= '0') &amp;&amp; (ch &lt;= '9');</span>
+	}
+	
+	public static boolean isOperator(final char ch) {
+<span class="fc bfc" id="L554" title="All 26 branches covered.">		return (ch == '!') || (ch == '^') || (ch == '~') || (ch == '=') || (ch == '+') || (ch == '-') || (ch == '*')</span>
+		        || (ch == '/') || (ch == '%') || (ch == '&amp;') || (ch == '|') || (ch == '&lt;') || (ch == '&gt;');
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

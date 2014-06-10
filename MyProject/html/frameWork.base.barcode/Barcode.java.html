@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Barcode.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.barcode</a> &gt; <span class="el_source">Barcode.java</span></div><h1>Barcode.java</h1><pre class="source lang-java linenums">package frameWork.base.barcode;
+
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
+
+<span class="nc" id="L7">public final class Barcode {</span>
+	static {
+		try {
+<span class="fc" id="L10">			BarcodeFont = Font.createFont(</span>
+			        Font.TRUETYPE_FONT,
+			        Barcode.class.getClassLoader().getResourceAsStream(
+			                Barcode.class.getPackage().getName().replace('.', '/') + &quot;/3of9.ttf&quot;));
+		}
+<span class="nc" id="L15">		catch (FontFormatException | IOException e) {</span>
+<span class="nc" id="L16">			BarcodeFont = null;</span>
+<span class="fc" id="L17">		}</span>
+	}
+	private static Font BarcodeFont;
+<span class="fc" id="L20">	static String EXTEND = &quot;*&quot;;</span>
+	
+	public static Font getBarcodeFont(final float size) {
+<span class="fc" id="L23">		return BarcodeFont.deriveFont(size * 4);</span>
+	}
+	
+	public static String createBarcode(final String text) {
+<span class="fc bfc" id="L27" title="All 2 branches covered.">		if (text.isEmpty()) {</span>
+<span class="fc" id="L28">			return text;</span>
+		}
+<span class="fc" id="L30">		return EXTEND + text + EXTEND;</span>
+		
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

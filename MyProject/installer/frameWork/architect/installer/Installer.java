@@ -14,7 +14,6 @@ import java.util.Properties;
 import javax.swing.UIManager;
 
 import frameWork.architect.installer.gui.InstallerGUI;
-import frameWork.base.core.fileSystem.FileSystem;
 
 public class Installer implements Runnable {
 	public static void main(final String[] args) {
@@ -47,7 +46,7 @@ public class Installer implements Runnable {
 	public Installer() {
 		this.components = new ArrayList<>();
 		try {
-			final URL url = FileSystem.class.getResource("/frameWork/architect/info.xml");
+			final URL url = Installer.class.getResource("/frameWork/architect/info.xml");
 			if (url != null) {
 				final URLConnection connection = url.openConnection();
 				if (connection != null) {
@@ -67,7 +66,7 @@ public class Installer implements Runnable {
 			appVersion = ("ERROR");
 		}
 		try {
-			final URL url = FileSystem.class.getResource("/frameWork/architect/jar/info.xml");
+			final URL url = Installer.class.getResource("/frameWork/architect/jar/info.xml");
 			if (url != null) {
 				final URLConnection connection = url.openConnection();
 				if (connection != null) {
@@ -78,7 +77,7 @@ public class Installer implements Runnable {
 					for (final String file : files) {
 						final String[] names = file.split("\\\\");
 						final String name = names[names.length - 1];
-						final URL jar = FileSystem.class.getResource("/frameWork/architect/jar/" + name);
+						final URL jar = Installer.class.getResource("/frameWork/architect/jar/" + name);
 						final URLConnection jarConnection = jar.openConnection();
 						final byte[] buffer = new byte[1024 * 1024];
 						try (InputStream is = jarConnection.getInputStream()) {
@@ -115,64 +114,40 @@ public class Installer implements Runnable {
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
+			final File src = new File(installDir + File.separator + "src/frameWork/architect");
+			if (!src.exists()) {
+				src.mkdirs();
+			}
 			for (int i = 0; i < installComponents.size(); i++) {
-				final URL jar = FileSystem.class.getResource(installComponents.get(i));
-				final URLConnection jarConnection = jar.openConnection();
-				final byte[] buffer = new byte[1024 * 1024];
-				try (InputStream is = jarConnection.getInputStream()) {
-					final String[] fileNames = installComponents.get(i).split("/");
-					final File file = new File(dir, fileNames[fileNames.length - 1]);
-					progress.message("インストール　" + file.getAbsolutePath());
-					int r = -1;
-					try (FileOutputStream fo = new FileOutputStream(file)) {
-						while ((r = is.read(buffer)) != -1) {
-							fo.write(buffer, 0, r);
-						}
-					}
-					progress.advance(1);
-				}
+				final String[] fileNames = installComponents.get(i).split("/");
+				installFile(dir, installComponents.get(i), fileNames[fileNames.length - 1]);
 			}
-			{
-				final URL jar = FileSystem.class.getResource("/frameWork/architect/jar/framework.jar");
-				final URLConnection jarConnection = jar.openConnection();
-				final byte[] buffer = new byte[1024 * 1024];
-				try (InputStream is = jarConnection.getInputStream()) {
-					final File file = new File(dir, "framework.jar");
-					progress.message("インストール　" + file.getAbsolutePath());
-					int r = -1;
-					try (FileOutputStream fo = new FileOutputStream(file)) {
-						while ((r = is.read(buffer)) != -1) {
-							fo.write(buffer, 0, r);
-						}
-					}
-					progress.advance(1);
-				}
-			}
-			{
-				final URL jar = FileSystem.class.getResource("/frameWork/architect/jar/manager.jar");
-				final URLConnection jarConnection = jar.openConnection();
-				final byte[] buffer = new byte[1024 * 1024];
-				try (InputStream is = jarConnection.getInputStream()) {
-					final File file = new File(dir, "manager.jar");
-					progress.message("インストール　" + file.getAbsolutePath());
-					int r = -1;
-					try (FileOutputStream fo = new FileOutputStream(file)) {
-						while ((r = is.read(buffer)) != -1) {
-							fo.write(buffer, 0, r);
-						}
-					}
-					progress.advance(1);
-				}
-			}
-			progress.message("インストール後　処理");
-			OperatingSystem.getOperatingSystem().perform(this, installDir, installComponents, "framework.jar");
-			progress.advance(1);
+			installFile(dir, "/frameWork/architect/jar/framework.jar", "framework.jar");
+			installFile(dir, "/frameWork/architect/jar/manager.jar", "manager.jar");
+			installFile(src, "/frameWork/architect/Project.java", "Project.java");
 		}
 		catch (final IOException io) {
 			progress.error(io.toString());
 			return;
 		}
 		progress.done();
+	}
+	
+	private void installFile(final File dir, final String resource, final String fileName) throws IOException {
+		final URL jar = Installer.class.getResource(resource);
+		final URLConnection jarConnection = jar.openConnection();
+		final byte[] buffer = new byte[1024 * 1024];
+		try (InputStream is = jarConnection.getInputStream()) {
+			final File file = new File(dir, fileName);
+			progress.message("インストール　" + file.getName());
+			int r = -1;
+			try (FileOutputStream fo = new FileOutputStream(file)) {
+				while ((r = is.read(buffer)) != -1) {
+					fo.write(buffer, 0, r);
+				}
+			}
+		}
+		progress.advance(1);
 	}
 	
 	public String getAppName() {

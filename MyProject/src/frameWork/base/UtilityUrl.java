@@ -16,10 +16,10 @@ public class UtilityUrl {
 			c = '&';
 		}
 		try {
-			return new UtilityUrl(c + parameterName + '=' + URLEncoder.encode(value, "UTF-8"));
+			return new UtilityUrl(url + c + parameterName + '=' + URLEncoder.encode(value, "UTF-8"));
 		}
 		catch (final UnsupportedEncodingException e) {
-			return new UtilityUrl(c + parameterName + '=' + value);
+			return new UtilityUrl(url + c + parameterName + '=' + value);
 		}
 	}
 	
@@ -29,19 +29,11 @@ public class UtilityUrl {
 		return url;
 	}
 	
-	@Override
-	public boolean equals(final Object obj) {
-		if (!super.equals(obj)) {
-			return url.equalsIgnoreCase(obj.toString());
-		}
-		return true;
-	}
-	
 	public boolean equals(final UtilityUrl obj) {
-		return url.equalsIgnoreCase(obj.url);
+		return url.equals(obj.url);
 	}
 	
 	public boolean equals(final String obj) {
-		return url.equalsIgnoreCase(obj);
+		return url.equals(obj);
 	}
 }

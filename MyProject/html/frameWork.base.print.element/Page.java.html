@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Page.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.print.element</a> &gt; <span class="el_source">Page.java</span></div><h1>Page.java</h1><pre class="source lang-java linenums">package frameWork.base.print.element;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Page implements Printable {
+	
+	private final Map&lt;String, Cell&gt; variableCells;
+	private final Map&lt;String, Cell&gt; cells;
+	private final int leftMargin;
+	private final int topMargin;
+	private final int rightMargin;
+	private final int bottomMargin;
+	private final int width;
+	private final int height;
+<span class="nc" id="L22">	private double scale = 1;</span>
+	private File file;
+	
+	public Page(final int leftMargin, final int topMargin, final int rightMargin, final int bottomMargin,
+<span class="nc" id="L26">	        final int width, final int height) {</span>
+<span class="nc" id="L27">		this.leftMargin = leftMargin;</span>
+<span class="nc" id="L28">		this.topMargin = topMargin;</span>
+<span class="nc" id="L29">		this.rightMargin = rightMargin;</span>
+<span class="nc" id="L30">		this.bottomMargin = bottomMargin;</span>
+<span class="nc" id="L31">		this.width = width;</span>
+<span class="nc" id="L32">		this.height = height;</span>
+<span class="nc" id="L33">		this.cells = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L34">		this.variableCells = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L35">	}</span>
+	
+	/**
+	 * 指定された行、列のセルを取得します&lt;br&gt;
+	 */
+	public Cell getCell(final int rowIndex, final int columnIndex) {
+<span class="nc" id="L41">		return cells.get(Cell.getKey(rowIndex, columnIndex));</span>
+	}
+	
+	/**
+	 * セルオブジェクトを取得します&lt;br&gt;
+	 * offset に、キーセルオブジェクトからの下方向へのオフセットを渡すことで、&lt;br&gt;
+	 * キーセルの下のオブジェクトを取得できます&lt;br&gt;
+	 */
+	public Cell getCell(final String key, final int offset) {
+<span class="nc" id="L50">		final Cell originCell = this.variableCells.get(key);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">		if (originCell == null) {</span>
+<span class="nc" id="L52">			return null;</span>
+		}
+<span class="nc" id="L54">		return this.getCell((originCell.getRowIndex()) + offset, originCell.getColumnIndex());</span>
+	}
+	
+	@Override
+	public int print(final Graphics g, final PageFormat format, final int i) {
+<span class="nc" id="L59">		final Graphics2D g2d = (Graphics2D) g;</span>
+<span class="nc" id="L60">		g2d.translate(format.getPaper().getImageableX(), format.getPaper().getImageableY());</span>
+<span class="nc" id="L61">		g2d.setClip(0, 0, width, height);</span>
+<span class="nc" id="L62">		paint(g2d);</span>
+<span class="nc" id="L63">		return Printable.PAGE_EXISTS;</span>
+	}
+	
+	public synchronized void paint(final Graphics2D g) {
+<span class="nc" id="L67">		g.scale(scale, scale);</span>
+<span class="nc" id="L68">		g.setColor(Color.white);</span>
+<span class="nc" id="L69">		g.fillRect(0, 0, width, height);</span>
+<span class="nc" id="L70">		g.translate(leftMargin, topMargin);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">		for (final Cell cell : cells.values()) {</span>
+<span class="nc" id="L72">			cell.paint(g);</span>
+<span class="nc" id="L73">		}</span>
+<span class="nc" id="L74">		g.setColor(Color.white);</span>
+<span class="nc" id="L75">		g.translate(-leftMargin, -topMargin);</span>
+<span class="nc" id="L76">		g.fillRect(0, 0, leftMargin, height);</span>
+<span class="nc" id="L77">		g.fillRect(0, 0, width, topMargin);</span>
+<span class="nc" id="L78">		g.fillRect(width - rightMargin, 0, rightMargin, height);</span>
+<span class="nc" id="L79">		g.fillRect(0, height - bottomMargin, width, bottomMargin);</span>
+		
+<span class="nc" id="L81">	}</span>
+	
+	public int getHeight() {
+<span class="nc" id="L84">		return (int) (height * scale);</span>
+	}
+	
+	public int getWidth() {
+<span class="nc" id="L88">		return (int) (width * scale);</span>
+	}
+	
+	public synchronized void setScale(final double scale) {
+<span class="nc" id="L92">		this.scale = scale;</span>
+<span class="nc" id="L93">	}</span>
+	
+	public File getFile() {
+<span class="nc" id="L96">		return file;</span>
+	}
+	
+	public void setFile(final File file) {
+<span class="nc" id="L100">		this.file = file;</span>
+<span class="nc" id="L101">	}</span>
+	
+	public void addCell(final Cell cell) {
+<span class="nc" id="L104">		cells.put(Cell.getKey(cell.getRowIndex(), cell.getColumnIndex()), cell);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (cell.getKey() != null) {</span>
+<span class="nc" id="L106">			variableCells.put(cell.getKey(), cell);</span>
+		}
+<span class="nc" id="L108">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

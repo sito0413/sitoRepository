@@ -1,6 +1,7 @@
 package frameWork.base.core.event.timerEvent;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import frameWork.base.core.event.TimerEvent;
 
@@ -26,15 +27,13 @@ public class TimerEventList implements Iterable<TimerEvent> {
 		TimerEventNode preNode = head;
 		TimerEventNode node = head.next;
 		while (node != null) {
-			if (o.equals(node.item)) {
-				synchronized (this) {
-					if (o.equals(node.item)) {
-						preNode.next = node.next;
-						if (last == node) {
-							last = preNode;
-						}
-						return;
+			synchronized (this) {
+				if (o.equals(node.item)) {
+					preNode.next = node.next;
+					if (last == node) {
+						last = preNode;
 					}
+					return;
 				}
 			}
 			preNode = node;
@@ -45,5 +44,32 @@ public class TimerEventList implements Iterable<TimerEvent> {
 	@Override
 	public Iterator<TimerEvent> iterator() {
 		return new TimerEventListIterator(head);
+	}
+	
+	private static class TimerEventListIterator implements Iterator<TimerEvent> {
+		private TimerEventNode cursor;
+		
+		TimerEventListIterator(final TimerEventNode head) {
+			cursor = head;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return (cursor.next != null);
+		}
+		
+		@Override
+		public TimerEvent next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			cursor = cursor.next;
+			return cursor.item;
+		}
+		
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

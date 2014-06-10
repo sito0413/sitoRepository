@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>XMLBorder.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.print.reader.xml</a> &gt; <span class="el_source">XMLBorder.java</span></div><h1>XMLBorder.java</h1><pre class="source lang-java linenums">package frameWork.base.print.reader.xml;
+
+import static frameWork.base.print.reader.xml.XMLConstants.*;
+
+import org.w3c.dom.Element;
+
+import frameWork.base.print.element.LineStyleType;
+import frameWork.base.print.element.LineWeight;
+import frameWork.base.print.element.PositionType;
+
+/**
+ * ボーダ&lt;br&gt;
+ */
+class XMLBorder {
+	/** 線の種類 */
+	final LineStyleType lineStyle;
+	
+	/** 線の太さ */
+	final LineWeight lineWeight;
+	
+	/** 線の位置 */
+	final PositionType linePosition;
+	
+	@SuppressWarnings(&quot;hiding&quot;)
+<span class="nc" id="L25">	XMLBorder(final Element borderElement) {</span>
+<span class="nc" id="L26">		LineStyleType lineStyle = null;</span>
+<span class="nc" id="L27">		LineWeight lineWeight = LineWeight.HAIRLINE;</span>
+<span class="nc" id="L28">		PositionType linePosition = null;</span>
+		
+		// 位置.
+<span class="nc" id="L31">		PositionType position = null;</span>
+<span class="nc" id="L32">		final String positionAttribute = borderElement.getAttribute(ATTR_POSITION);</span>
+<span class="nc bnc" id="L33" title="All 4 branches missed.">		if ((positionAttribute != null) &amp;&amp; (!positionAttribute.isEmpty())) {</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">			if (&quot;Top&quot;.equalsIgnoreCase(positionAttribute)) {</span>
+<span class="nc" id="L35">				position = PositionType.TOP;</span>
+			}
+<span class="nc bnc" id="L37" title="All 2 branches missed.">			else if (&quot;Left&quot;.equalsIgnoreCase(positionAttribute)) {</span>
+<span class="nc" id="L38">				position = PositionType.LEFT;</span>
+			}
+<span class="nc bnc" id="L40" title="All 2 branches missed.">			else if (&quot;Right&quot;.equalsIgnoreCase(positionAttribute)) {</span>
+<span class="nc" id="L41">				position = PositionType.RIGHT;</span>
+			}
+<span class="nc bnc" id="L43" title="All 2 branches missed.">			else if (&quot;Bottom&quot;.equalsIgnoreCase(positionAttribute)) {</span>
+<span class="nc" id="L44">				position = PositionType.BOTTOM;</span>
+			}
+<span class="nc bnc" id="L46" title="All 2 branches missed.">			else if (&quot;DiagonalLeft&quot;.equalsIgnoreCase(positionAttribute)) {</span>
+<span class="nc" id="L47">				position = PositionType.DLEFT;</span>
+			}
+<span class="nc bnc" id="L49" title="All 2 branches missed.">			else if (&quot;DiagonalRight&quot;.equalsIgnoreCase(positionAttribute)) {</span>
+<span class="nc" id="L50">				position = PositionType.DRIGHT;</span>
+			}
+			else {
+<span class="nc" id="L53">				position = PositionType.TOP;</span>
+			}
+		}
+		
+		// ライン太さ.
+<span class="nc" id="L58">		LineWeight weight = LineWeight.HAIRLINE;</span>
+<span class="nc" id="L59">		final String lineWeightAttribute = borderElement.getAttribute(ATTR_WEIGHT);</span>
+<span class="nc bnc" id="L60" title="All 4 branches missed.">		if ((lineWeightAttribute != null) &amp;&amp; (!lineWeightAttribute.isEmpty())) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">			if (&quot;0&quot;.equalsIgnoreCase(lineWeightAttribute)) {</span>
+<span class="nc" id="L62">				weight = LineWeight.HAIRLINE;</span>
+			}
+<span class="nc bnc" id="L64" title="All 2 branches missed.">			else if (&quot;1&quot;.equalsIgnoreCase(lineWeightAttribute)) {</span>
+<span class="nc" id="L65">				weight = LineWeight.THIN;</span>
+			}
+<span class="nc bnc" id="L67" title="All 2 branches missed.">			else if (&quot;2&quot;.equalsIgnoreCase(lineWeightAttribute)) {</span>
+<span class="nc" id="L68">				weight = LineWeight.MEDIUM;</span>
+			}
+<span class="nc bnc" id="L70" title="All 2 branches missed.">			else if (&quot;3&quot;.equalsIgnoreCase(lineWeightAttribute)) {</span>
+<span class="nc" id="L71">				weight = LineWeight.THICK;</span>
+			}
+			else {
+<span class="nc" id="L74">				weight = LineWeight.HAIRLINE;</span>
+			}
+		}
+		
+		// ラインスタイル.
+<span class="nc" id="L79">		LineStyleType style = null;</span>
+<span class="nc" id="L80">		final String lineStyleAttribute = borderElement.getAttribute(ATTR_LINESTYLE);</span>
+<span class="nc bnc" id="L81" title="All 4 branches missed.">		if ((lineStyleAttribute != null) &amp;&amp; (!lineStyleAttribute.isEmpty())) {</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">			if (!NONE.equals(lineStyleAttribute)) {</span>
+<span class="nc bnc" id="L83" title="All 12 branches missed.">				if ((CONTINUOUS.equals(lineStyleAttribute)) || (DASH.equals(lineStyleAttribute))</span>
+				        || (DOT.equals(lineStyleAttribute)) || (DASH_DOT.equals(lineStyleAttribute))
+				        || (DASH_DOT_DOT.equals(lineStyleAttribute)) || (SLANT_DASH_DOT.equals(lineStyleAttribute))) {
+					
+<span class="nc bnc" id="L87" title="All 2 branches missed.">					if (LineWeight.HAIRLINE.equals(weight)) {</span>
+<span class="nc" id="L88">						style = LineStyleType.DOTTED;</span>
+					}
+					else {
+<span class="nc" id="L91">						style = LineStyleType.CONTINUOUS;</span>
+					}
+				}
+<span class="nc bnc" id="L94" title="All 2 branches missed.">				else if (DOUBLE.equals(lineStyleAttribute)) {</span>
+<span class="nc" id="L95">					style = LineStyleType.DOUBLE;</span>
+				}
+			}
+		}
+<span class="nc bnc" id="L99" title="All 2 branches missed.">		if (position != null) {</span>
+<span class="nc" id="L100">			lineStyle = style;</span>
+<span class="nc" id="L101">			lineWeight = weight;</span>
+<span class="nc" id="L102">			linePosition = position;</span>
+		}
+<span class="nc" id="L104">		this.lineStyle = lineStyle;</span>
+<span class="nc" id="L105">		this.lineWeight = lineWeight;</span>
+<span class="nc" id="L106">		this.linePosition = linePosition;</span>
+<span class="nc" id="L107">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

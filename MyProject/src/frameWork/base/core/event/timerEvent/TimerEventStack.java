@@ -37,20 +37,17 @@ public class TimerEventStack {
 		TimerEventNode preNode = head;
 		TimerEventNode node = head.next;
 		while (node != null) {
-			if (o.equals(node.item)) {
-				synchronized (this) {
-					if (o.equals(node.item)) {
-						preNode.next = node.next;
-						if (last == node) {
-							last = preNode;
-						}
-						return;
+			synchronized (this) {
+				if (o.equals(node.item)) {
+					preNode.next = node.next;
+					if (last == node) {
+						last = preNode;
 					}
+					return;
 				}
 			}
 			preNode = node;
 			node = node.next;
 		}
 	}
-	
 }

@@ -9,7 +9,6 @@ import java.util.Properties;
 import frameWork.architect.Literal;
 import frameWork.base.core.authority.Role;
 
-@SuppressWarnings("unused")
 public class Config extends FileElement {
 	private final Properties properties;
 	public final String DATABASE_DRIVER_CLASS;
@@ -109,31 +108,32 @@ public class Config extends FileElement {
 			return defaultValue;
 		}
 	}
-	
+	/*
 	private long getLong(final String key, final long defaultValue) {
-		try {
-			return Long.parseLong(get(key));
-		}
-		catch (final MissingResourceException | NumberFormatException e) {
-			return defaultValue;
-		}
+	try {
+		return Long.parseLong(get(key));
 	}
-	
+	catch (final MissingResourceException | NumberFormatException e) {
+		return defaultValue;
+	}
+	}
+
 	private double getDouble(final String key, final double defaultValue) {
-		try {
-			return Double.parseDouble(get(key));
-		}
-		catch (final MissingResourceException | NumberFormatException e) {
-			return defaultValue;
-		}
+	try {
+		return Double.parseDouble(get(key));
 	}
-	
+	catch (final MissingResourceException | NumberFormatException e) {
+		return defaultValue;
+	}
+	}
+
 	private boolean getBoolean(final String key, final boolean defaultValue) {
-		try {
-			return Boolean.parseBoolean(get(key));
-		}
-		catch (final MissingResourceException | NumberFormatException e) {
-			return defaultValue;
-		}
+	try {
+		return Boolean.parseBoolean(get(key));
 	}
+	catch (final MissingResourceException | NumberFormatException e) {
+		return defaultValue;
+	}
+	}
+	*/
 }

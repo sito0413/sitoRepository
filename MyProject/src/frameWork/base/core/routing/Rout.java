@@ -1,10 +1,12 @@
 package frameWork.base.core.routing;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.state.Response;
 import frameWork.base.core.state.State;
+import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ViewCompiler;
 
 class Rout {
@@ -24,11 +26,20 @@ class Rout {
 		methodName.setAccessible(true);
 		methodName.invoke(className.newInstance(), state);
 		if (state.isViewCompiler()) {
-			ViewCompiler.compile(response, state);
+			viewCompile(state, response);
 		}
 		else {
-			new ResourceRout(methodName.getName(), FileSystem.Data.getResource(state.getPage()).getAbsolutePath())
-			        .invoke(state, response);
+			invokeResource(state, response);
 		}
+	}
+	
+	void invokeResource(final State state, final Response response) throws NoSuchMethodException, SecurityException,
+	        Exception {
+		new ResourceRout(methodName.getName(), FileSystem.Data.getResource(state.getPage()).getAbsolutePath()).invoke(
+		        state, response);
+	}
+	
+	void viewCompile(final State state, final Response response) throws IOException, ScriptException {
+		ViewCompiler.compile(response, state);
 	}
 }

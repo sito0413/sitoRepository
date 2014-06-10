@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>FileSystem.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.fileSystem</a> &gt; <span class="el_source">FileSystem.java</span></div><h1>FileSystem.java</h1><pre class="source lang-java linenums">package frameWork.base.core.fileSystem;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
+
+import frameWork.architect.Literal;
+
+<span class="nc" id="L11">public class FileSystem {</span>
+	public static final String SystemID;
+	public static final File Root;
+	public static final Temp Temp;
+	public static final FileElement Database;
+	public static final Resource Data;
+	public static final FileElement Viewer;
+	public static final FileElement Print;
+	public static final Resource Resource;
+	public static final Config Config;
+	public static final Log Log;
+	static {
+		File dir;
+<span class="fc" id="L24">		File path = null;</span>
+<span class="fc" id="L25">		String systemIDString = null;</span>
+		try {
+<span class="fc" id="L27">			final Properties properties = loadFromXML(FileSystem.class.getClassLoader().getResource(Literal.info_xml));</span>
+<span class="fc" id="L28">			path = loadPathDir(properties.getProperty(Literal.Path));</span>
+<span class="fc" id="L29">			systemIDString = loadSystemID(properties.getProperty(Literal.SystemID));</span>
+		}
+<span class="nc" id="L31">		catch (final IOException e) {</span>
+			//NOOP
+<span class="fc" id="L33">		}</span>
+<span class="fc" id="L34">		dir = loadRootDir(path, systemIDString);</span>
+		
+<span class="fc" id="L36">		SystemID = systemIDString;</span>
+<span class="fc" id="L37">		Root = dir;</span>
+<span class="fc" id="L38">		Temp = new Temp(Root);</span>
+<span class="fc" id="L39">		Database = new FileElement(Root, &quot;database&quot;);</span>
+<span class="fc" id="L40">		Data = new Resource(Root, &quot;data&quot;);</span>
+<span class="fc" id="L41">		Viewer = new FileElement(Root, Literal.viewer);</span>
+<span class="fc" id="L42">		Print = new FileElement(Root, &quot;print&quot;);</span>
+<span class="fc" id="L43">		Resource = new Resource(Root, &quot;resource&quot;);</span>
+<span class="fc" id="L44">		Config = new Config(Root);</span>
+<span class="fc" id="L45">		Log = new Log(Root);</span>
+<span class="fc" id="L46">	}</span>
+	
+	static Properties loadFromXML(final URL url) throws IOException {
+<span class="fc" id="L49">		final Properties properties = new Properties();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (url != null) {</span>
+<span class="fc" id="L51">			final URLConnection connection = url.openConnection();</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">			if (connection != null) {</span>
+<span class="fc" id="L53">				properties.loadFromXML(connection.getInputStream());</span>
+			}
+		}
+<span class="fc" id="L56">		return properties;</span>
+	}
+	
+	static File loadRootDir(final File path, final String systemIDString) {
+		File dir;
+<span class="fc bfc" id="L61" title="All 6 branches covered.">		if ((path != null) &amp;&amp; (!path.exists() || path.isDirectory())) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">			if (systemIDString != null) {</span>
+<span class="fc" id="L63">				dir = new File(path, systemIDString);</span>
+			}
+			else {
+<span class="fc" id="L66">				dir = new File(path, Literal.Temp);</span>
+			}
+		}
+		else {
+<span class="fc" id="L70">			dir = new File(Literal.Root, Literal.Temp);</span>
+		}
+<span class="fc bfc" id="L72" title="All 4 branches covered.">		if (dir.exists() &amp;&amp; dir.isFile()) {</span>
+<span class="fc" id="L73">			dir = new File(path, Literal.Temp);</span>
+<span class="fc" id="L74">			dir.mkdirs();</span>
+		}
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		else if (!dir.exists()) {</span>
+<span class="fc" id="L77">			dir.mkdirs();</span>
+		}
+<span class="fc" id="L79">		return dir;</span>
+	}
+	
+	static File loadPathDir(final String pathString) {
+<span class="fc bfc" id="L83" title="All 2 branches covered.">		if (pathString != null) {</span>
+<span class="fc" id="L84">			File path = new File(pathString);</span>
+<span class="fc bfc" id="L85" title="All 4 branches covered.">			if (path.exists() &amp;&amp; path.isFile()) {</span>
+<span class="fc" id="L86">				path = new File(Literal.Root);</span>
+			}
+<span class="fc bfc" id="L88" title="All 2 branches covered.">			else if (!path.exists()) {</span>
+<span class="fc" id="L89">				path.mkdirs();</span>
+			}
+<span class="fc" id="L91">			return path;</span>
+		}
+<span class="fc" id="L93">		return new File(Literal.Root);</span>
+	}
+	
+	static String loadSystemID(final String systemIDString) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">		if (systemIDString != null) {</span>
+<span class="fc" id="L98">			return systemIDString;</span>
+		}
+<span class="fc" id="L100">		return Literal.Temp;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
