@@ -1,0 +1,50 @@
+package frameWork.base.core.viewCompiler.script.expression;
+
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+
+public class OperatorScript extends ExpressionScript {
+	private final String op;
+	private final ExpressionScript expressionScript1;
+	private final ExpressionScript expressionScript2;
+	
+	public OperatorScript(final String op, final ExpressionScript expressionScript1,
+	        final ExpressionScript expressionScript2) {
+		this.op = op;
+		this.expressionScript1 = expressionScript1;
+		this.expressionScript2 = expressionScript2;
+	}
+	
+	public OperatorScript(final String op, final ExpressionScript expressionScript1) {
+		this.op = op;
+		this.expressionScript1 = expressionScript1;
+		this.expressionScript2 = null;
+	}
+	
+	@Override
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+		if (expressionScript2 == null) {
+			return expressionScript1.execute(scope).operation(op);
+		}
+		return expressionScript1.execute(scope).operation(op, expressionScript2, scope);
+	}
+	
+	@Override
+	public String toNameString() {
+		return expressionScript1.toNameString() + " " + op
+		        + ((expressionScript2 == null) ? "" : (" " + expressionScript2.toNameString()));
+	}
+	
+	@Override
+	public void callDefine(final Scope scope) throws ScriptException {
+		super.callDefine(scope);
+		if (expressionScript1 != null) {
+			expressionScript1.callDefine(scope);
+		}
+		if (expressionScript2 != null) {
+			expressionScript2.callDefine(scope);
+		}
+	}
+}

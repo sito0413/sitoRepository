@@ -3,10 +3,10 @@ package frameWork.base.core.viewCompiler.script.syntax;
 import frameWork.base.core.viewCompiler.Scope;
 import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ScriptsBuffer;
-import frameWork.base.core.viewCompiler.script.SyntaxScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
 
-public abstract class ExpressionScript extends SyntaxScript<InstanceBytecode> {
+public abstract class ExpressionScript extends Script<InstanceBytecode> {
 	
 	public ExpressionScript() {
 		super("");

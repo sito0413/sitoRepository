@@ -6,116 +6,116 @@ import java.util.HashMap;
 import java.util.Map;
 
 import frameWork.base.core.fileSystem.FileSystem;
-import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
 
 @SuppressWarnings(&quot;rawtypes&quot;)
-<span class="nc" id="L12">public class Scope {</span>
-<span class="nc" id="L13">	private final Map&lt;String, Class&lt;?&gt;&gt; classMap = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L14">	private Map&lt;String, InstanceBytecode&gt; objectMap = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L15">	private final Deque&lt;Map&lt;String, InstanceBytecode&gt;&gt; objectMapQueue = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L12">public class Scope {</span>
+<span class="fc" id="L13">	private final Map&lt;String, Class&lt;?&gt;&gt; classMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L14">	Map&lt;String, InstanceBytecode&gt; objectMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L15">	private final Deque&lt;Map&lt;String, InstanceBytecode&gt;&gt; objectMapQueue = new ArrayDeque&lt;&gt;();</span>
 	
 	public void startScope() {
-<span class="nc bnc" id="L18" title="All 2 branches missed.">		if (objectMap != null) {</span>
-<span class="nc" id="L19">			objectMapQueue.offerFirst(objectMap);</span>
-		}
-<span class="nc" id="L21">		objectMap = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L22">	}</span>
+<span class="fc" id="L18">		objectMapQueue.offerFirst(objectMap);</span>
+<span class="fc" id="L19">		objectMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L20">	}</span>
 	
 	public void endScope() {
-<span class="nc" id="L25">		objectMap = objectMapQueue.pollFirst();</span>
-		
-<span class="nc" id="L27">	}</span>
+<span class="fc" id="L23">		objectMap = objectMapQueue.pollFirst();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">		if (objectMap == null) {</span>
+<span class="fc" id="L25">			objectMap = new HashMap&lt;&gt;();</span>
+		}
+<span class="fc" id="L27">	}</span>
+	
+	int depth() {
+<span class="fc" id="L30">		return objectMapQueue.size();</span>
+	}
 	
 	public void put(final String key, final Object object) {
-<span class="nc" id="L30">		put(key, new InstanceBytecode(object.getClass(), object));</span>
-<span class="nc" id="L31">	}</span>
+<span class="fc" id="L34">		put(key, new InstanceBytecode(object.getClass(), object));</span>
+<span class="fc" id="L35">	}</span>
 	
 	public InstanceBytecode put(final String key, final InstanceBytecode object) {
-<span class="nc" id="L34">		Map&lt;String, InstanceBytecode&gt; map = objectMap;</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">		if (!map.containsKey(key)) {</span>
-<span class="nc bnc" id="L36" title="All 2 branches missed.">			for (final Map&lt;String, InstanceBytecode&gt; m : objectMapQueue) {</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">				if (m.containsKey(key)) {</span>
-<span class="nc" id="L38">					map = m;</span>
-<span class="nc" id="L39">					break;</span>
+<span class="fc" id="L38">		Map&lt;String, InstanceBytecode&gt; map = objectMap;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (!map.containsKey(key)) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">			for (final Map&lt;String, InstanceBytecode&gt; m : objectMapQueue) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">				if (m.containsKey(key)) {</span>
+<span class="fc" id="L42">					map = m;</span>
+<span class="fc" id="L43">					break;</span>
 				}
-<span class="nc" id="L41">			}</span>
+<span class="fc" id="L45">			}</span>
 		}
-<span class="nc" id="L43">		map.put(key, object);</span>
-<span class="nc" id="L44">		return object;</span>
+<span class="fc" id="L47">		map.put(key, object);</span>
+<span class="fc" id="L48">		return object;</span>
 	}
 	
 	public InstanceBytecode get(final Class type, final String key) throws ScriptException {
-<span class="nc" id="L48">		InstanceBytecode object = objectMap.get(key);</span>
-<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (object == null) {</span>
-<span class="nc bnc" id="L50" title="All 2 branches missed.">			for (final Map&lt;String, InstanceBytecode&gt; map : objectMapQueue) {</span>
-<span class="nc" id="L51">				object = map.get(key);</span>
-<span class="nc bnc" id="L52" title="All 2 branches missed.">				if (object != null) {</span>
-<span class="nc" id="L53">					break;</span>
+<span class="fc" id="L52">		InstanceBytecode object = objectMap.get(key);</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">		if (object == null) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">			for (final Map&lt;String, InstanceBytecode&gt; map : objectMapQueue) {</span>
+<span class="fc" id="L55">				object = map.get(key);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">				if (object != null) {</span>
+<span class="fc" id="L57">					break;</span>
 				}
-<span class="nc" id="L55">			}</span>
+<span class="fc" id="L59">			}</span>
 		}
-<span class="nc bnc" id="L57" title="All 2 branches missed.">		if (object == null) {</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">			if (type == null) {</span>
-<span class="nc" id="L59">				object = new InstanceBytecode(getImport(key), null);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		if (object == null) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">			if (type == null) {</span>
+<span class="fc" id="L63">				object = new InstanceBytecode(getImport(key), null);</span>
 			}
 			else {
-<span class="nc" id="L62">				object = new InstanceBytecode(type, null);</span>
+<span class="fc" id="L66">				object = new InstanceBytecode(type, null);</span>
 			}
 		}
-<span class="nc" id="L65">		return object;</span>
+<span class="fc" id="L69">		return object;</span>
 	}
 	
 	public Class&lt;?&gt; getImport(final String key) throws ScriptException {
-<span class="nc" id="L69">		ClassNotFoundException exception = null;</span>
-<span class="nc" id="L70">		Class&lt;?&gt; class1 = classMap.get(key);</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">		if (class1 == null) {</span>
+<span class="fc" id="L73">		ClassNotFoundException exception = null;</span>
+<span class="fc" id="L74">		Class&lt;?&gt; class1 = classMap.get(key);</span>
+<span class="fc bfc" id="L75" title="All 4 branches covered.">		if ((class1 == null) &amp;&amp; key.contains(&quot;.&quot;)) {</span>
 			try {
-<span class="nc" id="L73">				class1 = Class.forName(&quot;java.lang.&quot; + key);</span>
-<span class="nc" id="L74">				classMap.put(key, class1);</span>
+<span class="fc" id="L77">				class1 = Class.forName(key);</span>
+<span class="fc" id="L78">				classMap.put(key, class1);</span>
 			}
-<span class="nc" id="L76">			catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L77">				exception = e;</span>
-<span class="nc" id="L78">			}</span>
+<span class="fc" id="L80">			catch (final ClassNotFoundException e) {</span>
+<span class="fc" id="L81">				exception = e;</span>
+<span class="fc" id="L82">			}</span>
 		}
-<span class="nc bnc" id="L80" title="All 4 branches missed.">		if ((class1 == null) &amp;&amp; FileSystem.Config.IS_VAR_USEABLE &amp;&amp; key.equals(&quot;var&quot;)) {</span>
-<span class="nc" id="L81">			class1 = Object.class;</span>
-<span class="nc" id="L82">			classMap.put(key, Object.class);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		if (class1 == null) {</span>
+			try {
+<span class="fc" id="L86">				class1 = Class.forName(&quot;java.lang.&quot; + key);</span>
+			}
+<span class="fc" id="L88">			catch (final ClassNotFoundException e) {</span>
+<span class="fc" id="L89">				exception = e;</span>
+<span class="fc" id="L90">			}</span>
 		}
-<span class="nc bnc" id="L84" title="All 2 branches missed.">		if (class1 == null) {</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">			if (key.endsWith(&quot;[]&quot;)) {</span>
+<span class="fc bfc" id="L92" title="All 4 branches covered.">		if ((class1 == null) &amp;&amp; FileSystem.Config.IS_VAR_USEABLE &amp;&amp; key.equals(&quot;var&quot;)) {</span>
+<span class="fc" id="L93">			class1 = Object.class;</span>
+		}
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		if (class1 == null) {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">			if (key.endsWith(&quot;[]&quot;)) {</span>
 				try {
-<span class="nc" id="L87">					class1 = Class.forName(&quot;[L&quot; + key.substring(0, key.length() - &quot;[]&quot;.length()) + &quot;;&quot;);</span>
+<span class="fc" id="L98">					class1 = Class.forName(&quot;[L&quot;</span>
+					        + getImport(key.substring(0, key.length() - &quot;[]&quot;.length())).getCanonicalName() + &quot;;&quot;);
 				}
-<span class="nc" id="L89">				catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L90">					exception = e;</span>
-<span class="nc" id="L91">				}</span>
-<span class="nc bnc" id="L92" title="All 2 branches missed.">				if (class1 == null) {</span>
-					try {
-<span class="nc" id="L94">						class1 = Class.forName(&quot;[Ljava.lang.&quot; + key.substring(0, key.length() - &quot;[]&quot;.length()) + &quot;;&quot;);</span>
-<span class="nc" id="L95">						classMap.put(key, class1);</span>
-					}
-<span class="nc" id="L97">					catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L98">						exception = e;</span>
-<span class="nc" id="L99">					}</span>
-				}
-				else {
-<span class="nc" id="L102">					classMap.put(key, class1);</span>
-				}
+<span class="fc" id="L101">				catch (final ClassNotFoundException e) {</span>
+<span class="fc" id="L102">					exception = e;</span>
+<span class="fc" id="L103">				}</span>
 			}
 		}
 		
-<span class="nc bnc" id="L107" title="All 4 branches missed.">		if ((class1 == null) &amp;&amp; (exception != null)) {</span>
-<span class="nc" id="L108">			throw ScriptException.illegalStateException(exception);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">		if (class1 == null) {</span>
+<span class="fc" id="L108">			throw ScriptException.illegalStateException(exception);</span>
 		}
-<span class="nc" id="L110">		return class1;</span>
+<span class="fc" id="L110">		return class1;</span>
 	}
 	
 	public void putImport(final String key, final Class&lt;?&gt; c) {
-<span class="nc" id="L114">		classMap.put(key, c);</span>
-<span class="nc" id="L115">	}</span>
+<span class="fc" id="L114">		classMap.put(key, c);</span>
+<span class="fc" id="L115">	}</span>
 	
 	public void removeImport(final String key) {
-<span class="nc" id="L118">		classMap.remove(key);</span>
-<span class="nc" id="L119">	}</span>
+<span class="fc" id="L118">		classMap.remove(key);</span>
+<span class="fc" id="L119">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

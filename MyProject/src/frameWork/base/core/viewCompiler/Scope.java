@@ -6,24 +6,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import frameWork.base.core.fileSystem.FileSystem;
-import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
 
 @SuppressWarnings("rawtypes")
 public class Scope {
 	private final Map<String, Class<?>> classMap = new HashMap<>();
-	private Map<String, InstanceBytecode> objectMap = new HashMap<>();
+	Map<String, InstanceBytecode> objectMap = new HashMap<>();
 	private final Deque<Map<String, InstanceBytecode>> objectMapQueue = new ArrayDeque<>();
 	
 	public void startScope() {
-		if (objectMap != null) {
-			objectMapQueue.offerFirst(objectMap);
-		}
+		objectMapQueue.offerFirst(objectMap);
 		objectMap = new HashMap<>();
 	}
 	
 	public void endScope() {
 		objectMap = objectMapQueue.pollFirst();
-		
+		if (objectMap == null) {
+			objectMap = new HashMap<>();
+		}
+	}
+	
+	int depth() {
+		return objectMapQueue.size();
 	}
 	
 	public void put(final String key, final Object object) {
@@ -68,10 +72,18 @@ public class Scope {
 	public Class<?> getImport(final String key) throws ScriptException {
 		ClassNotFoundException exception = null;
 		Class<?> class1 = classMap.get(key);
+		if ((class1 == null) && key.contains(".")) {
+			try {
+				class1 = Class.forName(key);
+				classMap.put(key, class1);
+			}
+			catch (final ClassNotFoundException e) {
+				exception = e;
+			}
+		}
 		if (class1 == null) {
 			try {
 				class1 = Class.forName("java.lang." + key);
-				classMap.put(key, class1);
 			}
 			catch (final ClassNotFoundException e) {
 				exception = e;
@@ -79,32 +91,20 @@ public class Scope {
 		}
 		if ((class1 == null) && FileSystem.Config.IS_VAR_USEABLE && key.equals("var")) {
 			class1 = Object.class;
-			classMap.put(key, Object.class);
 		}
 		if (class1 == null) {
 			if (key.endsWith("[]")) {
 				try {
-					class1 = Class.forName("[L" + key.substring(0, key.length() - "[]".length()) + ";");
+					class1 = Class.forName("[L"
+					        + getImport(key.substring(0, key.length() - "[]".length())).getCanonicalName() + ";");
 				}
 				catch (final ClassNotFoundException e) {
 					exception = e;
 				}
-				if (class1 == null) {
-					try {
-						class1 = Class.forName("[Ljava.lang." + key.substring(0, key.length() - "[]".length()) + ";");
-						classMap.put(key, class1);
-					}
-					catch (final ClassNotFoundException e) {
-						exception = e;
-					}
-				}
-				else {
-					classMap.put(key, class1);
-				}
 			}
 		}
 		
-		if ((class1 == null) && (exception != null)) {
+		if (class1 == null) {
 			throw ScriptException.illegalStateException(exception);
 		}
 		return class1;

@@ -28,9 +28,8 @@ class SelectComponents extends JPanel implements ActionListener {
 		
 		this.checkBoxs = new ArrayList<>();
 		final JPanel panel = new JPanel(new GridLayout(componentList.size(), 1));
-		for (int i = 0; i < componentList.size(); i++) {
-			final JCheckBox checkBox = new JCheckBox(componentList.get(i).getLabel());
-			checkBox.getModel().setSelected(true);
+		for (final InstallComponent component : componentList) {
+			final JCheckBox checkBox = new JCheckBox(component.getLabel(), component.isSelect());
 			checkBox.addActionListener(this);
 			checkBox.setRequestFocusEnabled(false);
 			panel.add(checkBox);
@@ -57,13 +56,13 @@ class SelectComponents extends JPanel implements ActionListener {
 		sizeLabel.setText("Estimated disk usage of selected" + " components: " + getTotalSize() + "Kb");
 	}
 	
-	List<String> getInstallComponents() {
-		final List<String> components = new ArrayList<>();
+	List<InstallComponent> getInstallComponents() {
+		final List<InstallComponent> components = new ArrayList<>();
 		for (int i = 0; i < checkBoxs.size(); i++) {
 			final JCheckBox checkBox = checkBoxs.get(i);
 			final InstallComponent component = componentList.get(i);
 			if (checkBox.isSelected()) {
-				components.add(component.getName());
+				components.add(component);
 			}
 		}
 		return components;

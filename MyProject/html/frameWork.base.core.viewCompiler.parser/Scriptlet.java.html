@@ -4,19 +4,19 @@ import java.util.List;
 
 public class Scriptlet extends Textlet {
 	Scriptlet(final String text) {
-<span class="nc" id="L7">		super(text);</span>
-<span class="nc" id="L8">	}</span>
+<span class="fc" id="L7">		super(text);</span>
+<span class="fc" id="L8">	}</span>
 	
 	@Override
 	Textlet add(final List&lt;Textlet&gt; textlets, final String str) {
-<span class="nc" id="L12">		final Textlet textlet = new Textlet(str);</span>
-<span class="nc" id="L13">		textlets.add(textlet);</span>
-<span class="nc" id="L14">		return textlet;</span>
+<span class="fc" id="L12">		final Textlet textlet = new Textlet(str);</span>
+<span class="fc" id="L13">		textlets.add(textlet);</span>
+<span class="fc" id="L14">		return textlet;</span>
 	}
 	
 	@Override
 	public String toScript() {
-<span class="nc" id="L19">		return text;</span>
+<span class="fc" id="L19">		return text;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

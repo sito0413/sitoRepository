@@ -8,24 +8,24 @@ public class SessionAttributeMap implements AttributeMap {
 	
 	private final HttpSession session;
 	
-<span class="nc" id="L11">	public SessionAttributeMap(final HttpSession session) {</span>
-<span class="nc" id="L12">		this.session = session;</span>
-<span class="nc" id="L13">	}</span>
+<span class="fc" id="L11">	public SessionAttributeMap(final HttpSession session) {</span>
+<span class="fc" id="L12">		this.session = session;</span>
+<span class="fc" id="L13">	}</span>
 	
 	@Override
 	public Object getAttribute(final String name) {
-<span class="nc" id="L17">		return session.getAttribute(name);</span>
+<span class="fc" id="L17">		return session.getAttribute(name);</span>
 	}
 	
 	@Override
 	public Enumeration&lt;String&gt; getAttributeNames() {
-<span class="nc" id="L22">		return session.getAttributeNames();</span>
+<span class="fc" id="L22">		return session.getAttributeNames();</span>
 	}
 	
 	@Override
 	public void setAttribute(final String name, final Object value) {
-<span class="nc" id="L27">		session.setAttribute(name, value);</span>
-<span class="nc" id="L28">	}</span>
+<span class="fc" id="L27">		session.setAttribute(name, value);</span>
+<span class="fc" id="L28">	}</span>
 	
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

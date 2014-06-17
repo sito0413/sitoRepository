@@ -10,10 +10,14 @@ public final class LogFormatter extends Formatter {
 	
 	@Override
 	public synchronized String format(final LogRecord record) {
-		final StringBuilder message = new StringBuilder(dateFormat.format(new Date(record.getMillis()))).append(' ')
-		        .append(record.getMessage()).append('\r').append('\n');
+		final StringBuilder message = new StringBuilder(dateFormat.format(new Date(record.getMillis()))).append(' ');
 		final Throwable throwable = record.getThrown();
-		if (throwable != null) {
+		if (throwable == null) {
+			message.append(record.getMessage()).append('\r').append('\n');
+		}
+		else {
+			message.append(throwable.getClass().getCanonicalName()).append(" : ").append(record.getMessage())
+			        .append('\r').append('\n');
 			for (final StackTraceElement trace : throwable.getStackTrace()) {
 				message.append('\t').append(trace).append('\r').append('\n');
 			}

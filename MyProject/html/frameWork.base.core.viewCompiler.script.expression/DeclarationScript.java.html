@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DeclarationScript.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler.script.expression</a> &gt; <span class="el_source">DeclarationScript.java</span></div><h1>DeclarationScript.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler.script.expression;
+
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+
+public class DeclarationScript extends ExpressionScript {
+	private final String type;
+	private final String expressionScript;
+	
+<span class="fc" id="L12">	public DeclarationScript(final CallChainScript type, final CallChainScript expressionScript) {</span>
+<span class="fc" id="L13">		this.type = type.toNameString();</span>
+<span class="fc" id="L14">		this.expressionScript = expressionScript.toNameString();</span>
+<span class="fc" id="L15">	}</span>
+	
+	@Override
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+<span class="pc bpc" id="L19" title="16 of 66 branches missed.">		switch ( type ) {</span>
+			case &quot;long&quot; :
+<span class="fc" id="L21">				return scope.put(expressionScript, new InstanceBytecode(long.class, (long) 0));</span>
+			case &quot;int&quot; :
+<span class="fc" id="L23">				return scope.put(expressionScript, new InstanceBytecode(int.class, 0));</span>
+			case &quot;short&quot; :
+<span class="fc" id="L25">				return scope.put(expressionScript, new InstanceBytecode(short.class, (short) 0));</span>
+			case &quot;byte&quot; :
+<span class="fc" id="L27">				return scope.put(expressionScript, new InstanceBytecode(byte.class, (byte) 0));</span>
+			case &quot;char&quot; :
+<span class="fc" id="L29">				return scope.put(expressionScript, new InstanceBytecode(char.class, (char) 0));</span>
+			case &quot;double&quot; :
+<span class="fc" id="L31">				return scope.put(expressionScript, new InstanceBytecode(double.class, (double) 0));</span>
+			case &quot;float&quot; :
+<span class="fc" id="L33">				return scope.put(expressionScript, new InstanceBytecode(float.class, (float) 0));</span>
+			case &quot;boolean&quot; :
+<span class="fc" id="L35">				return scope.put(expressionScript, new InstanceBytecode(boolean.class, false));</span>
+			case &quot;long[]&quot; :
+<span class="fc" id="L37">				return scope.put(expressionScript, new InstanceBytecode(long[].class, null));</span>
+			case &quot;int[]&quot; :
+<span class="fc" id="L39">				return scope.put(expressionScript, new InstanceBytecode(int[].class, null));</span>
+			case &quot;short[]&quot; :
+<span class="fc" id="L41">				return scope.put(expressionScript, new InstanceBytecode(short[].class, null));</span>
+			case &quot;byte[]&quot; :
+<span class="fc" id="L43">				return scope.put(expressionScript, new InstanceBytecode(byte[].class, null));</span>
+			case &quot;char[]&quot; :
+<span class="fc" id="L45">				return scope.put(expressionScript, new InstanceBytecode(char[].class, null));</span>
+			case &quot;double[]&quot; :
+<span class="fc" id="L47">				return scope.put(expressionScript, new InstanceBytecode(double[].class, null));</span>
+			case &quot;float[]&quot; :
+<span class="fc" id="L49">				return scope.put(expressionScript, new InstanceBytecode(float[].class, null));</span>
+			case &quot;boolean[]&quot; :
+<span class="fc" id="L51">				return scope.put(expressionScript, new InstanceBytecode(boolean.class, null));</span>
+			default :
+<span class="fc" id="L53">				return scope.put(expressionScript, new InstanceBytecode(scope.getImport(type), null));</span>
+		}
+	}
+	
+	@Override
+	public String toNameString() {
+<span class="nc" id="L59">		return type + &quot; &quot; + expressionScript;</span>
+	}
+	
+	@Override
+	public void callDefine(final Scope scope) throws ScriptException {
+<span class="fc" id="L64">		execute(scope);</span>
+<span class="fc" id="L65">		super.callDefine(scope);</span>
+<span class="fc" id="L66">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

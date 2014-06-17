@@ -7,9 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import frameWork.architect.installer.Progress;
-
-class SwingProgress extends JPanel implements Progress {
+public class SwingProgress extends JPanel {
 	private final JProgressBar progress;
 	private final Pages pages;
 	
@@ -21,7 +19,6 @@ class SwingProgress extends JPanel implements Progress {
 		add(BorderLayout.NORTH, progress);
 	}
 	
-	@Override
 	public void setMaximum(final int max) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -31,7 +28,6 @@ class SwingProgress extends JPanel implements Progress {
 		});
 	}
 	
-	@Override
 	public void advance(final int value) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
@@ -46,7 +42,6 @@ class SwingProgress extends JPanel implements Progress {
 		}
 	}
 	
-	@Override
 	public void done() {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -56,7 +51,6 @@ class SwingProgress extends JPanel implements Progress {
 		});
 	}
 	
-	@Override
 	public void error(final String message) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -67,7 +61,6 @@ class SwingProgress extends JPanel implements Progress {
 		});
 	}
 	
-	@Override
 	public void message(final String message) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

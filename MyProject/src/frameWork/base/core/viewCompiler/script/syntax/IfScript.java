@@ -1,14 +1,13 @@
 package frameWork.base.core.viewCompiler.script.syntax;
 
 import frameWork.base.core.viewCompiler.Scope;
-import frameWork.base.core.viewCompiler.Script;
 import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ScriptsBuffer;
-import frameWork.base.core.viewCompiler.script.Bytecode;
-import frameWork.base.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.Bytecode;
 
 @SuppressWarnings("rawtypes")
-public class IfScript extends SyntaxScript<Bytecode> {
+public class IfScript extends Script<Bytecode> {
 	public IfScript(final String label) {
 		super(label);
 	}
@@ -34,13 +33,11 @@ public class IfScript extends SyntaxScript<Bytecode> {
 			loop:
 			for (final Script script : block) {
 				bytecode = script.execute(scope);
-				if (bytecode != null) {
-					if (bytecode.isBreak() || bytecode.isContinue()) {
-						if (!label.isEmpty() && bytecode.get().equals(label)) {
-							bytecode = null;
-						}
-						break loop;
+				if ((bytecode != null) && (bytecode.isBreak() || bytecode.isContinue())) {
+					if (!label.isEmpty() && bytecode.get().equals(label)) {
+						bytecode = null;
 					}
+					break loop;
 				}
 			}
 			scope.endScope();

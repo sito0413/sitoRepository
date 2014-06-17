@@ -9,28 +9,28 @@ import java.util.List;
 import frameWork.base.UtilityCharacter;
 import frameWork.base.core.fileSystem.FileSystem;
 import frameWork.base.core.viewCompiler.parser.Textlet;
-import frameWork.base.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.BreakScript;
+import frameWork.base.core.viewCompiler.script.bytecode.ContinueScript;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.expression.ArrayConstructorScript;
+import frameWork.base.core.viewCompiler.script.expression.ArrayScript;
+import frameWork.base.core.viewCompiler.script.expression.CallArrayScript;
+import frameWork.base.core.viewCompiler.script.expression.CallChainScript;
+import frameWork.base.core.viewCompiler.script.expression.CallMethodScript;
+import frameWork.base.core.viewCompiler.script.expression.CallObjectScript;
+import frameWork.base.core.viewCompiler.script.expression.CastScript;
+import frameWork.base.core.viewCompiler.script.expression.ConditionOperatorScript;
+import frameWork.base.core.viewCompiler.script.expression.ConstructorScript;
+import frameWork.base.core.viewCompiler.script.expression.DeclarationScript;
+import frameWork.base.core.viewCompiler.script.expression.OperatorScript;
 import frameWork.base.core.viewCompiler.script.syntax.BlockScript;
-import frameWork.base.core.viewCompiler.script.syntax.BreakScript;
-import frameWork.base.core.viewCompiler.script.syntax.ContineScript;
 import frameWork.base.core.viewCompiler.script.syntax.DoScript;
 import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
 import frameWork.base.core.viewCompiler.script.syntax.ForScript;
 import frameWork.base.core.viewCompiler.script.syntax.IfScript;
 import frameWork.base.core.viewCompiler.script.syntax.SwitchScript;
 import frameWork.base.core.viewCompiler.script.syntax.WhileScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.ArrayConstructorScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.ArrayScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.CallArrayScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.CallChainScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.CallMethodScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.CallObjectScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.CastScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.ConditionOperatorScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.ConstructorScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.DeclarationScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
-import frameWork.base.core.viewCompiler.script.syntax.expression.OperatorScript;
 
 @SuppressWarnings("rawtypes")
 public class ScriptsBuffer {
@@ -103,6 +103,10 @@ public class ScriptsBuffer {
 		index++;
 	}
 	
+	private void back() {
+		index--;
+	}
+	
 	private boolean startWith(final String string) {
 		String s = "";
 		for (int i = 0; i < string.length(); i++) {
@@ -125,7 +129,7 @@ public class ScriptsBuffer {
 		return getChar();
 	}
 	
-	public final SyntaxScript getSyntaxToken() throws ScriptException {
+	public final Script getSyntaxToken() throws ScriptException {
 		skip();
 		if (startToken("switch")) {
 			return new SwitchScript("");
@@ -142,7 +146,7 @@ public class ScriptsBuffer {
 		else if (startToken("if")) {
 			return new IfScript("");
 		}
-		else if (startToken("contine")) {
+		else if (startToken("continue")) {
 			String token = "";
 			if (getChar() != ';') {
 				token = getLabel();
@@ -151,7 +155,7 @@ public class ScriptsBuffer {
 					throw illegalCharacterError();
 				}
 			}
-			return new ContineScript(token);
+			return new ContinueScript(token);
 		}
 		else if (startToken("break")) {
 			String token = "";
@@ -168,11 +172,12 @@ public class ScriptsBuffer {
 			throw ScriptException.illegalStateException();
 		}
 		else if (startWith("{")) {
+			back();
 			return new BlockScript("");
 		}
 		else {
 			int buffer = index;
-			final SyntaxScript script = getStatementToken();
+			final Script script = getStatementToken();
 			if (getChar() == ':') {
 				final int temp = index;
 				index = buffer;
@@ -196,6 +201,7 @@ public class ScriptsBuffer {
 						return new IfScript(label);
 					}
 					else if (startWith("{")) {
+						back();
 						return new BlockScript(label);
 					}
 					index = buffer;
@@ -440,6 +446,10 @@ public class ScriptsBuffer {
 					return tokenScript(arrayDeque);
 				}
 				return a;
+			}
+			case ';' :
+			case ')' : {
+				return null;
 			}
 			default :
 				if (UtilityCharacter.isNumeric(getChar())) {
@@ -739,7 +749,7 @@ public class ScriptsBuffer {
 	
 	public void execute(final Scope scope) throws ScriptException {
 		while (hasRemaining()) {
-			final SyntaxScript script = getSyntaxToken();
+			final Script script = getSyntaxToken();
 			switch ( script.create(this) ) {
 				case ';' :
 				case '}' :
@@ -751,4 +761,45 @@ public class ScriptsBuffer {
 			script.execute(scope);
 		}
 	}
+	
+	//	public char[] dump() {
+	//		// TODO 自動生成されたメソッド・スタブ
+	//		return new char[] {
+	//		        getChar(index), getChar(index + 1), getChar(index + 2), getChar(index + 3), getChar(index + 4)
+	//		};
+	//	}
+	
+	//	final
+	//	return
+	
+	//	abstract
+	//	assert
+	//	catch
+	//	class
+	//	const
+	//	enum
+	//	extends
+	//	finally
+	//	goto
+	//	implements
+	//	import
+	//	instanceof
+	//	interface
+	//	native
+	//	package
+	//	private
+	//	protected
+	//	public
+	//	static
+	//	strictfp
+	//	super
+	//	switch
+	//	synchrnized
+	//	this
+	//	throw
+	//	throws
+	//	transient
+	//	try
+	//	void
+	//	volatile
 }

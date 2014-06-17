@@ -1,14 +1,13 @@
 package frameWork.base.core.viewCompiler.script.syntax;
 
 import frameWork.base.core.viewCompiler.Scope;
-import frameWork.base.core.viewCompiler.Script;
 import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ScriptsBuffer;
-import frameWork.base.core.viewCompiler.script.Bytecode;
-import frameWork.base.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.Bytecode;
 
 @SuppressWarnings("rawtypes")
-public class BlockScript extends SyntaxScript<Bytecode> {
+public class BlockScript extends Script<Bytecode> {
 	public BlockScript(final String label) {
 		super(label);
 	}

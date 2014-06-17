@@ -4,116 +4,143 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import frameWork.base.core.viewCompiler.Scope;
-import frameWork.base.core.viewCompiler.Script;
 import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ScriptsBuffer;
-import frameWork.base.core.viewCompiler.script.Bytecode;
-import frameWork.base.core.viewCompiler.script.SyntaxScript;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.Bytecode;
 
 @SuppressWarnings(&quot;rawtypes&quot;)
-public class SwitchScript extends SyntaxScript&lt;Bytecode&gt; {
-	private final Map&lt;SyntaxScript, List&lt;SyntaxScript&gt;&gt; caseMap;
-	private Map&lt;Object, List&lt;SyntaxScript&gt;&gt; caseBytecodeMap;
-	private final List&lt;SyntaxScript&gt; defaultList;
+public class SwitchScript extends Script&lt;Bytecode&gt; {
+	private final Map&lt;Script, List&lt;Script&gt;&gt; caseMap;
+	private final Map&lt;Object, List&lt;Script&gt;&gt; caseBytecodeMap;
+	private final List&lt;Script&gt; defaultList;
+	private final ArrayList&lt;Script&gt; caseOrderList;
 	
 	public SwitchScript(final String label) {
-<span class="nc" id="L23">		super(label);</span>
-<span class="nc" id="L24">		caseMap = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L25">		defaultList = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L26">	}</span>
-	
-	@Override
-	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
-<span class="nc" id="L30">		statement(scriptsBuffer);</span>
-<span class="nc bnc" id="L31" title="All 2 branches missed.">		switch ( scriptsBuffer.getChar() ) {</span>
-			case '{' :
-<span class="nc" id="L33">				return block(scriptsBuffer);</span>
-			default :
-<span class="nc" id="L35">				throw scriptsBuffer.illegalCharacterError();</span>
-		}
-	}
+<span class="fc" id="L22">		super(label);</span>
+<span class="fc" id="L23">		caseMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L24">		defaultList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">		caseOrderList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">		caseBytecodeMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L27">	}</span>
 	
 	@Override
 	protected final char block(final ScriptsBuffer scriptsBuffer) throws ScriptException {
-<span class="nc bnc" id="L41" title="All 2 branches missed.">		if (scriptsBuffer.getChar() == '{') {</span>
-<span class="nc" id="L42">			scriptsBuffer.gotoNextChar();</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">			if (scriptsBuffer.getChar() == '}') {</span>
-<span class="nc" id="L44">				return scriptsBuffer.gotoNextChar();</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">		if (scriptsBuffer.getChar() == '{') {</span>
+<span class="fc" id="L32">			scriptsBuffer.gotoNextChar();</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">			if (scriptsBuffer.getChar() == '}') {</span>
+<span class="fc" id="L34">				return scriptsBuffer.gotoNextChar();</span>
 			}
-<span class="nc" id="L46">			List&lt;SyntaxScript&gt; caseBlock = defaultList;</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">			while (scriptsBuffer.hasRemaining()) {</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">				if (scriptsBuffer.startToken(&quot;case&quot;)) {</span>
-<span class="nc" id="L49">					scriptsBuffer.skip();</span>
-<span class="nc" id="L50">					caseBlock = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L51">					final SyntaxScript subScript = scriptsBuffer.getStatementToken();</span>
-<span class="nc" id="L52">					scriptsBuffer.skip();</span>
-<span class="nc" id="L53">					subScript.create(scriptsBuffer);</span>
-<span class="nc" id="L54">					caseMap.put(subScript, caseBlock);</span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">					if (scriptsBuffer.getChar() != ':') {</span>
-<span class="nc" id="L56">						throw scriptsBuffer.illegalCharacterError();</span>
+			
+<span class="fc" id="L37">			List&lt;Script&gt; caseBlock = defaultList;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">			while (scriptsBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">				while (scriptsBuffer.startToken(&quot;case&quot;)) {</span>
+<span class="fc" id="L40">					scriptsBuffer.skip();</span>
+<span class="fc" id="L41">					caseBlock = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L42">					final Script subScript = scriptsBuffer.getStatementToken();</span>
+<span class="fc" id="L43">					scriptsBuffer.skip();</span>
+<span class="fc" id="L44">					subScript.create(scriptsBuffer);</span>
+<span class="fc" id="L45">					caseOrderList.add(subScript);</span>
+<span class="fc" id="L46">					caseMap.put(subScript, caseBlock);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">					if (scriptsBuffer.getChar() != ':') {</span>
+<span class="fc" id="L48">						throw scriptsBuffer.illegalCharacterError();</span>
 					}
-<span class="nc" id="L58">				}</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">				else if (scriptsBuffer.startToken(&quot;default&quot;)) {</span>
-<span class="nc" id="L60">					scriptsBuffer.skip();</span>
-<span class="nc" id="L61">					caseBlock = defaultList;</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">					if (scriptsBuffer.getChar() != ':') {</span>
-<span class="nc" id="L63">						throw scriptsBuffer.illegalCharacterError();</span>
+<span class="fc" id="L50">					scriptsBuffer.gotoNextChar();</span>
+<span class="fc" id="L51">				}</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">				if (scriptsBuffer.startToken(&quot;default&quot;)) {</span>
+<span class="fc" id="L53">					scriptsBuffer.skip();</span>
+<span class="fc" id="L54">					caseBlock = defaultList;</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">					if (scriptsBuffer.getChar() != ':') {</span>
+<span class="fc" id="L56">						throw scriptsBuffer.illegalCharacterError();</span>
 					}
+<span class="fc" id="L58">					scriptsBuffer.gotoNextChar();</span>
 				}
-<span class="nc" id="L66">				final SyntaxScript subScript = scriptsBuffer.getSyntaxToken();</span>
-<span class="nc" id="L67">				caseBlock.add(subScript);</span>
-<span class="nc bnc" id="L68" title="All 3 branches missed.">				switch ( subScript.create(scriptsBuffer) ) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">				switch ( scriptsBuffer.getChar() ) {</span>
 					case '}' :
-<span class="nc" id="L70">						return scriptsBuffer.gotoNextChar();</span>
-					case ';' :
-<span class="nc" id="L72">						scriptsBuffer.gotoNextChar();</span>
-<span class="nc" id="L73">						break;</span>
+<span class="fc" id="L62">						return scriptsBuffer.gotoNextChar();</span>
 					default :
-						break;
+<span class="fc bfc" id="L64" title="All 2 branches covered.">						if (scriptsBuffer.hasRemaining()) {</span>
+<span class="fc" id="L65">							final Script subScript = scriptsBuffer.getSyntaxToken();</span>
+<span class="fc" id="L66">							caseBlock.add(subScript);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">							switch ( subScript.create(scriptsBuffer) ) {</span>
+								case ';' :
+<span class="fc" id="L69">									scriptsBuffer.gotoNextChar();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">									if (scriptsBuffer.getChar() == '}') {</span>
+<span class="fc" id="L71">										return scriptsBuffer.gotoNextChar();</span>
+									}
+									break;
+								default :
+									break;
+							}
+<span class="fc" id="L77">						}</span>
 				}
-<span class="nc" id="L77">			}</span>
+			}
 		}
-<span class="nc" id="L79">		throw scriptsBuffer.illegalCharacterError();</span>
+<span class="fc" id="L81">		throw scriptsBuffer.illegalCharacterError();</span>
 	}
 	
 	@Override
 	public Bytecode execute(final Scope scope) throws ScriptException {
-<span class="nc" id="L84">		final Bytecode selectLabel = statement.get(0).execute(scope);</span>
-<span class="nc" id="L85">		scope.startScope();</span>
-<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (caseBytecodeMap == null) {</span>
-<span class="nc" id="L87">			caseBytecodeMap = new HashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">			for (final Entry&lt;SyntaxScript, List&lt;SyntaxScript&gt;&gt; e : caseMap.entrySet()) {</span>
-<span class="nc" id="L89">				caseBytecodeMap.put(e.getKey().execute(scope).get(), e.getValue());</span>
-<span class="nc" id="L90">			}</span>
-		}
-<span class="nc" id="L92">		List&lt;SyntaxScript&gt; caseBlock = caseBytecodeMap.get(selectLabel.get());</span>
-<span class="nc bnc" id="L93" title="All 2 branches missed.">		if (caseBlock == null) {</span>
-<span class="nc" id="L94">			caseBlock = defaultList;</span>
-		}
-<span class="nc" id="L96">		Bytecode bytecode = null;</span>
-		loop:
-<span class="nc bnc" id="L98" title="All 2 branches missed.">		for (final Script script : caseBlock) {</span>
-<span class="nc" id="L99">			bytecode = script.execute(scope);</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">			if (bytecode != null) {</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">				if (bytecode.isBreak()) {</span>
-<span class="nc bnc" id="L102" title="All 4 branches missed.">					if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {</span>
-<span class="nc" id="L103">						bytecode = null;</span>
-					}
-					break loop;
-				}
-<span class="nc bnc" id="L107" title="All 2 branches missed.">				if (bytecode.isContinue()) {</span>
-<span class="nc bnc" id="L108" title="All 4 branches missed.">					if (!label.isEmpty() &amp;&amp; bytecode.get().equals(label)) {</span>
-<span class="nc" id="L109">						bytecode = null;</span>
-					}
-					break loop;
-				}
+<span class="fc" id="L86">		final Bytecode selectLabel = statement.get(0).execute(scope);</span>
+<span class="fc" id="L87">		scope.startScope();</span>
+<span class="fc" id="L88">		caseBytecodeMap.clear();</span>
+<span class="fc" id="L89">		int index = caseOrderList.size();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		for (int i = 0; i &lt; caseOrderList.size(); i++) {</span>
+<span class="fc" id="L91">			final Script caseSyntaxScript = caseOrderList.get(i);</span>
+<span class="fc" id="L92">			final Object object = caseSyntaxScript.execute(scope).get();</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">			for (final Script script : caseMap.get(caseSyntaxScript)) {</span>
+<span class="fc" id="L94">				script.callDefine(scope);</span>
+<span class="fc" id="L95">			}</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">			if (object.equals(selectLabel.get())) {</span>
+<span class="fc" id="L97">				index = i;</span>
 			}
-<span class="nc" id="L114">		}</span>
-<span class="nc" id="L115">		scope.endScope();</span>
-<span class="nc" id="L116">		return bytecode;</span>
+		}
+<span class="fc" id="L100">		Bytecode bytecode = null;</span>
+		LOOP:
+		{
+<span class="fc bfc" id="L103" title="All 2 branches covered.">			while (index &lt; caseOrderList.size()) {</span>
+<span class="fc" id="L104">				final List&lt;Script&gt; caseBlock = caseMap.get(caseOrderList.get(index));</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">				for (final Script script : caseBlock) {</span>
+<span class="fc" id="L106">					bytecode = script.execute(scope);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">					if (bytecode != null) {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">						if (bytecode.isBreak()) {</span>
+<span class="fc bfc" id="L109" title="All 4 branches covered.">							if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {</span>
+<span class="fc" id="L110">								bytecode = null;</span>
+							}
+							break LOOP;
+						}
+<span class="fc bfc" id="L114" title="All 2 branches covered.">						if (bytecode.isContinue()) {</span>
+<span class="fc bfc" id="L115" title="All 4 branches covered.">							if (!label.isEmpty() &amp;&amp; bytecode.get().equals(label)) {</span>
+<span class="fc" id="L116">								bytecode = null;</span>
+							}
+							break LOOP;
+						}
+					}
+<span class="fc" id="L121">				}</span>
+<span class="fc" id="L122">				index++;</span>
+<span class="fc" id="L123">			}</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">			for (final Script script : defaultList) {</span>
+<span class="fc" id="L125">				bytecode = script.execute(scope);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">				if (bytecode != null) {</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">					if (bytecode.isBreak()) {</span>
+<span class="fc bfc" id="L128" title="All 4 branches covered.">						if (bytecode.get().toString().isEmpty() || bytecode.get().equals(label)) {</span>
+<span class="fc" id="L129">							bytecode = null;</span>
+						}
+						break;
+					}
+<span class="fc bfc" id="L133" title="All 2 branches covered.">					if (bytecode.isContinue()) {</span>
+<span class="fc bfc" id="L134" title="All 4 branches covered.">						if (!label.isEmpty() &amp;&amp; bytecode.get().equals(label)) {</span>
+<span class="fc" id="L135">							bytecode = null;</span>
+						}
+						break;
+					}
+				}
+<span class="fc" id="L140">			}</span>
+		}
+<span class="fc" id="L142">		scope.endScope();</span>
+<span class="fc" id="L143">		return bytecode;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

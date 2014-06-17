@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -23,6 +24,8 @@ public class InstallerGUI extends JFrame {
 		final Installer installer = new Installer();
 		pages = new Pages(this, installer, 450, 250);
 		setTitle(installer.getTitle());
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+		        InstallerGUI.class.getResource("/frameWork/architect/installer/gui/icon.png")));
 		caption = new JLabel();
 		caption.setFont(new Font("SansSerif", Font.BOLD, 18));
 		cancelButton = new JButton("キャンセル");

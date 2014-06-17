@@ -3,27 +3,30 @@
 public class ScriptException extends Exception {
 	
 	public ScriptException(final Throwable e) {
-<span class="nc" id="L6">		super(e);</span>
-<span class="nc" id="L7">	}</span>
+<span class="fc" id="L6">		super(e);</span>
+<span class="fc" id="L7">	}</span>
 	
 	public ScriptException(final String string) {
-<span class="nc" id="L10">		super(string);</span>
-<span class="nc" id="L11">	}</span>
+<span class="fc" id="L10">		super(string);</span>
+<span class="fc" id="L11">	}</span>
 	
 	public static ScriptException illegalStateException() {
 <span class="nc" id="L14">		return new ScriptException(&quot;IllegalState&quot;);</span>
 	}
 	
 	public static ScriptException illegalStateException(final Throwable e) {
-<span class="nc" id="L18">		return new ScriptException(e);</span>
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">		if (e != null) {</span>
+<span class="fc" id="L19">			return new ScriptException(e);</span>
+		}
+<span class="nc" id="L21">		return new ScriptException(&quot;IllegalState&quot;);</span>
 	}
 	
 	public static ScriptException illegalStateException(final String string) {
-<span class="nc" id="L22">		return new ScriptException(string);</span>
+<span class="fc" id="L25">		return new ScriptException(string);</span>
 	}
 	
 	public static ScriptException overflowException() {
-<span class="nc" id="L26">		return new ScriptException(&quot;Overflow&quot;);</span>
+<span class="nc" id="L29">		return new ScriptException(&quot;Overflow&quot;);</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

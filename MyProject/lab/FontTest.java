@@ -7,8 +7,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import org.junit.runner.JUnitCore;
-
 import frameWork.base.barcode.Barcode;
 
 public class FontTest {
@@ -21,7 +19,6 @@ public class FontTest {
 	 * Launch the application.
 	 */
 	public static void main(final String[] args) {
-		JUnitCore.main("frameWork.base.core.AllTests");
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -48,7 +45,7 @@ public class FontTest {
 	 */
 	private void initialize() {
 		this.frame = new JFrame();
-		this.frame.setBounds(100, 100, 450, 300);
+		this.frame.setBounds(100, 100, 429, 131);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.getContentPane().setLayout(null);
 		{
@@ -67,7 +64,7 @@ public class FontTest {
 		{
 			lblNewLabel = new JLabel("");
 			this.lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
-			lblNewLabel.setBounds(12, 39, 410, 192);
+			lblNewLabel.setBounds(12, 39, 600, 50);
 			this.frame.getContentPane().add(lblNewLabel);
 		}
 	}

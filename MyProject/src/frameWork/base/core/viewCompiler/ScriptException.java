@@ -15,7 +15,10 @@ public class ScriptException extends Exception {
 	}
 	
 	public static ScriptException illegalStateException(final Throwable e) {
-		return new ScriptException(e);
+		if (e != null) {
+			return new ScriptException(e);
+		}
+		return new ScriptException("IllegalState");
 	}
 	
 	public static ScriptException illegalStateException(final String string) {

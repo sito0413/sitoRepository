@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CallMethodScript.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジ</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler.script.expression</a> &gt; <span class="el_source">CallMethodScript.java</span></div><h1>CallMethodScript.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler.script.expression;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+
+public class CallMethodScript extends ExpressionScript {
+	private final List&lt;ExpressionScript&gt; expressionScripts;
+	private final String expression;
+	
+<span class="nc" id="L18">	public CallMethodScript(final String expression, final List&lt;ExpressionScript&gt; expressionScripts) {</span>
+<span class="nc" id="L19">		this.expression = expression;</span>
+<span class="nc" id="L20">		this.expressionScripts = expressionScripts;</span>
+<span class="nc" id="L21">	}</span>
+	
+	@Override
+	public InstanceBytecode execute(final Class&lt;?&gt; type, final Object object, final Scope scope) throws ScriptException {
+<span class="nc" id="L25">		final List&lt;InstanceBytecode&gt; bytecodes = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">		for (final ExpressionScript script : expressionScripts) {</span>
+<span class="nc" id="L27">			bytecodes.add(script.execute(scope));</span>
+<span class="nc" id="L28">		}</span>
+<span class="nc" id="L29">		final Class&lt;?&gt;[] classes = new Class&lt;?&gt;[bytecodes.size()];</span>
+<span class="nc" id="L30">		final Object[] objects = new Object[bytecodes.size()];</span>
+<span class="nc" id="L31">		int index = 0;</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		for (final InstanceBytecode script : bytecodes) {</span>
+<span class="nc" id="L33">			classes[index] = script.type();</span>
+<span class="nc" id="L34">			objects[index] = script.get();</span>
+<span class="nc" id="L35">			index++;</span>
+<span class="nc" id="L36">		}</span>
+		
+		try {
+			try {
+<span class="nc" id="L40">				final Method method = object.getClass().getMethod(expression, classes);</span>
+<span class="nc" id="L41">				method.setAccessible(true);</span>
+<span class="nc" id="L42">				return new InstanceBytecode(method.getReturnType(), method.invoke(object, objects));</span>
+			}
+<span class="nc" id="L44">			catch (final NoSuchMethodException e) {</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">				for (final Method method : object.getClass().getMethods()) {</span>
+<span class="nc" id="L46">					final Class&lt;?&gt;[] parameterTypes = method.getParameterTypes();</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">					if (method.getName().equals(expression) &amp;&amp; (classes.length == parameterTypes.length)) {</span>
+<span class="nc" id="L48">						boolean flg = true;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">						for (int i = 0; i &lt; parameterTypes.length; i++) {</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">							if (!parameterTypes[i].isAssignableFrom(classes[i])) {</span>
+<span class="nc" id="L51">								flg = false;</span>
+<span class="nc" id="L52">								break;</span>
+							}
+						}
+<span class="nc bnc" id="L55" title="All 2 branches missed.">						if (flg) {</span>
+<span class="nc" id="L56">							method.setAccessible(true);</span>
+<span class="nc" id="L57">							return new InstanceBytecode(method.getReturnType(), method.invoke(object, objects));</span>
+						}
+					}
+				}
+<span class="nc" id="L61">				throw ScriptException.illegalStateException(e);</span>
+			}
+		}
+<span class="nc" id="L64">		catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {</span>
+<span class="nc" id="L65">			throw ScriptException.illegalStateException(e);</span>
+		}
+	}
+	
+	@Override
+	public String toNameString() {
+<span class="nc" id="L71">		return expression;</span>
+	}
+	
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	@Override
+	public void callDefine(final Scope scope) throws ScriptException {
+<span class="nc" id="L77">		super.callDefine(scope);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">		for (final Script script : expressionScripts) {</span>
+<span class="nc" id="L79">			script.callDefine(scope);</span>
+<span class="nc" id="L80">		}</span>
+<span class="nc" id="L81">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

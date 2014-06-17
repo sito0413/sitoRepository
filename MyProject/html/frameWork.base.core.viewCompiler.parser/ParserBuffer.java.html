@@ -14,225 +14,196 @@ import frameWork.base.core.viewCompiler.Scope;
 public class ParserBuffer {
 	private final CharBuffer charBuffer;
 	
-<span class="nc" id="L17">	public ParserBuffer(final CharBuffer charBuffer) {</span>
-<span class="nc" id="L18">		this.charBuffer = charBuffer;</span>
-<span class="nc" id="L19">	}</span>
+<span class="fc" id="L17">	public ParserBuffer(final CharBuffer charBuffer) {</span>
+<span class="fc" id="L18">		this.charBuffer = charBuffer;</span>
+<span class="fc" id="L19">	}</span>
 	
 	public List&lt;Textlet&gt; toTextlets(final Scope scope, final Response response) {
-<span class="nc" id="L22">		final Set&lt;String&gt; duplicateCheck = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L23">		final List&lt;Textlet&gt; textlets = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L24">		Textlet oldTextlet = new Scriptlet(&quot;&quot;);</span>
-		Loop:
-<span class="nc bnc" id="L26" title="All 2 branches missed.">		while (charBuffer.hasRemaining()) {</span>
-<span class="nc" id="L27">			charBuffer.mark();</span>
-<span class="nc bnc" id="L28" title="All 4 branches missed.">			if (matches(&quot;&lt;%@&quot;) &amp;&amp; matches(&quot;page&quot;)) {//&lt;%@   pageを考慮</span>
-<span class="nc" id="L29">				String ct = null;</span>
-<span class="nc" id="L30">				String qName = parseName();</span>
-<span class="nc bnc" id="L31" title="All 2 branches missed.">				while (qName != null) {</span>
-<span class="nc" id="L32">					skipSpaces(charBuffer);</span>
-<span class="nc bnc" id="L33" title="All 2 branches missed.">					if ('=' == charBuffer.get(charBuffer.position())) {</span>
-<span class="nc" id="L34">						charBuffer.get();</span>
-					}
-<span class="nc" id="L36">					skipSpaces(charBuffer);</span>
-					
-<span class="nc" id="L38">					final char quote = charBuffer.get();</span>
-					
-<span class="nc" id="L40">					skipSpaces(charBuffer);</span>
-<span class="nc" id="L41">					int prev = ' ';</span>
-<span class="nc" id="L42">					final CharArrayWriter caw = new CharArrayWriter();</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">					for (int ch = charBuffer.get(); ch != -1; prev = ch, ch = charBuffer.get()) {</span>
-<span class="nc" id="L44">						caw.write(ch);</span>
-<span class="nc bnc" id="L45" title="All 4 branches missed.">						if ((ch == '\\') &amp;&amp; (prev == '\\')) {</span>
-<span class="nc" id="L46">							ch = 0;</span>
-						}
-<span class="nc bnc" id="L48" title="All 4 branches missed.">						else if ((ch == quote) &amp;&amp; (prev != '\\')) {</span>
-<span class="nc" id="L49">							break;</span>
-						}
-					}
-<span class="nc" id="L52">					caw.close();</span>
-<span class="nc" id="L53">					final String input = caw.toString();</span>
-<span class="nc" id="L54">					final int size = input.length();</span>
-<span class="nc" id="L55">					final StringBuilder result = new StringBuilder(size);</span>
-<span class="nc" id="L56">					int i = 0;</span>
-<span class="nc bnc" id="L57" title="All 2 branches missed.">					while (i &lt; size) {</span>
-<span class="nc" id="L58">						char ch = input.charAt(i);</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">						if (ch == '&amp;') {</span>
-							//&amp;apos;⇒'
-<span class="nc bnc" id="L61" title="All 12 branches missed.">							if (((i + 5) &lt; size) &amp;&amp; (input.charAt(i + 1) == 'a') &amp;&amp; (input.charAt(i + 2) == 'p')</span>
-							        &amp;&amp; (input.charAt(i + 3) == 'o') &amp;&amp; (input.charAt(i + 4) == 's')
-							        &amp;&amp; (input.charAt(i + 5) == ';')) {
-<span class="nc" id="L64">								ch = '\'';</span>
-<span class="nc" id="L65">								i += 6;</span>
-							}
-							//&amp;quot;⇒&quot;
-<span class="nc bnc" id="L68" title="All 12 branches missed.">							else if (((i + 5) &lt; size) &amp;&amp; (input.charAt(i + 1) == 'q') &amp;&amp; (input.charAt(i + 2) == 'u')</span>
-							        &amp;&amp; (input.charAt(i + 3) == 'o') &amp;&amp; (input.charAt(i + 4) == 't')
-							        &amp;&amp; (input.charAt(i + 5) == ';')) {
-<span class="nc" id="L71">								ch = '\&quot;';</span>
-<span class="nc" id="L72">								i += 6;</span>
-							}
-							else {
-<span class="nc" id="L75">								++i;</span>
-							}
-						}
-<span class="nc bnc" id="L78" title="All 4 branches missed.">						else if ((ch == '\\') &amp;&amp; ((i + 1) &lt; size)) {</span>
-<span class="nc" id="L79">							ch = input.charAt(i + 1);</span>
-<span class="nc bnc" id="L80" title="All 6 branches missed.">							if ((ch == '\\') || (ch == '\&quot;') || (ch == '\'')) {</span>
-<span class="nc" id="L81">								i += 2;</span>
-							}
-							else {
-<span class="nc" id="L84">								ch = '\\';</span>
-<span class="nc" id="L85">								++i;</span>
-							}
-						}
-<span class="nc bnc" id="L88" title="All 2 branches missed.">						else if ((ch == quote)) {</span>
-<span class="nc bnc" id="L89" title="All 2 branches missed.">							if ((i + 1) &lt; size) {</span>
-<span class="nc" id="L90">								result.append('\\');</span>
-<span class="nc" id="L91">								++i;</span>
-							}
-<span class="nc" id="L93">							++i;</span>
-<span class="nc" id="L94">							break;</span>
-						}
-						else {
-<span class="nc" id="L97">							++i;</span>
-						}
-<span class="nc" id="L99">						result.append(ch);</span>
-<span class="nc" id="L100">					}</span>
-<span class="nc" id="L101">					skipSpaces(charBuffer);</span>
-<span class="nc" id="L102">					final String value = result.toString();</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">					if (&quot;import&quot;.equals(qName)) {</span>
-<span class="nc" id="L104">						int s = 0;</span>
-<span class="nc" id="L105">						int index = -1;</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">						while ((index = value.indexOf(',', s)) != -1) {</span>
-<span class="nc" id="L107">							add(scope, value.substring(s, index).trim(), duplicateCheck);</span>
-<span class="nc" id="L108">							s = index + 1;</span>
-						}
-<span class="nc bnc" id="L110" title="All 2 branches missed.">						if (s == 0) {</span>
-<span class="nc" id="L111">							add(scope, value.trim(), duplicateCheck);</span>
-						}
-						else {
-<span class="nc" id="L114">							add(scope, value.substring(s).trim(), duplicateCheck);</span>
-						}
-<span class="nc" id="L116">					}</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">					else if (&quot;contentType&quot;.equals(qName)) {</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">						if ((value != null)) {</span>
-<span class="nc" id="L119">							ct = value;</span>
-						}
-					}
-<span class="nc" id="L122">					qName = parseName();</span>
-<span class="nc" id="L123">				}</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">				if (matches(&quot;%&gt;&quot;)) {</span>
-<span class="nc bnc" id="L125" title="All 4 branches missed.">					if ((response != null) &amp;&amp; (ct != null)) {</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">						if (ct.indexOf(&quot;charset=&quot;) &lt; 0) {</span>
-<span class="nc" id="L127">							response.setContentType(ct + &quot;;charset=&quot; + FileSystem.Config.VIEW_CHAREET);</span>
-						}
-						else {
-<span class="nc" id="L130">							response.setContentType(ct);</span>
-						}
-					}
-					continue Loop;
+<span class="fc" id="L22">		final Set&lt;String&gt; duplicateCheck = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L23">		final List&lt;Textlet&gt; textlets = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">		Textlet oldTextlet = new Scriptlet(&quot;&quot;);</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">		while (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">			if (!parsePage(scope, response, duplicateCheck)) {</span>
+<span class="fc" id="L27">				final Scriptlet scriptlet = parseScriptlet(textlets);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">				if (scriptlet == null) {</span>
+<span class="fc" id="L29">					oldTextlet = oldTextlet.add(textlets, parseText());</span>
 				}
+				else {
+<span class="fc" id="L32">					oldTextlet = oldTextlet.add(textlets, scriptlet);</span>
+				}
+<span class="fc" id="L34">			}</span>
+		}
+<span class="fc" id="L36">		return textlets;</span>
+	}
+	
+	String parseText() {
+<span class="fc" id="L40">		final CharArrayWriter text = new CharArrayWriter();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L42">			text.write(charBuffer.get());</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			while (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">				if (charBuffer.get(charBuffer.position()) == '&lt;') {</span>
+<span class="fc" id="L45">					break;</span>
+				}
+<span class="fc" id="L47">				text.write(charBuffer.get());</span>
 			}
-<span class="nc" id="L136">			charBuffer.reset();</span>
-			
-<span class="nc" id="L138">			charBuffer.mark();</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">			if (matches(&quot;&lt;%&quot;)) {</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">				final boolean isExpression = charBuffer.get(charBuffer.position()) == '=';</span>
-<span class="nc bnc" id="L141" title="All 2 branches missed.">				if (isExpression) {</span>
-<span class="nc" id="L142">					charBuffer.get();</span>
+		}
+<span class="fc" id="L50">		return text.toString();</span>
+	}
+	
+	Scriptlet parseScriptlet(final List&lt;Textlet&gt; textlets) {
+<span class="fc" id="L54">		charBuffer.mark();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (matches(&quot;&lt;%&quot;)) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			if (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">				final boolean isExpression = charBuffer.get(charBuffer.position()) == '=';</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">				if (isExpression) {</span>
+<span class="fc" id="L59">					charBuffer.get();</span>
 				}
-<span class="nc" id="L144">				final CharArrayWriter caw = new CharArrayWriter();</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">				while (charBuffer.hasRemaining()) {</span>
-<span class="nc" id="L146">					final int ch = charBuffer.get();</span>
-<span class="nc bnc" id="L147" title="All 2 branches missed.">					if (ch == '%') {</span>
-<span class="nc bnc" id="L148" title="All 2 branches missed.">						if (charBuffer.get() == '&gt;') {</span>
-<span class="nc" id="L149">							caw.close();</span>
-<span class="nc" id="L150">							String text = caw.toString();</span>
-<span class="nc bnc" id="L151" title="All 2 branches missed.">							text = ((text == null ? &quot;&quot; : text));</span>
-<span class="nc bnc" id="L152" title="All 2 branches missed.">							if (isExpression) {</span>
-<span class="nc" id="L153">								text = FileSystem.Config.VIEW_OUTPUT_METHOD + &quot;(&quot; + text + &quot;);&quot;;</span>
+<span class="fc" id="L61">				final CharArrayWriter caw = new CharArrayWriter();</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">				while (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L63">					final int ch = charBuffer.get();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">					if (ch == '%') {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">						if (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">							if (charBuffer.get(charBuffer.position()) == '&gt;') {</span>
+<span class="fc" id="L67">								charBuffer.get();</span>
+<span class="fc" id="L68">								caw.close();</span>
+<span class="fc" id="L69">								String text = caw.toString();</span>
+<span class="fc bfc" id="L70" title="All 4 branches covered.">								if (isExpression &amp;&amp; !text.isEmpty()) {</span>
+<span class="fc" id="L71">									text = FileSystem.Config.VIEW_OUTPUT_METHOD + &quot;(&quot; + text + &quot;);&quot;;</span>
+								}
+<span class="fc" id="L73">								return new Scriptlet(text);</span>
 							}
-<span class="nc" id="L155">							oldTextlet = oldTextlet.add(textlets, new Scriptlet(text));</span>
-<span class="nc" id="L156">							continue Loop;</span>
 						}
+					}
+<span class="fc" id="L77">					caw.write(ch);</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">					if ((ch == '&quot;') &amp;&amp; (charBuffer.get(charBuffer.position() - 2) != '\\')) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">						while (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L80">							final int c = charBuffer.get();</span>
+<span class="fc" id="L81">							caw.write(c);</span>
+<span class="fc bfc" id="L82" title="All 4 branches covered.">							if ((c == '&quot;') &amp;&amp; (charBuffer.get(charBuffer.position() - 2) != '\\')) {</span>
+<span class="fc" id="L83">								break;</span>
+							}
+<span class="fc" id="L85">						}</span>
+					}
+					
+<span class="fc" id="L88">				}</span>
+<span class="fc" id="L89">				caw.close();</span>
+			}
+		}
+<span class="fc" id="L92">		charBuffer.reset();</span>
+<span class="fc" id="L93">		return null;</span>
+	}
+	
+	boolean parsePage(final Scope scope, final Response response, final Set&lt;String&gt; duplicateCheck) {
+<span class="fc" id="L97">		charBuffer.mark();</span>
+<span class="fc bfc" id="L98" title="All 4 branches covered.">		if (matches(&quot;&lt;%@&quot;) &amp;&amp; matches(&quot;page&quot;)) {//&lt;%@   pageを考慮</span>
+<span class="fc" id="L99">			String ct = null;</span>
+<span class="fc" id="L100">			String qName = null;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			while (((qName = parseName()) != null)) {</span>
+<span class="fc bfc" id="L102" title="All 4 branches covered.">				if (matches(&quot;=&quot;) &amp;&amp; matches(&quot;\&quot;&quot;)) {</span>
+<span class="fc" id="L103">					skipSpaces();</span>
+<span class="fc" id="L104">					final CharArrayWriter caw = new CharArrayWriter();</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">					if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L106">						int ch = charBuffer.get();</span>
+<span class="fc bfc" id="L107" title="All 6 branches covered.">						while (charBuffer.hasRemaining() &amp;&amp; (ch != '\&quot;') &amp;&amp; (ch != '%')) {</span>
+<span class="fc" id="L108">							caw.write(ch);</span>
+<span class="fc" id="L109">							ch = charBuffer.get();</span>
+						}
+<span class="fc bfc" id="L111" title="All 2 branches covered.">						if (ch == '%') {</span>
+<span class="fc" id="L112">							charBuffer.position(charBuffer.position() - 1);</span>
+						}
+						else {
+<span class="fc" id="L115">							skipSpaces();</span>
+						}
+					}
+<span class="fc" id="L118">					caw.close();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">					if (&quot;import&quot;.equals(qName)) {</span>
+						try {
+<span class="fc" id="L121">							final Class&lt;?&gt; c = Class.forName(caw.toString().trim());</span>
+<span class="fc" id="L122">							scope.putImport(c.getCanonicalName(), c);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">							if (duplicateCheck.add(c.getSimpleName())) {</span>
+<span class="fc" id="L124">								scope.putImport(c.getSimpleName(), c);</span>
+							}
+							else {
+<span class="fc" id="L127">								scope.removeImport(c.getSimpleName());</span>
+							}
+						}
+<span class="fc" id="L130">						catch (final Exception exception) {</span>
+<span class="fc" id="L131">							FileSystem.Log.logging(exception);</span>
+<span class="fc" id="L132">						}</span>
+					}
+<span class="fc bfc" id="L134" title="All 2 branches covered.">					else if (&quot;contentType&quot;.equals(qName)) {</span>
+<span class="fc" id="L135">						ct = caw.toString().trim();</span>
+					}
+<span class="fc" id="L137">				}</span>
+			}
+			
+<span class="fc bfc" id="L140" title="All 2 branches covered.">			if (matches(&quot;%&gt;&quot;)) {</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">				if (ct != null) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">					if (ct.indexOf(&quot;charset=&quot;) &lt; 0) {</span>
+<span class="fc" id="L143">						response.setContentType(ct + &quot;;charset=&quot; + FileSystem.Config.VIEW_CHAREET);</span>
 					}
 					else {
-<span class="nc" id="L160">						caw.write(ch);</span>
+<span class="fc" id="L146">						response.setContentType(ct);</span>
 					}
-<span class="nc" id="L162">				}</span>
-<span class="nc" id="L163">				caw.close();</span>
-			}
-<span class="nc" id="L165">			charBuffer.reset();</span>
-<span class="nc" id="L166">			final CharArrayWriter text = new CharArrayWriter();</span>
-<span class="nc" id="L167">			text.write(charBuffer.get());</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">			while (charBuffer.hasRemaining()) {</span>
-<span class="nc bnc" id="L169" title="All 2 branches missed.">				if (charBuffer.get(charBuffer.position()) == '&lt;') {</span>
-<span class="nc" id="L170">					break;</span>
 				}
-<span class="nc" id="L172">				text.write(charBuffer.get());</span>
+<span class="fc" id="L149">				return true;</span>
 			}
-<span class="nc" id="L174">			oldTextlet = oldTextlet.add(textlets, text.toString());</span>
-<span class="nc" id="L175">		}</span>
-<span class="nc" id="L176">		return textlets;</span>
+		}
+<span class="fc" id="L152">		charBuffer.reset();</span>
+<span class="fc" id="L153">		return false;</span>
 	}
 	
 	private boolean matches(final String string) {
-<span class="nc" id="L180">		final int len = string.length();</span>
-<span class="nc" id="L181">		skipSpaces(charBuffer);</span>
-<span class="nc" id="L182">		int position = charBuffer.position();</span>
-<span class="nc bnc" id="L183" title="All 2 branches missed.">		if ((position + len) &gt;= charBuffer.limit()) {</span>
-<span class="nc" id="L184">			return false;</span>
+<span class="fc" id="L157">		final int len = string.length();</span>
+<span class="fc" id="L158">		skipSpaces();</span>
+<span class="fc" id="L159">		int position = charBuffer.position();</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">		if ((position + len) &gt; charBuffer.limit()) {</span>
+<span class="fc" id="L161">			return false;</span>
 		}
-<span class="nc bnc" id="L186" title="All 2 branches missed.">		for (int i = 0; i &lt; len; i++) {</span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">			if (string.charAt(i) != charBuffer.get(position++)) {</span>
-<span class="nc" id="L188">				return false;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">		for (int i = 0; i &lt; len; i++) {</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">			if (string.charAt(i) != charBuffer.get(position++)) {</span>
+<span class="fc" id="L165">				return false;</span>
 			}
 		}
-<span class="nc" id="L191">		charBuffer.position(position);</span>
-<span class="nc" id="L192">		return true;</span>
+<span class="fc" id="L168">		charBuffer.position(position);</span>
+<span class="fc" id="L169">		return true;</span>
 	}
 	
 	private String parseName() {
-<span class="nc" id="L196">		skipSpaces(charBuffer);</span>
-<span class="nc" id="L197">		char ch = charBuffer.get(charBuffer.position());</span>
-<span class="nc bnc" id="L198" title="All 6 branches missed.">		if (Character.isLetter(ch) || (ch == '_') || (ch == ':')) {</span>
-<span class="nc" id="L199">			final StringBuilder buf = new StringBuilder();</span>
-<span class="nc" id="L200">			buf.append(ch);</span>
-<span class="nc" id="L201">			charBuffer.get();</span>
-<span class="nc" id="L202">			ch = charBuffer.get(charBuffer.position());</span>
-			while (Character.isLetter(ch) || Character.isDigit(ch) || (ch == '.') || (ch == '_') || (ch == '-')
-<span class="nc bnc" id="L204" title="All 12 branches missed.">			        || (ch == ':')) {</span>
-<span class="nc" id="L205">				buf.append(ch);</span>
-<span class="nc" id="L206">				charBuffer.get();</span>
-<span class="nc" id="L207">				ch = charBuffer.get(charBuffer.position());</span>
+<span class="fc" id="L173">		skipSpaces();</span>
+<span class="fc" id="L174">		final StringBuilder buf = new StringBuilder();</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">		if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L176">			char ch = charBuffer.get();</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">			if (Character.isLetter(ch)) {</span>
+<span class="fc" id="L178">				buf.append(ch);</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">				if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L180">					ch = charBuffer.get();</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">					while (Character.isLetter(ch)) {</span>
+<span class="fc" id="L182">						buf.append(ch);</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">						if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L184">							ch = charBuffer.get();</span>
+						}
+						else {
+							break;
+						}
+					}
+<span class="fc bfc" id="L190" title="All 2 branches covered.">					if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L191">						charBuffer.position(charBuffer.position() - 1);</span>
+					}
+				}
+<span class="fc" id="L194">				return buf.toString();</span>
+				
 			}
-<span class="nc" id="L209">			return buf.toString();</span>
+<span class="fc" id="L197">			charBuffer.position(charBuffer.position() - 1);</span>
 		}
-<span class="nc" id="L211">		return null;</span>
+<span class="fc" id="L199">		return null;</span>
 	}
 	
-	private static void skipSpaces(final CharBuffer charBuffer) {
-<span class="nc bnc" id="L215" title="All 4 branches missed.">		while (charBuffer.hasRemaining() &amp;&amp; (charBuffer.get(charBuffer.position()) &lt;= ' ')) {</span>
-<span class="nc" id="L216">			charBuffer.get();</span>
+	private void skipSpaces() {
+<span class="fc bfc" id="L203" title="All 4 branches covered.">		while (charBuffer.hasRemaining() &amp;&amp; (charBuffer.get(charBuffer.position()) &lt;= ' ')) {</span>
+<span class="fc" id="L204">			charBuffer.get();</span>
 		}
-<span class="nc" id="L218">	}</span>
+<span class="fc" id="L206">	}</span>
 	
-	private static void add(final Scope scope, final String importText, final Set&lt;String&gt; duplicateCheck) {
-<span class="nc bnc" id="L221" title="All 2 branches missed.">		if (scope != null) {</span>
-			try {
-<span class="nc" id="L223">				final Class&lt;?&gt; c = Class.forName(importText);</span>
-<span class="nc" id="L224">				scope.putImport(c.getCanonicalName(), c);</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">				if (duplicateCheck.add(c.getSimpleName())) {</span>
-<span class="nc" id="L226">					scope.putImport(c.getSimpleName(), c);</span>
-				}
-				else {
-<span class="nc" id="L229">					scope.removeImport(c.getSimpleName());</span>
-				}
-			}
-<span class="nc" id="L232">			catch (final Exception exception) {</span>
-				//NOP
-<span class="nc" id="L234">			}</span>
-		}
-<span class="nc" id="L236">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

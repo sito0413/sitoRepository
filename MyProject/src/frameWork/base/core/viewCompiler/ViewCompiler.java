@@ -37,9 +37,8 @@ public class ViewCompiler {
 	protected static void parse(final File targetFile, final Response response, final Scope scope)
 	        throws ScriptException, FileNotFoundException, IOException {
 		try (final CharArrayWriter writer = new CharArrayWriter()) {
-			final ScriptsBuffer scriptsBuffer = new ScriptsBuffer(
-			        new ParserBuffer(createCharBuffer(targetFile, writer)).toTextlets(scope, response));
-			scriptsBuffer.execute(scope);
+			new ScriptsBuffer(new ParserBuffer(createCharBuffer(targetFile, writer)).toTextlets(scope, response))
+			        .execute(scope);
 		}
 	}
 	

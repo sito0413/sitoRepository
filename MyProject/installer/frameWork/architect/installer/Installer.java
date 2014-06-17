@@ -8,12 +8,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.swing.UIManager;
 
 import frameWork.architect.installer.gui.InstallerGUI;
+import frameWork.architect.installer.gui.SwingProgress;
 
 public class Installer implements Runnable {
 	public static void main(final String[] args) {
@@ -36,12 +40,13 @@ public class Installer implements Runnable {
 		});
 	}
 	
-	private Progress progress;
+	private SwingProgress progress;
 	private String installDir;
-	private List<String> installComponents;
+	private List<InstallComponent> installComponents;
 	private final List<InstallComponent> components;
 	private final String appName = "フレームワーク";
 	private String appVersion;
+	private final String directory;
 	
 	public Installer() {
 		this.components = new ArrayList<>();
@@ -65,6 +70,7 @@ public class Installer implements Runnable {
 		catch (final IOException e1) {
 			appVersion = ("ERROR");
 		}
+		
 		try {
 			final URL url = Installer.class.getResource("/frameWork/architect/jar/info.xml");
 			if (url != null) {
@@ -77,18 +83,7 @@ public class Installer implements Runnable {
 					for (final String file : files) {
 						final String[] names = file.split("\\\\");
 						final String name = names[names.length - 1];
-						final URL jar = Installer.class.getResource("/frameWork/architect/jar/" + name);
-						final URLConnection jarConnection = jar.openConnection();
-						final byte[] buffer = new byte[1024 * 1024];
-						try (InputStream is = jarConnection.getInputStream()) {
-							int total = 0;
-							int r = -1;
-							while ((r = is.read(buffer)) != -1) {
-								total += r;
-							}
-							components.add(new InstallComponent(name + " (" + (total / 1024) + "Kb)",
-							        "/frameWork/architect/jar/" + name, total));
-						}
+						components.add(createInstallComponent(name, true));
 					}
 				}
 			}
@@ -96,9 +91,25 @@ public class Installer implements Runnable {
 		catch (final IOException e1) {
 			e1.printStackTrace();
 		}
+		directory = new File("").getAbsolutePath();
 	}
 	
-	public void install(final Progress p, final String i, final List<String> c) {
+	private InstallComponent createInstallComponent(final String name, final boolean isSelect) throws IOException {
+		final URL jar = Installer.class.getResource("/frameWork/architect/jar/" + name);
+		final URLConnection jarConnection = jar.openConnection();
+		final byte[] buffer = new byte[1024 * 1024];
+		try (InputStream is = jarConnection.getInputStream()) {
+			int total = 0;
+			int r = -1;
+			while ((r = is.read(buffer)) != -1) {
+				total += r;
+			}
+			return new InstallComponent(name + " (" + (total / 1024) + "Kb)", "/frameWork/architect/jar/" + name,
+			        total, isSelect);
+		}
+	}
+	
+	public void install(final SwingProgress p, final String i, final List<InstallComponent> c) {
 		this.progress = p;
 		this.installDir = i;
 		this.installComponents = c;
@@ -107,30 +118,102 @@ public class Installer implements Runnable {
 	
 	@Override
 	public void run() {
-		progress.setMaximum(installComponents.size() + 3);
 		try {
-			final File dir = new File(installDir + File.separator + "WebContent" + File.separator + "WEB-INF"
-			        + File.separator + "lib");
+			installComponents.add(createInstallComponent("framework.jar", false));
+			installComponents.add(createInstallComponent("manager.jar", false));
+			InstallComponent zip = null;
+			{
+				final URL jar = Installer.class.getResource("/frameWork/architect/jar/jdk.zip");
+				final URLConnection jarConnection = jar.openConnection();
+				final byte[] buffer = new byte[1024 * 1024];
+				try (InputStream is = jarConnection.getInputStream()) {
+					int total = 0;
+					int r = -1;
+					while ((r = is.read(buffer)) != -1) {
+						total += r;
+					}
+					zip = new InstallComponent("", "/frameWork/architect/jar/jdk.zip", total, false);
+				}
+			}
+			InstallComponent java = null;
+			{
+				final URL jar = Installer.class.getResource("/frameWork/architect/Project.java");
+				final URLConnection jarConnection = jar.openConnection();
+				final byte[] buffer = new byte[1024 * 1024];
+				try (InputStream is = jarConnection.getInputStream()) {
+					int total = 0;
+					int r = -1;
+					while ((r = is.read(buffer)) != -1) {
+						total += r;
+					}
+					java = new InstallComponent("", "/frameWork/architect/Project.java", total, false);
+				}
+			}
+			
+			int total = 0;
+			for (final InstallComponent component : installComponents) {
+				total += component.size;
+			}
+			total += zip.size;
+			total += zip.size;
+			total += java.size;
+			progress.setMaximum(total);
+			final File dir = new File(installDir + "/WebContent/WEB-INF/lib");
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
-			final File src = new File(installDir + File.separator + "src/frameWork/architect");
+			final File src = new File(installDir + "/src/frameWork/architect");
 			if (!src.exists()) {
 				src.mkdirs();
 			}
-			for (int i = 0; i < installComponents.size(); i++) {
-				final String[] fileNames = installComponents.get(i).split("/");
-				installFile(dir, installComponents.get(i), fileNames[fileNames.length - 1]);
+			for (final InstallComponent component : installComponents) {
+				final String[] fileNames = component.getName().split("/");
+				installFile(dir, component.getName(), fileNames[fileNames.length - 1]);
+				progress.advance(component.size);
 			}
-			installFile(dir, "/frameWork/architect/jar/framework.jar", "framework.jar");
-			installFile(dir, "/frameWork/architect/jar/manager.jar", "manager.jar");
-			installFile(src, "/frameWork/architect/Project.java", "Project.java");
+			installFile(src, java.getName(), "Project.java");
+			progress.advance(java.size);
+			installFile(new File(installDir), zip.getName(), "jdk.zip");
+			progress.advance(zip.size);
+			unzip(new File(installDir, "jdk"), zip.size);
+			
+			progress.done();
 		}
 		catch (final IOException io) {
+			io.printStackTrace();
 			progress.error(io.toString());
 			return;
 		}
-		progress.done();
+	}
+	
+	private void unzip(final File file, final int size) throws IOException {
+		file.mkdirs();
+		final byte[] buf = new byte[1024];
+		try (final ZipFile zf = new ZipFile(new File(file.getParent(), "jdk.zip"))) {
+			int i = 0;
+			for (final Enumeration<? extends ZipEntry> e = zf.entries(); e.hasMoreElements();) {
+				i++;
+				final ZipEntry entry = e.nextElement();
+				if (entry.isDirectory()) {
+					new File(file, entry.getName()).mkdirs();
+					continue;
+				}
+				try (FileOutputStream fo = new FileOutputStream(new File(file, entry.getName()))) {
+					try (final InputStream is = zf.getInputStream(entry)) {
+						for (;;) {
+							final int len = is.read(buf);
+							if (len < 0) {
+								break;
+							}
+							fo.write(buf, 0, len);
+						}
+					}
+				}
+				progress.advance((size / zf.size()) * i);
+				i = 0;
+			}
+		}
+		new File(file.getParent(), "jdk.zip").delete();
 	}
 	
 	private void installFile(final File dir, final String resource, final String fileName) throws IOException {
@@ -147,7 +230,7 @@ public class Installer implements Runnable {
 				}
 			}
 		}
-		progress.advance(1);
+		
 	}
 	
 	public String getAppName() {
@@ -167,14 +250,10 @@ public class Installer implements Runnable {
 	}
 	
 	public String getInstallDirectory() {
-		return new File("").getAbsolutePath();
+		return directory;
 	}
 	
-	public String getReadme1() {
-		return getAppName() + "のインストールを開始します。";
-	}
-	
-	public String getReadme2() {
+	public String getReadme() {
 		return getAppName() + "のインストールが完了しました。";
 	}
 }

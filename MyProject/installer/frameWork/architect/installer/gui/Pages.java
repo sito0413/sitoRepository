@@ -22,14 +22,11 @@ class Pages {
 		this.progress = new SwingProgress(this);
 		this.chooseDirectory = new ChooseDirectory(this.installerGUI, installer.getInstallDirectory());
 		this.selectComponents = new SelectComponents(installer.getInstallComponents());
-		
 		this.chooseDirectory.setName("インストール先を選択してください。");
 		this.selectComponents.setName("インストールのオプションを選択してください。");
 		this.progress.setName(installer.getAppName() + "をインストール中です。");
-		
 		this.pages = new Component[] {
-		        new TextPanel(installer.getAppName() + "をインストールします。", installer.getReadme1(), w, h), chooseDirectory,
-		        selectComponents, progress, new TextPanel("インストールが完了しました", installer.getReadme2(), w, h)
+		        chooseDirectory, selectComponents, progress, new EndPanel(installer.getReadme(), w, h)
 		};
 		
 	}

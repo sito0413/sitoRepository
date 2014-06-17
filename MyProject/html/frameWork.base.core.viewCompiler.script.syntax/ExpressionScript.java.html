@@ -3,18 +3,18 @@
 import frameWork.base.core.viewCompiler.Scope;
 import frameWork.base.core.viewCompiler.ScriptException;
 import frameWork.base.core.viewCompiler.ScriptsBuffer;
-import frameWork.base.core.viewCompiler.script.SyntaxScript;
-import frameWork.base.core.viewCompiler.script.syntax.expression.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
 
-public abstract class ExpressionScript extends SyntaxScript&lt;InstanceBytecode&gt; {
+public abstract class ExpressionScript extends Script&lt;InstanceBytecode&gt; {
 	
 	public ExpressionScript() {
-<span class="nc" id="L12">		super(&quot;&quot;);</span>
-<span class="nc" id="L13">	}</span>
+<span class="fc" id="L12">		super(&quot;&quot;);</span>
+<span class="fc" id="L13">	}</span>
 	
 	@Override
 	public char create(final ScriptsBuffer scriptsBuffer) throws ScriptException {
-<span class="nc" id="L17">		return scriptsBuffer.getChar();</span>
+<span class="fc" id="L17">		return scriptsBuffer.getChar();</span>
 	}
 	
 	public InstanceBytecode execute(final Class&lt;?&gt; type, final Object object, final Scope scope) throws ScriptException {

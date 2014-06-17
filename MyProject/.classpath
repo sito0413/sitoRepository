@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="manager"/>
-	<classpathentry kind="src" path="installer"/>
 	<classpathentry kind="src" path="lab"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="architect"/>
+	<classpathentry kind="src" path="installer"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-all-9.1.3.v20140225.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.9-20121203.jar"/>
@@ -23,6 +23,10 @@
 	<classpathentry kind="lib" path="lib/asm-commons-5.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-util-5.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/asm-xml-5.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry kind="lib" path="lib/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="lib/ant-junit.jar"/>
+	<classpathentry kind="lib" path="lib/ant-junit4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="output" path="bin"/>

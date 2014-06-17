@@ -43,7 +43,7 @@ public class CreateBuildFile {
 	private static String compileManager = "compileManager";
 	private static String compileInstaller = "compileInstaller";
 	
-	private static File createBuildFile() {
+	static File createBuildFile() {
 		final File file = new File("./build.xml");
 		try (FileOutputStream os = new FileOutputStream(file)) {
 			os.write(new StringBuilder(
@@ -171,13 +171,15 @@ public class CreateBuildFile {
 		        .append(compileInstaller)
 		        .append("\" depends=\"")
 		        .append(compileManager)
-		        .append("\"><copy todir=\"${")
+		        .append("\"><zip destfile=\"${")
+		        .append(installerJarDir)
+		        .append("}/jdk.zip\" basedir=\"./jdk\"/><copy todir=\"${")
 		        .append(installerJarDir)
 		        .append("}\"><fileset dir=\"${")
 		        .append(libDir)
 		        .append("}\" includes=\"*.jar\"/></copy><fileset id=\"test\" dir=\"${")
 		        .append(libDir)
-		        .append("}\" includes=\"/**/*.jar\"/><pathconvert pathsep=\"&#xA;\" property=\"filelist\" refid=\"test\" />")
+		        .append("}\" includes=\"/**/*\"/><pathconvert pathsep=\"&#xA;\" property=\"filelist\" refid=\"test\" />")
 		        .append(definePropertyXml(installerJarInfo, new String[] {
 		                "Path", "${filelist}"
 		        }))
@@ -217,7 +219,7 @@ public class CreateBuildFile {
 		}
 		for (final String fileset : filesetStrings) {
 			for (final String includes : new String[] {
-			        "**/*.png", "**/*.class", "**/*.java", "**/*.ttf", "**/*.xml", "**/*.jar"
+			        "**/*.png", "**/*.class", "**/*.java", "**/*.ttf", "**/*.xml", "**/*.jar", "**/*.zip"
 			}) {
 				builder.append("<fileset dir=\"${").append(fileset).append("}\" includes=\"").append(includes)
 				        .append("\"/>");
@@ -229,7 +231,8 @@ public class CreateBuildFile {
 	
 	private static String compile(final String srcdir, final String destdir, final String... classpathStrings) {
 		final StringBuilder builder = new StringBuilder("<javac srcdir=\"${").append(srcdir).append("}\" destdir=\"${")
-		        .append(destdir).append("}\" debug=\"true\" includeantruntime=\"false\">");
+		        .append(destdir)
+		        .append("}\" debug=\"true\" includeantruntime=\"false\" fork=\"true\" encoding=\"utf-8\" >");
 		for (final String classpath : classpathStrings) {
 			builder.append("<classpath refid=\"").append(classpath).append("\"/>");
 		}

@@ -22,121 +22,38 @@ public class ParserBuffer {
 		final Set<String> duplicateCheck = new HashSet<>();
 		final List<Textlet> textlets = new ArrayList<>();
 		Textlet oldTextlet = new Scriptlet("");
-		Loop:
 		while (charBuffer.hasRemaining()) {
-			charBuffer.mark();
-			if (matches("<%@") && matches("page")) {//<%@   pageを考慮
-				String ct = null;
-				String qName = parseName();
-				while (qName != null) {
-					skipSpaces(charBuffer);
-					if ('=' == charBuffer.get(charBuffer.position())) {
-						charBuffer.get();
-					}
-					skipSpaces(charBuffer);
-					
-					final char quote = charBuffer.get();
-					
-					skipSpaces(charBuffer);
-					int prev = ' ';
-					final CharArrayWriter caw = new CharArrayWriter();
-					for (int ch = charBuffer.get(); ch != -1; prev = ch, ch = charBuffer.get()) {
-						caw.write(ch);
-						if ((ch == '\\') && (prev == '\\')) {
-							ch = 0;
-						}
-						else if ((ch == quote) && (prev != '\\')) {
-							break;
-						}
-					}
-					caw.close();
-					final String input = caw.toString();
-					final int size = input.length();
-					final StringBuilder result = new StringBuilder(size);
-					int i = 0;
-					while (i < size) {
-						char ch = input.charAt(i);
-						if (ch == '&') {
-							//&apos;⇒'
-							if (((i + 5) < size) && (input.charAt(i + 1) == 'a') && (input.charAt(i + 2) == 'p')
-							        && (input.charAt(i + 3) == 'o') && (input.charAt(i + 4) == 's')
-							        && (input.charAt(i + 5) == ';')) {
-								ch = '\'';
-								i += 6;
-							}
-							//&quot;⇒"
-							else if (((i + 5) < size) && (input.charAt(i + 1) == 'q') && (input.charAt(i + 2) == 'u')
-							        && (input.charAt(i + 3) == 'o') && (input.charAt(i + 4) == 't')
-							        && (input.charAt(i + 5) == ';')) {
-								ch = '\"';
-								i += 6;
-							}
-							else {
-								++i;
-							}
-						}
-						else if ((ch == '\\') && ((i + 1) < size)) {
-							ch = input.charAt(i + 1);
-							if ((ch == '\\') || (ch == '\"') || (ch == '\'')) {
-								i += 2;
-							}
-							else {
-								ch = '\\';
-								++i;
-							}
-						}
-						else if ((ch == quote)) {
-							if ((i + 1) < size) {
-								result.append('\\');
-								++i;
-							}
-							++i;
-							break;
-						}
-						else {
-							++i;
-						}
-						result.append(ch);
-					}
-					skipSpaces(charBuffer);
-					final String value = result.toString();
-					if ("import".equals(qName)) {
-						int s = 0;
-						int index = -1;
-						while ((index = value.indexOf(',', s)) != -1) {
-							add(scope, value.substring(s, index).trim(), duplicateCheck);
-							s = index + 1;
-						}
-						if (s == 0) {
-							add(scope, value.trim(), duplicateCheck);
-						}
-						else {
-							add(scope, value.substring(s).trim(), duplicateCheck);
-						}
-					}
-					else if ("contentType".equals(qName)) {
-						if ((value != null)) {
-							ct = value;
-						}
-					}
-					qName = parseName();
+			if (!parsePage(scope, response, duplicateCheck)) {
+				final Scriptlet scriptlet = parseScriptlet(textlets);
+				if (scriptlet == null) {
+					oldTextlet = oldTextlet.add(textlets, parseText());
 				}
-				if (matches("%>")) {
-					if ((response != null) && (ct != null)) {
-						if (ct.indexOf("charset=") < 0) {
-							response.setContentType(ct + ";charset=" + FileSystem.Config.VIEW_CHAREET);
-						}
-						else {
-							response.setContentType(ct);
-						}
-					}
-					continue Loop;
+				else {
+					oldTextlet = oldTextlet.add(textlets, scriptlet);
 				}
 			}
-			charBuffer.reset();
-			
-			charBuffer.mark();
-			if (matches("<%")) {
+		}
+		return textlets;
+	}
+	
+	String parseText() {
+		final CharArrayWriter text = new CharArrayWriter();
+		if (charBuffer.hasRemaining()) {
+			text.write(charBuffer.get());
+			while (charBuffer.hasRemaining()) {
+				if (charBuffer.get(charBuffer.position()) == '<') {
+					break;
+				}
+				text.write(charBuffer.get());
+			}
+		}
+		return text.toString();
+	}
+	
+	Scriptlet parseScriptlet(final List<Textlet> textlets) {
+		charBuffer.mark();
+		if (matches("<%")) {
+			if (charBuffer.hasRemaining()) {
 				final boolean isExpression = charBuffer.get(charBuffer.position()) == '=';
 				if (isExpression) {
 					charBuffer.get();
@@ -145,42 +62,102 @@ public class ParserBuffer {
 				while (charBuffer.hasRemaining()) {
 					final int ch = charBuffer.get();
 					if (ch == '%') {
-						if (charBuffer.get() == '>') {
-							caw.close();
-							String text = caw.toString();
-							text = ((text == null ? "" : text));
-							if (isExpression) {
-								text = FileSystem.Config.VIEW_OUTPUT_METHOD + "(" + text + ");";
+						if (charBuffer.hasRemaining()) {
+							if (charBuffer.get(charBuffer.position()) == '>') {
+								charBuffer.get();
+								caw.close();
+								String text = caw.toString();
+								if (isExpression && !text.isEmpty()) {
+									text = FileSystem.Config.VIEW_OUTPUT_METHOD + "(" + text + ");";
+								}
+								return new Scriptlet(text);
 							}
-							oldTextlet = oldTextlet.add(textlets, new Scriptlet(text));
-							continue Loop;
 						}
 					}
-					else {
-						caw.write(ch);
+					caw.write(ch);
+					if ((ch == '"') && (charBuffer.get(charBuffer.position() - 2) != '\\')) {
+						while (charBuffer.hasRemaining()) {
+							final int c = charBuffer.get();
+							caw.write(c);
+							if ((c == '"') && (charBuffer.get(charBuffer.position() - 2) != '\\')) {
+								break;
+							}
+						}
 					}
+					
 				}
 				caw.close();
 			}
-			charBuffer.reset();
-			final CharArrayWriter text = new CharArrayWriter();
-			text.write(charBuffer.get());
-			while (charBuffer.hasRemaining()) {
-				if (charBuffer.get(charBuffer.position()) == '<') {
-					break;
-				}
-				text.write(charBuffer.get());
-			}
-			oldTextlet = oldTextlet.add(textlets, text.toString());
 		}
-		return textlets;
+		charBuffer.reset();
+		return null;
+	}
+	
+	boolean parsePage(final Scope scope, final Response response, final Set<String> duplicateCheck) {
+		charBuffer.mark();
+		if (matches("<%@") && matches("page")) {//<%@   pageを考慮
+			String ct = null;
+			String qName = null;
+			while (((qName = parseName()) != null)) {
+				if (matches("=") && matches("\"")) {
+					skipSpaces();
+					final CharArrayWriter caw = new CharArrayWriter();
+					if (charBuffer.hasRemaining()) {
+						int ch = charBuffer.get();
+						while (charBuffer.hasRemaining() && (ch != '\"') && (ch != '%')) {
+							caw.write(ch);
+							ch = charBuffer.get();
+						}
+						if (ch == '%') {
+							charBuffer.position(charBuffer.position() - 1);
+						}
+						else {
+							skipSpaces();
+						}
+					}
+					caw.close();
+					if ("import".equals(qName)) {
+						try {
+							final Class<?> c = Class.forName(caw.toString().trim());
+							scope.putImport(c.getCanonicalName(), c);
+							if (duplicateCheck.add(c.getSimpleName())) {
+								scope.putImport(c.getSimpleName(), c);
+							}
+							else {
+								scope.removeImport(c.getSimpleName());
+							}
+						}
+						catch (final Exception exception) {
+							FileSystem.Log.logging(exception);
+						}
+					}
+					else if ("contentType".equals(qName)) {
+						ct = caw.toString().trim();
+					}
+				}
+			}
+			
+			if (matches("%>")) {
+				if (ct != null) {
+					if (ct.indexOf("charset=") < 0) {
+						response.setContentType(ct + ";charset=" + FileSystem.Config.VIEW_CHAREET);
+					}
+					else {
+						response.setContentType(ct);
+					}
+				}
+				return true;
+			}
+		}
+		charBuffer.reset();
+		return false;
 	}
 	
 	private boolean matches(final String string) {
 		final int len = string.length();
-		skipSpaces(charBuffer);
+		skipSpaces();
 		int position = charBuffer.position();
-		if ((position + len) >= charBuffer.limit()) {
+		if ((position + len) > charBuffer.limit()) {
 			return false;
 		}
 		for (int i = 0; i < len; i++) {
@@ -193,45 +170,39 @@ public class ParserBuffer {
 	}
 	
 	private String parseName() {
-		skipSpaces(charBuffer);
-		char ch = charBuffer.get(charBuffer.position());
-		if (Character.isLetter(ch) || (ch == '_') || (ch == ':')) {
-			final StringBuilder buf = new StringBuilder();
-			buf.append(ch);
-			charBuffer.get();
-			ch = charBuffer.get(charBuffer.position());
-			while (Character.isLetter(ch) || Character.isDigit(ch) || (ch == '.') || (ch == '_') || (ch == '-')
-			        || (ch == ':')) {
+		skipSpaces();
+		final StringBuilder buf = new StringBuilder();
+		if (charBuffer.hasRemaining()) {
+			char ch = charBuffer.get();
+			if (Character.isLetter(ch)) {
 				buf.append(ch);
-				charBuffer.get();
-				ch = charBuffer.get(charBuffer.position());
+				if (charBuffer.hasRemaining()) {
+					ch = charBuffer.get();
+					while (Character.isLetter(ch)) {
+						buf.append(ch);
+						if (charBuffer.hasRemaining()) {
+							ch = charBuffer.get();
+						}
+						else {
+							break;
+						}
+					}
+					if (charBuffer.hasRemaining()) {
+						charBuffer.position(charBuffer.position() - 1);
+					}
+				}
+				return buf.toString();
+				
 			}
-			return buf.toString();
+			charBuffer.position(charBuffer.position() - 1);
 		}
 		return null;
 	}
 	
-	private static void skipSpaces(final CharBuffer charBuffer) {
+	private void skipSpaces() {
 		while (charBuffer.hasRemaining() && (charBuffer.get(charBuffer.position()) <= ' ')) {
 			charBuffer.get();
 		}
 	}
 	
-	private static void add(final Scope scope, final String importText, final Set<String> duplicateCheck) {
-		if (scope != null) {
-			try {
-				final Class<?> c = Class.forName(importText);
-				scope.putImport(c.getCanonicalName(), c);
-				if (duplicateCheck.add(c.getSimpleName())) {
-					scope.putImport(c.getSimpleName(), c);
-				}
-				else {
-					scope.removeImport(c.getSimpleName());
-				}
-			}
-			catch (final Exception exception) {
-				//NOP
-			}
-		}
-	}
 }

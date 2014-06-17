@@ -10,15 +10,19 @@ import java.util.logging.LogRecord;
 	
 	@Override
 	public synchronized String format(final LogRecord record) {
-<span class="fc" id="L13">		final StringBuilder message = new StringBuilder(dateFormat.format(new Date(record.getMillis()))).append(' ')</span>
-		        .append(record.getMessage()).append('\r').append('\n');
-<span class="fc" id="L15">		final Throwable throwable = record.getThrown();</span>
-<span class="fc bfc" id="L16" title="All 2 branches covered.">		if (throwable != null) {</span>
-<span class="fc bfc" id="L17" title="All 2 branches covered.">			for (final StackTraceElement trace : throwable.getStackTrace()) {</span>
-<span class="fc" id="L18">				message.append('\t').append(trace).append('\r').append('\n');</span>
+<span class="nc" id="L13">		final StringBuilder message = new StringBuilder(dateFormat.format(new Date(record.getMillis()))).append(' ');</span>
+<span class="nc" id="L14">		final Throwable throwable = record.getThrown();</span>
+<span class="nc bnc" id="L15" title="All 2 branches missed.">		if (throwable == null) {</span>
+<span class="nc" id="L16">			message.append(record.getMessage()).append('\r').append('\n');</span>
+		}
+		else {
+<span class="nc" id="L19">			message.append(throwable.getClass().getCanonicalName()).append(&quot; : &quot;).append(record.getMessage())</span>
+			        .append('\r').append('\n');
+<span class="nc bnc" id="L21" title="All 2 branches missed.">			for (final StackTraceElement trace : throwable.getStackTrace()) {</span>
+<span class="nc" id="L22">				message.append('\t').append(trace).append('\r').append('\n');</span>
 			}
 		}
-<span class="fc" id="L21">		return message.toString();</span>
+<span class="nc" id="L25">		return message.toString();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
