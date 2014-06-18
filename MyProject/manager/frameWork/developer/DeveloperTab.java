@@ -12,12 +12,14 @@ import javax.swing.JPanel;
 
 import frameWork.developer.authority.Authority;
 import frameWork.developer.database.DbCreate;
+import frameWork.developer.lock.Lock;
 import frameWork.developer.routing.Routing;
 import frameWork.manager.tab.TabPanel;
 import frameWork.manager.tab.TabbedPanel;
 
 public class DeveloperTab extends TabPanel {
 	private Authority authority;
+	private Lock lock;
 	private DbCreate database;
 	private Routing routing;
 	
@@ -40,6 +42,9 @@ public class DeveloperTab extends TabPanel {
 				
 				routing = new Routing();
 				tabbedPanel.addTab("New tab", null, this.routing, null);
+				
+				lock = new Lock();
+				tabbedPanel.addTab("New tab", null, this.lock, null);
 			}
 		}
 		{
@@ -59,6 +64,7 @@ public class DeveloperTab extends TabPanel {
 									authority.create();
 									database.create();
 									routing.create();
+									lock.create();
 								}
 							});
 						}
@@ -79,10 +85,12 @@ public class DeveloperTab extends TabPanel {
 					Authority.createFile();
 					DbCreate.createFile();
 					Routing.createFile();
+					Lock.createFile();
 					setEnabled(true);
 					authority.update();
 					database.update();
 					routing.update();
+					lock.update();
 				}
 				else {
 					setEnabled(false);

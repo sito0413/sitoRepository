@@ -12,7 +12,7 @@ public class SET implements SQL<UpdateSQL> {
 		for (final Field<?> field : fields) {
 			builder.append(", ").append(field.toAssignment());
 		}
-		base = "SET " + builder.substring(1) + " ";
+		base = sql + "SET " + builder.substring(1) + " ";
 	}
 	
 	@Override

@@ -84,12 +84,12 @@ public class Table {
 		printWriter.println("\t\t\t\t/**");
 		printWriter.println("\t\t\t\t * " + id);
 		printWriter.println("\t\t\t\t */");
-		printWriter.println("\t\t\t\tpublic static final " + id + " " + id + " = new " + id + "();");
+		printWriter.println("\t\t\t\tpublic final " + id + " " + id + " = new " + id + "();");
 		for (final Field field : fields) {
 			printWriter.println("\t\t\t\t/**");
-			printWriter.println(field.subName);
+			printWriter.println("\t\t\t\t *" + field.subName);
 			printWriter.println("\t\t\t\t */");
-			printWriter.println("\t\t\t\tpublic static final " + field.name + " " + field.name + " = new " + field.name
+			printWriter.println("\t\t\t\tpublic final " + field.name + " " + field.name + " = new " + field.name
 			        + "();");
 		}
 		
@@ -107,13 +107,12 @@ public class Table {
 		printWriter.println("\t\t\t}");
 		
 		printWriter.println("\t\t\t/**" + id + "*/");
-		printWriter.println("\t\t\tpublic static final " + id + " " + id + " = new " + id + "();");
+		printWriter.println("\t\t\tpublic final " + id + " " + id + " = new " + id + "();");
 		for (final Field field : fields) {
 			printWriter.println("\t\t\t/**");
 			printWriter.println("\t\t\t *" + field.subName);
 			printWriter.println("\t\t\t */");
-			printWriter.println("\t\t\tpublic static final " + field.name + " " + field.name + " = new " + field.name
-			        + "();");
+			printWriter.println("\t\t\tpublic final " + field.name + " " + field.name + " = new " + field.name + "();");
 		}
 		
 		printWriter.println("\t\t\t@Override");

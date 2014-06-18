@@ -1,38 +1,34 @@
+import java.io.IOException;
+import java.net.URL;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
-import org.eclipse.jetty.deploy.providers.WebAppProvider;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.webapp.WebAppContext;
+
+import frameWork.base.core.WrapFilter;
 
 //http://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all
-public class Main {
+public class Main extends HttpServlet {
 	public static void main(final String[] args) throws Exception {
 		final Server server = new Server(8800);
-		
-		final HandlerCollection handlers = new HandlerCollection();
-		final ContextHandlerCollection contexts = new ContextHandlerCollection();
-		handlers.setHandlers(new Handler[] {
-		        contexts, new DefaultHandler()
-		});
-		server.setHandler(handlers);
-		
-		final DeploymentManager deployer = new DeploymentManager();
-		deployer.setContexts(contexts);
-		
-		final WebAppProvider webappProvider = new WebAppProvider();
-		webappProvider.setMonitoredDirName("./main/webapps");
-		webappProvider.setScanInterval(1);
-		webappProvider.setExtractWars(true);
-		webappProvider.setConfigurationManager(new PropertiesConfigurationManager());
-		
-		deployer.addAppProvider(webappProvider);
-		server.addBean(deployer);
+		final URL warLocation = Main.class.getProtectionDomain().getCodeSource().getLocation();
+		final WebAppContext webapp = new WebAppContext();
+		System.out.println(warLocation.toExternalForm());
+		webapp.addFilter(WrapFilter.class, "/*", null);
+		webapp.addServlet(Main.class, "/*");
+		webapp.setWar(warLocation.toExternalForm());
+		webapp.setContextPath("/");
+		server.setHandler(webapp);
 		server.start();
 		server.join();
+	}
+	
+	@Override
+	public void doGet(final HttpServletRequest req, final HttpServletResponse res) throws IOException {
+		
+		res.getWriter().println("Servlet on Jetty." + req.getSession().getId());
 	}
 }

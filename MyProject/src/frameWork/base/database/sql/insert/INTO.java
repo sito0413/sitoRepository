@@ -11,7 +11,7 @@ public class INTO {
 	public INTO(final String sql, final Table<?> table, final Field<?>... fields) {
 		final StringBuilder builder = new StringBuilder();
 		for (final Field<?> field : fields) {
-			builder.append(", ").append(field.table + "." + field.name);
+			builder.append(", ").append(field.name);
 		}
 		this.base = sql + "INTO " + table.name + " ( " + builder.substring(1) + ") ";
 	}

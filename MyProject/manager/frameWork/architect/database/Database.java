@@ -127,8 +127,7 @@ public class Database {
 			printWriter.println("\t\t/**");
 			printWriter.println("\t\t *" + table.subName);
 			printWriter.println("\t\t */");
-			printWriter.println("\t\tpublic static final " + table.name + " " + table.name + " = new " + table.name
-			        + "();");
+			printWriter.println("\t\tpublic final " + table.name + " " + table.name + " = new " + table.name + "();");
 		}
 		
 		printWriter.println("\t\t@Override");

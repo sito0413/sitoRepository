@@ -7,6 +7,7 @@ import frameWork.architect.Literal;
 public final class Constant {
 	public static final String InfoFile = "info/" + Literal.info_xml;
 	public static String TestInfoFile = Literal.src + "/" + Literal.info_xml;
+	public static final String LOCK_SHEET_NAME = "ロック";
 	public static final String AUTHORITY_SHEET_NAME = "権限";
 	public static final String DATABASE_SHEET_NAME = "データベース";
 	public static final String TABLE_SHEET_NAME = "テーブル";
@@ -14,6 +15,10 @@ public final class Constant {
 	public static final String ROUTING_SHEET_NAME = "経路情報";
 	
 	private Constant() {
+	}
+	
+	public static File getLockFile() {
+		return new File(Literal.lock + "/ロック.xls");
 	}
 	
 	public static File getAuthorityFile() {
