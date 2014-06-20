@@ -14,15 +14,20 @@ import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.Statement;
 
 public class ParallelSuite extends Suite {
-
+	
 	public ParallelSuite(final Class<?> klass, final RunnerBuilder builder) throws InitializationError {
 		super(klass, builder);
 	}
-
+	
 	public ParallelSuite(final RunnerBuilder builder, final Class<?>[] classes) throws InitializationError {
 		super(builder, classes);
 	}
-
+	
+	@Override
+	protected Statement withAfterClasses(final Statement statement) {
+		return super.withAfterClasses(statement);
+	}
+	
 	@Override
 	protected Statement childrenInvoker(final RunNotifier notifier) {
 		return new Statement() {
@@ -54,6 +59,7 @@ public class ParallelSuite extends Suite {
 					es.shutdown();
 				}
 			}
+			
 		};
 	}
 }

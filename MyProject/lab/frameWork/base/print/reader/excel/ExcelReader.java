@@ -24,7 +24,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-import frameWork.ExcelUtil;
+import frameWork.base.ExcelUtil;
 import frameWork.base.print.ReportException;
 import frameWork.base.print.element.BorderInfo;
 import frameWork.base.print.element.HorizontalAlignment;

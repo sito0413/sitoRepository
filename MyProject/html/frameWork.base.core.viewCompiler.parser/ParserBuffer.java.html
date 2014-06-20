@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ParserBuffer.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler.parser</a> &gt; <span class="el_source">ParserBuffer.java</span></div><h1>ParserBuffer.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler.parser;
+
+import java.io.CharArrayWriter;
+import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.state.Response;
+import frameWork.base.core.viewCompiler.Scope;
+
+public class ParserBuffer {
+	private final CharBuffer charBuffer;
+	
+<span class="fc" id="L17">	public ParserBuffer(final CharBuffer charBuffer) {</span>
+<span class="fc" id="L18">		this.charBuffer = charBuffer;</span>
+<span class="fc" id="L19">	}</span>
+	
+	public List&lt;Textlet&gt; toTextlets(final Scope scope, final Response response) {
+<span class="fc" id="L22">		final Set&lt;String&gt; duplicateCheck = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L23">		final List&lt;Textlet&gt; textlets = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">		Textlet oldTextlet = new Scriptlet(&quot;&quot;);</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">		while (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">			if (!parsePage(scope, response, duplicateCheck)) {</span>
+<span class="fc" id="L27">				final Scriptlet scriptlet = parseScriptlet(textlets);</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">				if (scriptlet == null) {</span>
+<span class="fc" id="L29">					oldTextlet = oldTextlet.add(textlets, parseText());</span>
+				}
+				else {
+<span class="fc" id="L32">					oldTextlet = oldTextlet.add(textlets, scriptlet);</span>
+				}
+<span class="fc" id="L34">			}</span>
+		}
+<span class="fc" id="L36">		return textlets;</span>
+	}
+	
+	String parseText() {
+<span class="fc" id="L40">		final CharArrayWriter text = new CharArrayWriter();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L42">			text.write(charBuffer.get());</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			while (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">				if (charBuffer.get(charBuffer.position()) == '&lt;') {</span>
+<span class="fc" id="L45">					break;</span>
+				}
+<span class="fc" id="L47">				text.write(charBuffer.get());</span>
+			}
+		}
+<span class="fc" id="L50">		return text.toString();</span>
+	}
+	
+	Scriptlet parseScriptlet(final List&lt;Textlet&gt; textlets) {
+<span class="fc" id="L54">		charBuffer.mark();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		if (matches(&quot;&lt;%&quot;)) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			if (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">				final boolean isExpression = charBuffer.get(charBuffer.position()) == '=';</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">				if (isExpression) {</span>
+<span class="fc" id="L59">					charBuffer.get();</span>
+				}
+<span class="fc" id="L61">				final CharArrayWriter caw = new CharArrayWriter();</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">				while (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L63">					final int ch = charBuffer.get();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">					if (ch == '%') {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">						if (charBuffer.hasRemaining()) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">							if (charBuffer.get(charBuffer.position()) == '&gt;') {</span>
+<span class="fc" id="L67">								charBuffer.get();</span>
+<span class="fc" id="L68">								caw.close();</span>
+<span class="fc" id="L69">								String text = caw.toString();</span>
+<span class="fc bfc" id="L70" title="All 4 branches covered.">								if (isExpression &amp;&amp; !text.isEmpty()) {</span>
+<span class="fc" id="L71">									text = FileSystem.Config.VIEW_OUTPUT_METHOD + &quot;(&quot; + text + &quot;);&quot;;</span>
+								}
+<span class="fc" id="L73">								return new Scriptlet(text);</span>
+							}
+						}
+					}
+<span class="fc" id="L77">					caw.write(ch);</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">					if ((ch == '&quot;') &amp;&amp; (charBuffer.get(charBuffer.position() - 2) != '\\')) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">						while (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L80">							final int c = charBuffer.get();</span>
+<span class="fc" id="L81">							caw.write(c);</span>
+<span class="fc bfc" id="L82" title="All 4 branches covered.">							if ((c == '&quot;') &amp;&amp; (charBuffer.get(charBuffer.position() - 2) != '\\')) {</span>
+<span class="fc" id="L83">								break;</span>
+							}
+<span class="fc" id="L85">						}</span>
+					}
+					
+<span class="fc" id="L88">				}</span>
+<span class="fc" id="L89">				caw.close();</span>
+			}
+		}
+<span class="fc" id="L92">		charBuffer.reset();</span>
+<span class="fc" id="L93">		return null;</span>
+	}
+	
+	boolean parsePage(final Scope scope, final Response response, final Set&lt;String&gt; duplicateCheck) {
+<span class="fc" id="L97">		charBuffer.mark();</span>
+<span class="fc bfc" id="L98" title="All 4 branches covered.">		if (matches(&quot;&lt;%@&quot;) &amp;&amp; matches(&quot;page&quot;)) {//&lt;%@   pageを考慮</span>
+<span class="fc" id="L99">			String ct = null;</span>
+<span class="fc" id="L100">			String qName = null;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">			while (((qName = parseName()) != null)) {</span>
+<span class="fc bfc" id="L102" title="All 4 branches covered.">				if (matches(&quot;=&quot;) &amp;&amp; matches(&quot;\&quot;&quot;)) {</span>
+<span class="fc" id="L103">					skipSpaces();</span>
+<span class="fc" id="L104">					final CharArrayWriter caw = new CharArrayWriter();</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">					if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L106">						int ch = charBuffer.get();</span>
+<span class="fc bfc" id="L107" title="All 6 branches covered.">						while (charBuffer.hasRemaining() &amp;&amp; (ch != '\&quot;') &amp;&amp; (ch != '%')) {</span>
+<span class="fc" id="L108">							caw.write(ch);</span>
+<span class="fc" id="L109">							ch = charBuffer.get();</span>
+						}
+<span class="fc bfc" id="L111" title="All 2 branches covered.">						if (ch == '%') {</span>
+<span class="fc" id="L112">							charBuffer.position(charBuffer.position() - 1);</span>
+						}
+						else {
+<span class="fc" id="L115">							skipSpaces();</span>
+						}
+					}
+<span class="fc" id="L118">					caw.close();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">					if (&quot;import&quot;.equals(qName)) {</span>
+						try {
+<span class="fc" id="L121">							final Class&lt;?&gt; c = Class.forName(caw.toString().trim());</span>
+<span class="fc" id="L122">							scope.putImport(c.getCanonicalName(), c);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">							if (duplicateCheck.add(c.getSimpleName())) {</span>
+<span class="fc" id="L124">								scope.putImport(c.getSimpleName(), c);</span>
+							}
+							else {
+<span class="fc" id="L127">								scope.removeImport(c.getSimpleName());</span>
+							}
+						}
+<span class="fc" id="L130">						catch (final Exception exception) {</span>
+<span class="fc" id="L131">							FileSystem.Log.logging(exception);</span>
+<span class="fc" id="L132">						}</span>
+					}
+<span class="fc bfc" id="L134" title="All 2 branches covered.">					else if (&quot;contentType&quot;.equals(qName)) {</span>
+<span class="fc" id="L135">						ct = caw.toString().trim();</span>
+					}
+<span class="fc" id="L137">				}</span>
+			}
+			
+<span class="fc bfc" id="L140" title="All 2 branches covered.">			if (matches(&quot;%&gt;&quot;)) {</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">				if (ct != null) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">					if (ct.indexOf(&quot;charset=&quot;) &lt; 0) {</span>
+<span class="fc" id="L143">						response.setContentType(ct + &quot;;charset=&quot; + FileSystem.Config.VIEW_CHAREET);</span>
+					}
+					else {
+<span class="fc" id="L146">						response.setContentType(ct);</span>
+					}
+				}
+<span class="fc" id="L149">				return true;</span>
+			}
+		}
+<span class="fc" id="L152">		charBuffer.reset();</span>
+<span class="fc" id="L153">		return false;</span>
+	}
+	
+	private boolean matches(final String string) {
+<span class="fc" id="L157">		final int len = string.length();</span>
+<span class="fc" id="L158">		skipSpaces();</span>
+<span class="fc" id="L159">		int position = charBuffer.position();</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">		if ((position + len) &gt; charBuffer.limit()) {</span>
+<span class="fc" id="L161">			return false;</span>
+		}
+<span class="fc bfc" id="L163" title="All 2 branches covered.">		for (int i = 0; i &lt; len; i++) {</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">			if (string.charAt(i) != charBuffer.get(position++)) {</span>
+<span class="fc" id="L165">				return false;</span>
+			}
+		}
+<span class="fc" id="L168">		charBuffer.position(position);</span>
+<span class="fc" id="L169">		return true;</span>
+	}
+	
+	private String parseName() {
+<span class="fc" id="L173">		skipSpaces();</span>
+<span class="fc" id="L174">		final StringBuilder buf = new StringBuilder();</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">		if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L176">			char ch = charBuffer.get();</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">			if (Character.isLetter(ch)) {</span>
+<span class="fc" id="L178">				buf.append(ch);</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">				if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L180">					ch = charBuffer.get();</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">					while (Character.isLetter(ch)) {</span>
+<span class="fc" id="L182">						buf.append(ch);</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">						if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L184">							ch = charBuffer.get();</span>
+						}
+						else {
+							break;
+						}
+					}
+<span class="fc bfc" id="L190" title="All 2 branches covered.">					if (charBuffer.hasRemaining()) {</span>
+<span class="fc" id="L191">						charBuffer.position(charBuffer.position() - 1);</span>
+					}
+				}
+<span class="fc" id="L194">				return buf.toString();</span>
+				
+			}
+<span class="fc" id="L197">			charBuffer.position(charBuffer.position() - 1);</span>
+		}
+<span class="fc" id="L199">		return null;</span>
+	}
+	
+	private void skipSpaces() {
+<span class="fc bfc" id="L203" title="All 4 branches covered.">		while (charBuffer.hasRemaining() &amp;&amp; (charBuffer.get(charBuffer.position()) &lt;= ' ')) {</span>
+<span class="fc" id="L204">			charBuffer.get();</span>
+		}
+<span class="fc" id="L206">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

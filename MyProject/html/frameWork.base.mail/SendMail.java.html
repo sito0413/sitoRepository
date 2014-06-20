@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SendMail.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.mail</a> &gt; <span class="el_source">SendMail.java</span></div><h1>SendMail.java</h1><pre class="source lang-java linenums">package frameWork.base.mail;
+
+import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
+
+import frameWork.base.core.event.queue.EventQueue;
+
+<span class="nc" id="L8">public class SendMail {</span>
+	public static void main(final String[] args) throws Exception {
+<span class="nc" id="L10">		SendMail.invoke(&quot;test&quot;, &quot;test&quot;, new String[] {</span>
+			&quot;sito0413@yahoo.co.jp&quot;
+		}, new String[] {
+			&quot;sito0413@yahoo.co.jp&quot;
+		}, new String[] {
+			&quot;sito0413@yahoo.co.jp&quot;
+		});
+		try {
+<span class="nc" id="L18">			Thread.sleep(5000);</span>
+		}
+<span class="nc" id="L20">		catch (final InterruptedException e) {</span>
+<span class="nc" id="L21">			e.printStackTrace();</span>
+<span class="nc" id="L22">		}</span>
+<span class="nc" id="L23">	}</span>
+	
+<span class="nc" id="L25">	private static EventQueue eventQueue = new EventQueue();</span>
+	
+	public static void invoke(final String title, final String mailBody, final String to) throws Exception {
+<span class="nc" id="L28">		invoke(title, mailBody, new String[] {</span>
+			to
+		});
+<span class="nc" id="L31">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final String to, final String cc)
+	        throws Exception {
+<span class="nc" id="L35">		invoke(title, mailBody, new String[] {</span>
+			to
+		}, new String[] {
+			cc
+		});
+<span class="nc" id="L40">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final String to, final String cc,
+	        final String bcc) throws Exception {
+<span class="nc" id="L44">		invoke(title, mailBody, new String[] {</span>
+			to
+		}, new String[] {
+			cc
+		}, new String[] {
+			bcc
+		});
+<span class="nc" id="L51">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final String[] to) throws Exception {
+<span class="nc" id="L54">		invoke(title, mailBody, to, new String[] {});</span>
+<span class="nc" id="L55">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final String[] to, final String[] cc)
+	        throws Exception {
+<span class="nc" id="L59">		invoke(title, mailBody, to, cc, new String[] {});</span>
+<span class="nc" id="L60">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final String[] to, final String[] cc,
+	        final String[] bcc) throws Exception {
+<span class="nc" id="L64">		final Address[] ato = new Address[to.length];</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">		for (int i = 0; i &lt; to.length; i++) {</span>
+<span class="nc" id="L66">			ato[i] = new InternetAddress(to[i]);</span>
+		}
+		
+<span class="nc" id="L69">		final Address[] acc = new Address[cc.length];</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">		for (int i = 0; i &lt; to.length; i++) {</span>
+<span class="nc" id="L71">			acc[i] = new InternetAddress(cc[i]);</span>
+		}
+		
+<span class="nc" id="L74">		final Address[] abcc = new Address[bcc.length];</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		for (int i = 0; i &lt; to.length; i++) {</span>
+<span class="nc" id="L76">			abcc[i] = new InternetAddress(bcc[i]);</span>
+		}
+<span class="nc" id="L78">		eventQueue.putEvent(new SendMailEvent(title, mailBody, ato, acc, abcc));</span>
+<span class="nc" id="L79">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final Address to) throws Exception {
+<span class="nc" id="L82">		invoke(title, mailBody, new Address[] {</span>
+			to
+		});
+<span class="nc" id="L85">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final Address to, final Address cc)
+	        throws Exception {
+<span class="nc" id="L89">		invoke(title, mailBody, new Address[] {</span>
+			to
+		}, new Address[] {
+			cc
+		});
+<span class="nc" id="L94">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final Address to, final Address cc,
+	        final Address bcc) throws Exception {
+<span class="nc" id="L98">		invoke(title, mailBody, new Address[] {</span>
+			to
+		}, new Address[] {
+			cc
+		}, new Address[] {
+			bcc
+		});
+<span class="nc" id="L105">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final Address[] to) throws Exception {
+<span class="nc" id="L108">		invoke(title, mailBody, to, new Address[] {});</span>
+<span class="nc" id="L109">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final Address[] to, final Address[] cc)
+	        throws Exception {
+<span class="nc" id="L113">		invoke(title, mailBody, to, cc, new Address[] {});</span>
+<span class="nc" id="L114">	}</span>
+	
+	public static void invoke(final String title, final String mailBody, final Address[] to, final Address[] cc,
+	        final Address[] bcc) throws Exception {
+<span class="nc" id="L118">		eventQueue.putEvent(new SendMailEvent(title, mailBody, to, cc, bcc));</span>
+<span class="nc" id="L119">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

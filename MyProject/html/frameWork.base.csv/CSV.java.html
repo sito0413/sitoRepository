@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CSV.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.csv</a> &gt; <span class="el_source">CSV.java</span></div><h1>CSV.java</h1><pre class="source lang-java linenums">package frameWork.base.csv;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+<span class="nc" id="L9">public class CSV extends ArrayList&lt;List&lt;String&gt;&gt; {</span>
+	
+	CharSequence toString(final Config config) {
+<span class="nc" id="L12">		final StringBuilder builder = new StringBuilder();</span>
+<span class="nc bnc" id="L13" title="All 2 branches missed.">		for (final List&lt;String&gt; record : this) {</span>
+<span class="nc bnc" id="L14" title="All 2 branches missed.">			for (final String field : record) {</span>
+<span class="nc bnc" id="L15" title="All 6 branches missed.">				if (field.toString().contains(String.valueOf(config.getQuotation()))</span>
+				        || field.toString().contains(String.valueOf(config.getSeparator()))
+				        || field.toString().contains(config.getLineSeparator())) {
+<span class="nc" id="L18">					builder.append(config.getQuotation())</span>
+					        .append(field.toString().replace(String.valueOf(config.getQuotation()),
+					                config.getEscape())).append(config.getQuotation())
+					        .append(config.getSeparator());
+				}
+				else {
+<span class="nc" id="L24">					builder.append(field.toString()).append(config.getSeparator());</span>
+				}
+<span class="nc" id="L26">			}</span>
+<span class="nc" id="L27">			builder.append(config.getLineSeparator());</span>
+<span class="nc" id="L28">		}</span>
+<span class="nc" id="L29">		return builder;</span>
+	}
+	
+	private static List&lt;String&gt; create(final String lineString, final char quotation, final char separator) {
+<span class="nc" id="L33">		final int loopMaxCount = lineString.length();</span>
+<span class="nc" id="L34">		final List&lt;String&gt; record = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">		for (int i = 0; i &lt; loopMaxCount; i++) {</span>
+<span class="nc" id="L36">			boolean isQuotationBlock = false;</span>
+<span class="nc" id="L37">			boolean isQuotationBlockEscape = false;</span>
+<span class="nc" id="L38">			final StringBuilder buffer = new StringBuilder();</span>
+<span class="nc" id="L39">			char analyzedChar = lineString.charAt(i);</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">			if (analyzedChar == quotation) {</span>
+<span class="nc" id="L41">				isQuotationBlock = true;</span>
+			}
+<span class="nc bnc" id="L43" title="All 2 branches missed.">			else if (analyzedChar == separator) {</span>
+<span class="nc" id="L44">				record.add(create(buffer.toString(), isQuotationBlock, quotation));</span>
+<span class="nc" id="L45">				continue;</span>
+			}
+<span class="nc" id="L47">			buffer.append(analyzedChar);</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			for (i++; i &lt; loopMaxCount; i++) {</span>
+<span class="nc" id="L49">				analyzedChar = lineString.charAt(i);</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">				if (analyzedChar == separator) {</span>
+<span class="nc bnc" id="L51" title="All 4 branches missed.">					if (isQuotationBlock &amp;&amp; !isQuotationBlockEscape) {</span>
+<span class="nc" id="L52">						buffer.append(analyzedChar);</span>
+					}
+					else {
+						break;
+					}
+				}
+				else {
+<span class="nc" id="L59">					buffer.append(analyzedChar);</span>
+<span class="nc bnc" id="L60" title="All 4 branches missed.">					if ((analyzedChar == quotation) &amp;&amp; isQuotationBlock) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">						isQuotationBlockEscape = !isQuotationBlockEscape;</span>
+					}
+				}
+			}
+<span class="nc" id="L65">			record.add(create(buffer.toString(), isQuotationBlock, quotation));</span>
+		}
+<span class="nc" id="L67">		return record;</span>
+	}
+	
+	private static String create(final String string, final boolean isQuotationBlock, final char quotation) {
+<span class="nc" id="L71">		final StringBuilder buffer = new StringBuilder();</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">		if (!string.isEmpty()) {</span>
+<span class="nc" id="L73">			final int loopMaxCount = string.length() - 1;</span>
+<span class="nc" id="L74">			boolean isQuotationBlockEscape = false;</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">			if (isQuotationBlock) {</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">				for (int i = 1; i &lt; loopMaxCount; i++) {</span>
+<span class="nc" id="L77">					final char analyzedChar = string.charAt(i);</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">					if (analyzedChar == quotation) {</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">						isQuotationBlockEscape = !isQuotationBlockEscape;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">						if (isQuotationBlockEscape) {</span>
+<span class="nc" id="L81">							buffer.append(analyzedChar);</span>
+						}
+					}
+					else {
+<span class="nc" id="L85">						buffer.append(analyzedChar);</span>
+					}
+				}
+			}
+			else {
+<span class="nc" id="L90">				buffer.append(string);</span>
+			}
+		}
+<span class="nc" id="L93">		return buffer.toString();</span>
+	}
+	
+	private boolean readLine(final Config config, final String readLine, final StringBuilder buffer,
+	        final boolean isQuotationBlock) {
+<span class="nc" id="L98">		boolean result = isQuotationBlock;</span>
+<span class="nc" id="L99">		int quotationCount = 0;</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">		for (int i = 0; i &lt; readLine.length(); i++) {</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">			if (readLine.charAt(i) == config.getQuotation()) {</span>
+<span class="nc" id="L102">				quotationCount++;</span>
+			}
+		}
+<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (isQuotationBlock) {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">			if ((quotationCount % 2) == 0) {</span>
+<span class="nc" id="L107">				buffer.append(readLine).append(config.getLineSeparator());</span>
+			}
+			else {
+<span class="nc" id="L110">				add(create(buffer.append(readLine).toString(), config.getQuotation(), config.getSeparator()));</span>
+<span class="nc" id="L111">				buffer.delete(0, buffer.length());</span>
+<span class="nc" id="L112">				result = false;</span>
+			}
+		}
+		else {
+<span class="nc bnc" id="L116" title="All 2 branches missed.">			if ((quotationCount % 2) == 0) {</span>
+<span class="nc" id="L117">				add(create(readLine, config.getQuotation(), config.getSeparator()));</span>
+			}
+			else {
+<span class="nc" id="L120">				buffer.append(readLine).append(config.getLineSeparator());</span>
+<span class="nc" id="L121">				result = true;</span>
+			}
+		}
+<span class="nc" id="L124">		return result;</span>
+	}
+	
+	void read(final Config config, final BufferedReader reader) throws IOException {
+<span class="nc" id="L128">		boolean isQuotationBlock = false;</span>
+<span class="nc" id="L129">		final StringBuilder buffer = new StringBuilder();</span>
+		// 最終行まで読み込む
+<span class="nc bnc" id="L131" title="All 2 branches missed.">		while (reader.ready()) {</span>
+<span class="nc" id="L132">			isQuotationBlock = readLine(config, reader.readLine(), buffer, isQuotationBlock);</span>
+		}
+<span class="nc" id="L134">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

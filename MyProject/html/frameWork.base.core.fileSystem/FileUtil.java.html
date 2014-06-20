@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>FileUtil.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.fileSystem</a> &gt; <span class="el_source">FileUtil.java</span></div><h1>FileUtil.java</h1><pre class="source lang-java linenums">package frameWork.base.core.fileSystem;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.FileChannel;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+<span class="nc" id="L15">public class FileUtil {</span>
+	
+	public static boolean neweComparison(final File src, final File base) {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">		if (!base.exists()) {</span>
+<span class="nc" id="L19">			return true;</span>
+		}
+<span class="nc bnc" id="L21" title="All 2 branches missed.">		if (src.isDirectory()) {</span>
+<span class="nc bnc" id="L22" title="All 2 branches missed.">			if (base.isDirectory()) {</span>
+<span class="nc" id="L23">				final File[] srcListFiles = src.listFiles();</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">				for (final File file : srcListFiles) {</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">					if (neweComparison(file, new File(base, file.getName()))) {</span>
+<span class="nc" id="L26">						return true;</span>
+					}
+				}
+<span class="nc bnc" id="L29" title="All 2 branches missed.">				return srcListFiles.length != base.listFiles().length;</span>
+			}
+<span class="nc" id="L31">			return true;</span>
+		}
+<span class="nc bnc" id="L33" title="All 2 branches missed.">		else if (base.isDirectory()) {</span>
+<span class="nc" id="L34">			return true;</span>
+		}
+		else {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">			return src.lastModified() &gt; base.lastModified();</span>
+		}
+	}
+	
+	public static void copy(final File src, final File dest) throws IOException {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">		if (src.isDirectory()) {</span>
+			// ディレクトリがない場合、作成
+<span class="nc bnc" id="L44" title="All 2 branches missed.">			if (!dest.exists()) {</span>
+<span class="nc" id="L45">				dest.mkdir();</span>
+			}
+			
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			for (final String file : src.list()) {</span>
+<span class="nc" id="L49">				copy(new File(src, file), new File(dest, file));</span>
+			}
+		}
+		else {
+			// ファイルのコピー
+<span class="nc" id="L54">			try (FileChannel srcChannel = new FileInputStream(src).getChannel();</span>
+<span class="nc" id="L55">			        FileChannel destChannel = new FileOutputStream(dest).getChannel();) {</span>
+<span class="nc" id="L56">				srcChannel.transferTo(0, srcChannel.size(), destChannel);</span>
+<span class="nc bnc" id="L57" title="All 16 branches missed.">			}</span>
+		}
+<span class="nc" id="L59">	}</span>
+	
+	public static void delete(final File file) {
+<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (file.isDirectory()) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">			for (final File subFile : file.listFiles()) {</span>
+<span class="nc" id="L64">				delete(subFile);</span>
+			}
+		}
+<span class="nc" id="L67">		file.delete();</span>
+<span class="nc" id="L68">	}</span>
+	
+	public static void zip(final File src, final File dest) throws IOException {
+<span class="nc" id="L71">		dest.getParentFile().mkdirs();</span>
+<span class="nc" id="L72">		try (final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(dest))) {</span>
+<span class="nc" id="L73">			encode(zos, src, src.getAbsolutePath());</span>
+<span class="nc bnc" id="L74" title="All 8 branches missed.">		}</span>
+<span class="nc" id="L75">	}</span>
+	
+	private static void encode(final ZipOutputStream zos, final File src, final String basePath) throws IOException {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">		if (src.isDirectory()) {</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">			for (final File subFile : src.listFiles()) {</span>
+<span class="nc" id="L80">				encode(zos, subFile, basePath);</span>
+			}
+		}
+		else {
+<span class="nc" id="L84">			final byte[] buf = new byte[1024];</span>
+<span class="nc" id="L85">			final ZipEntry entry = new ZipEntry(src.getAbsolutePath().substring(basePath.length() + 1)</span>
+			        .replace('\\', '/'));
+<span class="nc" id="L87">			zos.putNextEntry(entry);</span>
+<span class="nc" id="L88">			try (InputStream is = new BufferedInputStream(new FileInputStream(src))) {</span>
+				for (;;) {
+<span class="nc" id="L90">					final int len = is.read(buf);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">					if (len &lt; 0) {</span>
+<span class="nc" id="L92">						break;</span>
+					}
+<span class="nc" id="L94">					zos.write(buf, 0, len);</span>
+<span class="nc" id="L95">				}</span>
+<span class="nc bnc" id="L96" title="All 8 branches missed.">			}</span>
+		}
+<span class="nc" id="L98">	}</span>
+	
+	public static void unzip(final File src, final File dest) throws IOException {
+<span class="nc" id="L101">		final byte[] buf = new byte[1024];</span>
+<span class="nc" id="L102">		try (final ZipFile zf = new ZipFile(src)) {</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">			for (final Enumeration&lt;? extends ZipEntry&gt; e = zf.entries(); e.hasMoreElements();) {</span>
+<span class="nc" id="L104">				final ZipEntry entry = e.nextElement();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">				if (entry.isDirectory()) {</span>
+<span class="nc" id="L106">					new File(dest, entry.getName()).mkdirs();</span>
+<span class="nc" id="L107">					continue;</span>
+				}
+<span class="nc" id="L109">				try (FileOutputStream fo = new FileOutputStream(new File(dest, entry.getName()))) {</span>
+<span class="nc" id="L110">					try (final InputStream is = zf.getInputStream(entry)) {</span>
+						for (;;) {
+<span class="nc" id="L112">							final int len = is.read(buf);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">							if (len &lt; 0) {</span>
+<span class="nc" id="L114">								break;</span>
+							}
+<span class="nc" id="L116">							fo.write(buf, 0, len);</span>
+<span class="nc" id="L117">						}</span>
+<span class="nc bnc" id="L118" title="All 8 branches missed.">					}</span>
+<span class="nc bnc" id="L119" title="All 8 branches missed.">				}</span>
+<span class="nc" id="L120">			}</span>
+<span class="nc bnc" id="L121" title="All 8 branches missed.">		}</span>
+<span class="nc" id="L122">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

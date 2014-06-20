@@ -23,4 +23,5 @@ public interface Literal {
 	public static final String routing = "routing";
 	public static final Role DefaultRole = Role.ANONYMOUS;
 	public static final String lock = "lock";
+	public static final String Ver = "Ver";
 }

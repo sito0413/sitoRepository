@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ScriptsBuffer.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler</a> &gt; <span class="el_source">ScriptsBuffer.java</span></div><h1>ScriptsBuffer.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+
+import frameWork.base.UtilityCharacter;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.viewCompiler.parser.Textlet;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.BreakScript;
+import frameWork.base.core.viewCompiler.script.bytecode.ContinueScript;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.expression.ArrayConstructorScript;
+import frameWork.base.core.viewCompiler.script.expression.ArrayScript;
+import frameWork.base.core.viewCompiler.script.expression.CallArrayScript;
+import frameWork.base.core.viewCompiler.script.expression.CallChainScript;
+import frameWork.base.core.viewCompiler.script.expression.CallMethodScript;
+import frameWork.base.core.viewCompiler.script.expression.CallObjectScript;
+import frameWork.base.core.viewCompiler.script.expression.CastScript;
+import frameWork.base.core.viewCompiler.script.expression.ConditionOperatorScript;
+import frameWork.base.core.viewCompiler.script.expression.ConstructorScript;
+import frameWork.base.core.viewCompiler.script.expression.DeclarationScript;
+import frameWork.base.core.viewCompiler.script.expression.OperatorScript;
+import frameWork.base.core.viewCompiler.script.syntax.BlockScript;
+import frameWork.base.core.viewCompiler.script.syntax.DoScript;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+import frameWork.base.core.viewCompiler.script.syntax.ForScript;
+import frameWork.base.core.viewCompiler.script.syntax.IfScript;
+import frameWork.base.core.viewCompiler.script.syntax.SwitchScript;
+import frameWork.base.core.viewCompiler.script.syntax.WhileScript;
+
+@SuppressWarnings(&quot;rawtypes&quot;)
+public class ScriptsBuffer {
+	private final Iterator&lt;Textlet&gt; iterator;
+	private int index;
+	private String text;
+	
+<span class="fc" id="L41">	public ScriptsBuffer(final List&lt;Textlet&gt; textlets) {</span>
+<span class="fc" id="L42">		text = &quot;&quot;;</span>
+<span class="fc" id="L43">		iterator = textlets.iterator();</span>
+<span class="fc" id="L44">		index = 0;</span>
+<span class="fc" id="L45">		read(0);</span>
+<span class="fc" id="L46">	}</span>
+	
+	public void skip() {
+<span class="fc bfc" id="L49" title="All 4 branches covered.">		while (hasRemaining() &amp;&amp; UtilityCharacter.isWhitespace(getChar())) {</span>
+<span class="fc" id="L50">			next();</span>
+		}
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (hasRemaining()) {</span>
+<span class="pc bpc" id="L53" title="3 of 4 branches missed.">			if ((getChar() == '/') &amp;&amp; (getChar(index + 1) == '/')) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">				while ((getChar() != '\n')) {</span>
+<span class="nc" id="L55">					next();</span>
+				}
+<span class="nc" id="L57">				gotoNextChar();</span>
+			}
+<span class="pc bpc" id="L59" title="3 of 4 branches missed.">			if ((getChar() == '/') &amp;&amp; (getChar(index + 1) == '*')) {</span>
+<span class="nc bnc" id="L60" title="All 4 branches missed.">				while (((getChar() != '*') || (getChar(index + 1) != '/'))) {</span>
+<span class="nc" id="L61">					next();</span>
+				}
+<span class="nc" id="L63">				next();</span>
+<span class="nc" id="L64">				gotoNextChar();</span>
+			}
+		}
+<span class="fc" id="L67">	}</span>
+	
+	public char getChar() {
+<span class="fc" id="L70">		return getChar(index);</span>
+	}
+	
+	private char getChar(final int i) {
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		if (0 &lt;= i) {</span>
+<span class="fc" id="L75">			read(i);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">			if (i &lt; text.length()) {</span>
+<span class="fc" id="L77">				return text.charAt(i);</span>
+			}
+		}
+<span class="fc" id="L80">		return 0;</span>
+	}
+	
+	public boolean hasRemaining() {
+<span class="fc" id="L84">		read(index);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		return index &lt; text.length();</span>
+	}
+	
+	private void read(final int i) {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">		if (iterator.hasNext()) {</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">			while (i &gt;= text.length()) {</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">				if (!iterator.hasNext()) {</span>
+<span class="nc" id="L92">					return;</span>
+				}
+<span class="fc" id="L94">				final String scriptlet = iterator.next().toScript();</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">				if (scriptlet != null) {</span>
+<span class="fc" id="L96">					text += scriptlet;</span>
+				}
+<span class="fc" id="L98">			}</span>
+		}
+<span class="fc" id="L100">	}</span>
+	
+	private void next() {
+<span class="fc" id="L103">		index++;</span>
+<span class="fc" id="L104">	}</span>
+	
+	private void back() {
+<span class="fc" id="L107">		index--;</span>
+<span class="fc" id="L108">	}</span>
+	
+	private boolean startWith(final String string) {
+<span class="fc" id="L111">		String s = &quot;&quot;;</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">		for (int i = 0; i &lt; string.length(); i++) {</span>
+<span class="fc" id="L113">			s += getChar(index + i);</span>
+		}
+<span class="fc bfc" id="L115" title="All 2 branches covered.">		if (s.equals(string)) {</span>
+<span class="fc" id="L116">			index += string.length();</span>
+<span class="pc bpc" id="L117" title="1 of 6 branches missed.">			if (hasRemaining() &amp;&amp; (UtilityCharacter.isWhitespace(getChar()) || !UtilityCharacter.isOperator(getChar()))) {</span>
+<span class="fc" id="L118">				skip();</span>
+<span class="fc" id="L119">				return true;</span>
+			}
+<span class="fc" id="L121">			index -= string.length();</span>
+		}
+<span class="fc" id="L123">		return false;</span>
+	}
+	
+	public char gotoNextChar() {
+<span class="fc" id="L127">		next();</span>
+<span class="fc" id="L128">		skip();</span>
+<span class="fc" id="L129">		return getChar();</span>
+	}
+	
+	public final Script getSyntaxToken() throws ScriptException {
+<span class="fc" id="L133">		skip();</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">		if (startToken(&quot;switch&quot;)) {</span>
+<span class="fc" id="L135">			return new SwitchScript(&quot;&quot;);</span>
+		}
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		else if (startToken(&quot;while&quot;)) {</span>
+<span class="fc" id="L138">			return new WhileScript(&quot;&quot;);</span>
+		}
+<span class="fc bfc" id="L140" title="All 2 branches covered.">		else if (startToken(&quot;for&quot;)) {</span>
+<span class="fc" id="L141">			return new ForScript(&quot;&quot;);</span>
+		}
+<span class="fc bfc" id="L143" title="All 2 branches covered.">		else if (startToken(&quot;do&quot;)) {</span>
+<span class="fc" id="L144">			return new DoScript(&quot;&quot;);</span>
+		}
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		else if (startToken(&quot;if&quot;)) {</span>
+<span class="fc" id="L147">			return new IfScript(&quot;&quot;);</span>
+		}
+<span class="fc bfc" id="L149" title="All 2 branches covered.">		else if (startToken(&quot;continue&quot;)) {</span>
+<span class="fc" id="L150">			String token = &quot;&quot;;</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">			if (getChar() != ';') {</span>
+<span class="fc" id="L152">				token = getLabel();</span>
+<span class="fc" id="L153">				skip();</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">				if (getChar() != ';') {</span>
+<span class="nc" id="L155">					throw illegalCharacterError();</span>
+				}
+			}
+<span class="fc" id="L158">			return new ContinueScript(token);</span>
+		}
+<span class="fc bfc" id="L160" title="All 2 branches covered.">		else if (startToken(&quot;break&quot;)) {</span>
+<span class="fc" id="L161">			String token = &quot;&quot;;</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">			if (getChar() != ';') {</span>
+<span class="fc" id="L163">				token = getLabel();</span>
+<span class="fc" id="L164">				skip();</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">				if (getChar() != ';') {</span>
+<span class="nc" id="L166">					throw illegalCharacterError();</span>
+				}
+			}
+<span class="fc" id="L169">			return new BreakScript(token);</span>
+		}
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">		else if (startToken(&quot;case&quot;)) {</span>
+<span class="nc" id="L172">			throw ScriptException.illegalStateException();</span>
+		}
+<span class="fc bfc" id="L174" title="All 2 branches covered.">		else if (startWith(&quot;{&quot;)) {</span>
+<span class="fc" id="L175">			back();</span>
+<span class="fc" id="L176">			return new BlockScript(&quot;&quot;);</span>
+		}
+		else {
+<span class="fc" id="L179">			int buffer = index;</span>
+<span class="fc" id="L180">			final Script script = getStatementToken();</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">			if (getChar() == ':') {</span>
+<span class="fc" id="L182">				final int temp = index;</span>
+<span class="fc" id="L183">				index = buffer;</span>
+<span class="fc" id="L184">				buffer = temp;</span>
+<span class="fc" id="L185">				final String label = getLabel();</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">				if (getChar() == ':') {</span>
+<span class="fc" id="L187">					gotoNextChar();</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">					if (startToken(&quot;switch&quot;)) {</span>
+<span class="fc" id="L189">						return new SwitchScript(label);</span>
+					}
+<span class="fc bfc" id="L191" title="All 2 branches covered.">					else if (startToken(&quot;while&quot;)) {</span>
+<span class="fc" id="L192">						return new WhileScript(label);</span>
+					}
+<span class="fc bfc" id="L194" title="All 2 branches covered.">					else if (startToken(&quot;for&quot;)) {</span>
+<span class="fc" id="L195">						return new ForScript(label);</span>
+					}
+<span class="fc bfc" id="L197" title="All 2 branches covered.">					else if (startToken(&quot;do&quot;)) {</span>
+<span class="fc" id="L198">						return new DoScript(label);</span>
+					}
+<span class="fc bfc" id="L200" title="All 2 branches covered.">					else if (startToken(&quot;if&quot;)) {</span>
+<span class="fc" id="L201">						return new IfScript(label);</span>
+					}
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">					else if (startWith(&quot;{&quot;)) {</span>
+<span class="fc" id="L204">						back();</span>
+<span class="fc" id="L205">						return new BlockScript(label);</span>
+					}
+<span class="nc" id="L207">					index = buffer;</span>
+				}
+<span class="nc" id="L209">				throw ScriptException.illegalStateException();</span>
+			}
+<span class="fc" id="L211">			return script;</span>
+		}
+	}
+	
+	public ExpressionScript getStatementToken() throws ScriptException {
+<span class="fc" id="L216">		ExpressionScript logic = condition();</span>
+		{
+<span class="pc bpc" id="L218" title="3 of 6 branches missed.">			while ((getChar() == '|') || (getChar() == '&amp;') || (getChar() == '^')) {</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">				if (startWith(&quot;|&quot;)) {</span>
+<span class="nc" id="L220">					logic = new OperatorScript(&quot;|&quot;, logic, condition());</span>
+				}
+<span class="nc bnc" id="L222" title="All 2 branches missed.">				else if (startWith(&quot;||&quot;)) {</span>
+<span class="nc" id="L223">					logic = new OperatorScript(&quot;||&quot;, logic, condition());</span>
+				}
+<span class="nc bnc" id="L225" title="All 2 branches missed.">				else if (startWith(&quot;&amp;&quot;)) {</span>
+<span class="nc" id="L226">					logic = new OperatorScript(&quot;&amp;&quot;, logic, condition());</span>
+				}
+<span class="nc bnc" id="L228" title="All 2 branches missed.">				else if (startWith(&quot;&amp;&amp;&quot;)) {</span>
+<span class="nc" id="L229">					logic = new OperatorScript(&quot;&amp;&amp;&quot;, logic, condition());</span>
+				}
+<span class="nc bnc" id="L231" title="All 2 branches missed.">				else if (startWith(&quot;^&quot;)) {</span>
+<span class="nc" id="L232">					logic = new OperatorScript(&quot;^&quot;, logic, condition());</span>
+				}
+				else {
+					break;
+				}
+			}
+		}
+<span class="fc" id="L239">		ExpressionScript ternary = logic;</span>
+		//ternary
+		{
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">			if (startWith(&quot;?&quot;)) {</span>
+<span class="nc" id="L243">				final ExpressionScript expressionScript1 = getStatementToken();</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">				if (getChar() != ':') {</span>
+<span class="nc" id="L245">					throw illegalCharacterError();</span>
+				}
+<span class="nc" id="L247">				gotoNextChar();</span>
+<span class="nc" id="L248">				ternary = new ConditionOperatorScript(ternary, expressionScript1, getStatementToken());</span>
+			}
+		}
+<span class="fc" id="L251">		final ExpressionScript base = ternary;</span>
+		//base
+		{
+<span class="fc bfc" id="L254" title="All 2 branches covered.">			if (startWith(&quot;=&quot;)) {</span>
+<span class="fc" id="L255">				return new OperatorScript(&quot;=&quot;, base, getStatementToken());</span>
+			}
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">			else if (startWith(&quot;+=&quot;)) {</span>
+<span class="nc" id="L258">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;+&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L260" title="1 of 2 branches missed.">			else if (startWith(&quot;-=&quot;)) {</span>
+<span class="nc" id="L261">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;-&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">			else if (startWith(&quot;*=&quot;)) {</span>
+<span class="nc" id="L264">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;*&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">			else if (startWith(&quot;/=&quot;)) {</span>
+<span class="nc" id="L267">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;/&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">			else if (startWith(&quot;%=&quot;)) {</span>
+<span class="nc" id="L270">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;%&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">			else if (startWith(&quot;&amp;=&quot;)) {</span>
+<span class="nc" id="L273">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;&amp;&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">			else if (startWith(&quot;^=&quot;)) {</span>
+<span class="nc" id="L276">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;^&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">			else if (startWith(&quot;|=&quot;)) {</span>
+<span class="nc" id="L279">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;|&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">			else if (startWith(&quot;&lt;&lt;=&quot;)) {</span>
+<span class="nc" id="L282">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;&lt;&lt;&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">			else if (startWith(&quot;&gt;&gt;=&quot;)) {</span>
+<span class="nc" id="L285">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;&gt;&gt;&quot;, base, getStatementToken()));</span>
+			}
+<span class="pc bpc" id="L287" title="1 of 2 branches missed.">			else if (startWith(&quot;&gt;&gt;&gt;=&quot;)) {</span>
+<span class="nc" id="L288">				return new OperatorScript(&quot;=&quot;, base, new OperatorScript(&quot;&gt;&gt;&gt;&quot;, base, getStatementToken()));</span>
+			}
+			else {
+<span class="fc" id="L291">				skip();</span>
+			}
+		}
+<span class="fc" id="L294">		return base;</span>
+	}
+	
+	private ExpressionScript condition() throws ScriptException {
+<span class="fc" id="L298">		ExpressionScript shift = shift();</span>
+<span class="pc bpc" id="L299" title="1 of 8 branches missed.">		while ((getChar() == '&lt;') || (getChar() == '&gt;') || (getChar() == '=') || (getChar() == '!')) {</span>
+<span class="fc bfc" id="L300" title="All 2 branches covered.">			if (startWith(&quot;&lt;&quot;)) {</span>
+<span class="fc" id="L301">				shift = new OperatorScript(&quot;&lt;&quot;, shift, shift());</span>
+			}
+<span class="fc bfc" id="L303" title="All 2 branches covered.">			else if (startWith(&quot;&gt;&quot;)) {</span>
+<span class="fc" id="L304">				shift = new OperatorScript(&quot;&gt;&quot;, shift, shift());</span>
+			}
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">			else if (startWith(&quot;==&quot;)) {</span>
+<span class="nc" id="L307">				shift = new OperatorScript(&quot;==&quot;, shift, shift());</span>
+			}
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">			else if (startWith(&quot;!=&quot;)) {</span>
+<span class="nc" id="L310">				shift = new OperatorScript(&quot;!=&quot;, shift, shift());</span>
+			}
+<span class="fc bfc" id="L312" title="All 2 branches covered.">			else if (startWith(&quot;&lt;=&quot;)) {</span>
+<span class="fc" id="L313">				shift = new OperatorScript(&quot;&lt;=&quot;, shift, shift());</span>
+			}
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">			else if (startWith(&quot;&gt;=&quot;)) {</span>
+<span class="nc" id="L316">				shift = new OperatorScript(&quot;&gt;=&quot;, shift, shift());</span>
+			}
+			else {
+				break;
+			}
+		}
+<span class="fc" id="L322">		return shift;</span>
+	}
+	
+	private ExpressionScript shift() throws ScriptException {
+		ExpressionScript expression;
+		//expression
+		{
+<span class="pc bpc" id="L329" title="1 of 2 branches missed.">			if (startWith(&quot;++&quot;)) {</span>
+<span class="nc" id="L330">				final ExpressionScript term = term();</span>
+<span class="nc" id="L331">				expression = new OperatorScript(&quot;=&quot;, term, new OperatorScript(&quot;+&quot;, term, InstanceBytecode.ONE));</span>
+<span class="nc" id="L332">			}</span>
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">			else if (startWith(&quot;--&quot;)) {</span>
+<span class="nc" id="L334">				final ExpressionScript term = term();</span>
+<span class="nc" id="L335">				expression = new OperatorScript(&quot;=&quot;, term, new OperatorScript(&quot;+&quot;, term, InstanceBytecode.ONE));</span>
+<span class="nc" id="L336">			}</span>
+<span class="pc bpc" id="L337" title="1 of 2 branches missed.">			else if (startWith(&quot;+&quot;)) {</span>
+<span class="nc" id="L338">				expression = term();</span>
+			}
+<span class="pc bpc" id="L340" title="1 of 2 branches missed.">			else if (startWith(&quot;-&quot;)) {</span>
+<span class="nc" id="L341">				final ExpressionScript term = term();</span>
+<span class="nc" id="L342">				expression = new OperatorScript(&quot;-&quot;, InstanceBytecode.ZERO, term);</span>
+<span class="nc" id="L343">			}</span>
+			else {
+<span class="fc" id="L345">				expression = term();</span>
+			}
+<span class="pc bpc" id="L347" title="1 of 4 branches missed.">			while ((getChar() == '+') || (getChar() == '-')) {</span>
+<span class="fc bfc" id="L348" title="All 2 branches covered.">				if (startWith(&quot;++&quot;)) {</span>
+<span class="fc" id="L349">					expression = new OperatorScript(&quot;++&quot;, expression);</span>
+				}
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">				else if (startWith(&quot;--&quot;)) {</span>
+<span class="nc" id="L352">					expression = new OperatorScript(&quot;--&quot;, expression);</span>
+				}
+<span class="pc bpc" id="L354" title="1 of 2 branches missed.">				else if (startWith(&quot;+&quot;)) {</span>
+<span class="fc" id="L355">					expression = new OperatorScript(&quot;+&quot;, expression, term());</span>
+				}
+<span class="nc bnc" id="L357" title="All 2 branches missed.">				else if (startWith(&quot;-&quot;)) {</span>
+<span class="nc" id="L358">					expression = new OperatorScript(&quot;-&quot;, expression, term());</span>
+				}
+			}
+		}
+<span class="pc bpc" id="L362" title="1 of 2 branches missed.">		if (startWith(&quot;&lt;&lt;&quot;)) {</span>
+<span class="nc" id="L363">			return new OperatorScript(&quot;&lt;&lt;&quot;, expression, getStatementToken());</span>
+		}
+<span class="pc bpc" id="L365" title="1 of 2 branches missed.">		else if (startWith(&quot;&gt;&gt;&quot;)) {</span>
+<span class="nc" id="L366">			return new OperatorScript(&quot;&gt;&gt;&quot;, expression, getStatementToken());</span>
+		}
+<span class="pc bpc" id="L368" title="1 of 2 branches missed.">		else if (startWith(&quot;&gt;&gt;&gt;&quot;)) {</span>
+<span class="nc" id="L369">			return new OperatorScript(&quot;&gt;&gt;&gt;&quot;, expression, getStatementToken());</span>
+		}
+		else {
+<span class="fc" id="L372">			return expression;</span>
+		}
+	}
+	
+	private ExpressionScript term() throws ScriptException {
+<span class="fc" id="L377">		ExpressionScript term = unary();</span>
+<span class="pc bpc" id="L378" title="3 of 6 branches missed.">		while ((getChar() == '/') || (getChar() == '%') || (getChar() == '*')) {</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">			if (startWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L380">				term = new OperatorScript(&quot;/&quot;, term, unary());</span>
+			}
+<span class="nc bnc" id="L382" title="All 2 branches missed.">			else if (startWith(&quot;%&quot;)) {</span>
+<span class="nc" id="L383">				term = new OperatorScript(&quot;%&quot;, term, unary());</span>
+			}
+<span class="nc bnc" id="L385" title="All 2 branches missed.">			else if (startWith(&quot;*&quot;)) {</span>
+<span class="nc" id="L386">				term = new OperatorScript(&quot;*&quot;, term, unary());</span>
+			}
+			else {
+				break;
+			}
+		}
+<span class="fc" id="L392">		return term;</span>
+	}
+	
+	private ExpressionScript unary() throws ScriptException {
+<span class="pc bpc" id="L396" title="1 of 2 branches missed.">		if (startWith(&quot;!&quot;)) {</span>
+<span class="nc" id="L397">			return new OperatorScript(&quot;!&quot;, factor());</span>
+		}
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">		else if (startWith(&quot;~&quot;)) {</span>
+<span class="nc" id="L400">			return new OperatorScript(&quot;~&quot;, factor());</span>
+		}
+		else {
+<span class="fc" id="L403">			return factor();</span>
+		}
+	}
+	
+	private ExpressionScript factor() throws ScriptException {
+<span class="pc bpc" id="L408" title="1 of 5 branches missed.">		switch ( getChar() ) {</span>
+			case '\'' :
+			case '&quot;' : {
+<span class="fc" id="L411">				return string(getChar());</span>
+			}
+			case '{' : {
+<span class="fc" id="L414">				final Deque&lt;ExpressionScript&gt; expressionScripts = new ArrayDeque&lt;&gt;();</span>
+<span class="fc" id="L415">				gotoNextChar();</span>
+<span class="fc" id="L416">				final List&lt;ExpressionScript&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L417" title="1 of 4 branches missed.">				while (hasRemaining() &amp;&amp; (getChar() != '}')) {</span>
+<span class="fc bfc" id="L418" title="All 2 branches covered.">					if (getChar() == ',') {</span>
+<span class="fc" id="L419">						gotoNextChar();</span>
+					}
+<span class="fc" id="L421">					list.add(getStatementToken());</span>
+				}
+<span class="fc" id="L423">				gotoNextChar();</span>
+<span class="pc bpc" id="L424" title="1 of 2 branches missed.">				if ((getChar() == '.')) {</span>
+<span class="nc" id="L425">					final ArrayDeque&lt;ExpressionScript&gt; arrayDeque = new ArrayDeque&lt;&gt;();</span>
+<span class="nc" id="L426">					arrayDeque.addFirst(new ArrayScript(expressionScripts));</span>
+<span class="nc" id="L427">					gotoNextChar();</span>
+<span class="nc" id="L428">					return tokenScript(arrayDeque);</span>
+				}
+<span class="fc" id="L430">				return new ArrayScript(expressionScripts);</span>
+			}
+			case '(' : {
+<span class="nc" id="L433">				gotoNextChar();</span>
+<span class="nc" id="L434">				final ExpressionScript a = getStatementToken();</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">				if (getChar() != ')') {</span>
+<span class="nc" id="L436">					throw illegalCharacterError();</span>
+				}
+<span class="nc" id="L438">				gotoNextChar();</span>
+<span class="nc bnc" id="L439" title="All 6 branches missed.">				if (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()) || (getChar() == '(')) {</span>
+<span class="nc" id="L440">					return new CastScript(a, getStatementToken());</span>
+				}
+<span class="nc bnc" id="L442" title="All 2 branches missed.">				else if ((getChar() == '.')) {</span>
+<span class="nc" id="L443">					final ArrayDeque&lt;ExpressionScript&gt; arrayDeque = new ArrayDeque&lt;&gt;();</span>
+<span class="nc" id="L444">					arrayDeque.addFirst(a);</span>
+<span class="nc" id="L445">					gotoNextChar();</span>
+<span class="nc" id="L446">					return tokenScript(arrayDeque);</span>
+				}
+<span class="nc" id="L448">				return a;</span>
+			}
+			case ';' :
+			case ')' : {
+<span class="fc" id="L452">				return null;</span>
+			}
+			default :
+<span class="fc bfc" id="L455" title="All 2 branches covered.">				if (UtilityCharacter.isNumeric(getChar())) {</span>
+<span class="fc" id="L456">					return numeric();</span>
+				}
+<span class="fc bfc" id="L458" title="All 2 branches covered.">				else if (startToken(&quot;new&quot;)) {</span>
+<span class="fc" id="L459">					return newScript();</span>
+				}
+<span class="fc bfc" id="L461" title="All 2 branches covered.">				else if (startToken(&quot;true&quot;)) {</span>
+<span class="fc" id="L462">					return new InstanceBytecode(boolean.class, true);</span>
+				}
+<span class="fc bfc" id="L464" title="All 2 branches covered.">				else if (startToken(&quot;false&quot;)) {</span>
+<span class="fc" id="L465">					return new InstanceBytecode(boolean.class, false);</span>
+				}
+<span class="pc bpc" id="L467" title="1 of 2 branches missed.">				else if (startToken(&quot;null&quot;)) {</span>
+<span class="nc" id="L468">					return new InstanceBytecode(Object.class, null);</span>
+				}
+<span class="fc bfc" id="L470" title="All 2 branches covered.">				else if (UtilityCharacter.isAlpha(getChar())) {</span>
+<span class="fc" id="L471">					return callChain();</span>
+				}
+				break;
+		}
+<span class="fc" id="L475">		throw illegalCharacterError();</span>
+	}
+	
+	private ExpressionScript callChain() throws ScriptException {
+<span class="fc" id="L479">		final CallChainScript token = tokenScript(new ArrayDeque&lt;ExpressionScript&gt;());</span>
+<span class="fc" id="L480">		skip();</span>
+<span class="fc bfc" id="L481" title="All 2 branches covered.">		if (UtilityCharacter.isAlpha(getChar())) {</span>
+<span class="fc" id="L482">			return new DeclarationScript(token, tokenScript(new ArrayDeque&lt;ExpressionScript&gt;()));</span>
+		}
+<span class="fc" id="L484">		return token;</span>
+		
+	}
+	
+	private CallChainScript tokenScript(final Deque&lt;ExpressionScript&gt; expressionScripts) throws ScriptException {
+<span class="fc" id="L489">		skip();</span>
+<span class="pc bpc" id="L490" title="1 of 2 branches missed.">		while (hasRemaining()) {</span>
+<span class="fc" id="L491">			String expression = &quot;&quot;;</span>
+<span class="pc bpc" id="L492" title="1 of 6 branches missed.">			while (hasRemaining() &amp;&amp; (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()))) {</span>
+<span class="fc" id="L493">				expression += getChar();</span>
+<span class="fc" id="L494">				next();</span>
+			}
+<span class="fc" id="L496">			skip();</span>
+<span class="pc bpc" id="L497" title="1 of 4 branches missed.">			switch ( getChar() ) {</span>
+				case '(' : {
+<span class="nc" id="L499">					gotoNextChar();</span>
+<span class="nc" id="L500">					final List&lt;ExpressionScript&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L501" title="All 4 branches missed.">					while (hasRemaining() &amp;&amp; (getChar() != ')')) {</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">						if (getChar() == ',') {</span>
+<span class="nc" id="L503">							gotoNextChar();</span>
+						}
+<span class="nc" id="L505">						list.add(getStatementToken());</span>
+					}
+<span class="nc" id="L507">					gotoNextChar();</span>
+<span class="nc" id="L508">					expressionScripts.addLast(new CallMethodScript(expression, list));</span>
+<span class="nc" id="L509">					break;</span>
+				}
+				case '[' : {
+<span class="fc" id="L512">					final CallArrayScript callObjectScript = new CallArrayScript(expression);</span>
+					do {
+<span class="fc" id="L514">						gotoNextChar();</span>
+<span class="pc bpc" id="L515" title="1 of 2 branches missed.">						if (getChar() != ']') {</span>
+<span class="nc" id="L516">							callObjectScript.addArray(getStatementToken());</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">							if (getChar() != ']') {</span>
+<span class="nc" id="L518">								throw illegalCharacterError();</span>
+							}
+						}
+<span class="fc" id="L521">						gotoNextChar();</span>
+					}
+<span class="fc bfc" id="L523" title="All 2 branches covered.">					while (getChar() == '[');</span>
+<span class="fc" id="L524">					expressionScripts.addLast(callObjectScript);</span>
+<span class="fc" id="L525">					break;</span>
+				}
+				case '&lt;' : {
+<span class="fc" id="L528">					expressionScripts.addLast(new CallObjectScript(expression));</span>
+<span class="fc" id="L529">					final int mark = index;</span>
+<span class="fc" id="L530">					gotoNextChar();</span>
+<span class="fc" id="L531">					int depth = 1;</span>
+<span class="pc bpc" id="L532" title="2 of 4 branches missed.">					while (hasRemaining() &amp;&amp; (depth &gt; 0)) {</span>
+<span class="pc bpc" id="L533" title="1 of 2 branches missed.">						if (UtilityCharacter.isAlpha(getChar())) {</span>
+							while (hasRemaining()
+<span class="nc bnc" id="L535" title="All 6 branches missed.">							        &amp;&amp; (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()))) {</span>
+<span class="nc" id="L536">								next();</span>
+							}
+						}
+<span class="pc bpc" id="L539" title="1 of 2 branches missed.">						else if (getChar() == ',') {</span>
+<span class="nc" id="L540">							gotoNextChar();</span>
+						}
+<span class="pc bpc" id="L542" title="1 of 2 branches missed.">						else if (getChar() == '&gt;') {</span>
+<span class="nc" id="L543">							depth--;</span>
+<span class="nc" id="L544">							gotoNextChar();</span>
+						}
+<span class="pc bpc" id="L546" title="1 of 2 branches missed.">						else if (getChar() == '&lt;') {</span>
+<span class="nc" id="L547">							depth++;</span>
+<span class="nc" id="L548">							gotoNextChar();</span>
+						}
+						else {
+							break;
+						}
+					}
+<span class="pc bpc" id="L554" title="2 of 4 branches missed.">					if (!hasRemaining() || (depth &gt; 0)) {</span>
+<span class="fc" id="L555">						index = mark;</span>
+					}
+					break;
+				}
+				default :
+<span class="fc" id="L560">					expressionScripts.addLast(new CallObjectScript(expression));</span>
+					break;
+			}
+<span class="pc bpc" id="L563" title="2 of 4 branches missed.">			if ((hasRemaining() &amp;&amp; (getChar() == '.'))) {</span>
+<span class="nc" id="L564">				gotoNextChar();</span>
+			}
+			else {
+<span class="fc" id="L567">				return new CallChainScript(expressionScripts);</span>
+			}
+<span class="nc" id="L569">		}</span>
+<span class="nc" id="L570">		throw ScriptException.overflowException();</span>
+	}
+	
+	private ConstructorScript newScript() throws ScriptException {
+<span class="fc" id="L574">		skip();</span>
+<span class="fc" id="L575">		String expression = &quot;&quot;;</span>
+<span class="pc bpc" id="L576" title="1 of 2 branches missed.">		while (hasRemaining()) {</span>
+<span class="pc bpc" id="L577" title="2 of 6 branches missed.">			while (hasRemaining() &amp;&amp; (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar()))) {</span>
+<span class="fc" id="L578">				expression += getChar();</span>
+<span class="fc" id="L579">				next();</span>
+			}
+<span class="fc" id="L581">			skip();</span>
+<span class="fc bfc" id="L582" title="All 2 branches covered.">			if (getChar() == '(') {</span>
+<span class="fc" id="L583">				gotoNextChar();</span>
+<span class="fc" id="L584">				final List&lt;ExpressionScript&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L585" title="1 of 4 branches missed.">				while (hasRemaining() &amp;&amp; (getChar() != ')')) {</span>
+<span class="pc bpc" id="L586" title="1 of 2 branches missed.">					if (getChar() == ',') {</span>
+<span class="nc" id="L587">						gotoNextChar();</span>
+					}
+<span class="fc" id="L589">					list.add(getStatementToken());</span>
+				}
+<span class="fc" id="L591">				gotoNextChar();</span>
+<span class="fc" id="L592">				return new ConstructorScript(expression, list);</span>
+			}
+<span class="pc bpc" id="L594" title="1 of 2 branches missed.">			if (getChar() == '[') {</span>
+<span class="fc" id="L595">				gotoNextChar();</span>
+<span class="fc" id="L596">				final List&lt;ExpressionScript&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L597">				final ExpressionScript i = getStatementToken();</span>
+<span class="pc bpc" id="L598" title="1 of 2 branches missed.">				if (getChar() != ']') {</span>
+<span class="nc" id="L599">					throw ScriptException.overflowException();</span>
+				}
+<span class="fc" id="L601">				gotoNextChar();</span>
+<span class="pc bpc" id="L602" title="1 of 2 branches missed.">				if (getChar() == '{') {</span>
+<span class="nc" id="L603">					gotoNextChar();</span>
+<span class="nc bnc" id="L604" title="All 4 branches missed.">					while (hasRemaining() &amp;&amp; (getChar() != '}')) {</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">						if (getChar() == ',') {</span>
+<span class="nc" id="L606">							gotoNextChar();</span>
+						}
+<span class="nc" id="L608">						list.add(getStatementToken());</span>
+					}
+<span class="nc" id="L610">					gotoNextChar();</span>
+				}
+<span class="fc" id="L612">				return new ArrayConstructorScript(expression, i, list);</span>
+			}
+<span class="nc bnc" id="L614" title="All 2 branches missed.">			if (getChar() == '&lt;') {</span>
+<span class="nc bnc" id="L615" title="All 4 branches missed.">				while (hasRemaining() &amp;&amp; (getChar() != '&gt;')) {</span>
+<span class="nc" id="L616">					gotoNextChar();</span>
+				}
+<span class="nc" id="L618">				gotoNextChar();</span>
+<span class="nc" id="L619">				continue;</span>
+			}
+<span class="nc bnc" id="L621" title="All 2 branches missed.">			if (getChar() == '.') {</span>
+<span class="nc" id="L622">				expression += getChar();</span>
+<span class="nc" id="L623">				skip();</span>
+<span class="nc" id="L624">				continue;</span>
+			}
+			break;
+		}
+<span class="nc" id="L628">		throw ScriptException.overflowException();</span>
+	}
+	
+	private InstanceBytecode numeric() throws ScriptException {
+<span class="fc" id="L632">		String numeric = &quot;&quot;;</span>
+<span class="pc bpc" id="L633" title="1 of 4 branches missed.">		while (hasRemaining() &amp;&amp; UtilityCharacter.isNumeric(getChar())) {</span>
+<span class="fc" id="L634">			numeric += getChar();</span>
+<span class="fc" id="L635">			next();</span>
+		}
+<span class="pc bpc" id="L637" title="1 of 2 branches missed.">		if (getChar() == '.') {</span>
+<span class="nc" id="L638">			numeric += getChar();</span>
+<span class="nc" id="L639">			next();</span>
+<span class="nc bnc" id="L640" title="All 4 branches missed.">			if (hasRemaining() &amp;&amp; UtilityCharacter.isNumeric(getChar())) {</span>
+<span class="nc bnc" id="L641" title="All 4 branches missed.">				while (hasRemaining() &amp;&amp; UtilityCharacter.isNumeric(getChar())) {</span>
+<span class="nc" id="L642">					numeric += getChar();</span>
+<span class="nc" id="L643">					next();</span>
+				}
+<span class="nc" id="L645">				skip();</span>
+<span class="nc" id="L646">				return new InstanceBytecode(double.class, Double.parseDouble(numeric));</span>
+			}
+<span class="nc" id="L648">			throw illegalCharacterError();</span>
+		}
+<span class="fc" id="L650">		skip();</span>
+<span class="fc" id="L651">		return new InstanceBytecode(int.class, Integer.parseInt(numeric));</span>
+	}
+	
+	private ExpressionScript string(final char mark) {
+<span class="fc" id="L655">		String token = &quot;&quot;;</span>
+<span class="fc" id="L656">		token += getChar();</span>
+<span class="fc" id="L657">		next();</span>
+<span class="pc bpc" id="L658" title="2 of 4 branches missed.">		while (hasRemaining() &amp;&amp; (getChar() != mark)) {</span>
+<span class="nc" id="L659">			final char c = getChar();</span>
+<span class="nc bnc" id="L660" title="All 2 branches missed.">			if (c != '\\') {</span>
+<span class="nc" id="L661">				token += c;</span>
+			}
+			else {
+<span class="nc" id="L664">				next();</span>
+<span class="nc bnc" id="L665" title="All 6 branches missed.">				switch ( getChar() ) {</span>
+					case '&quot;' :
+<span class="nc" id="L667">						token += '&quot;';</span>
+<span class="nc" id="L668">						break;</span>
+					case '\\' :
+<span class="nc" id="L670">						token += '\\';</span>
+<span class="nc" id="L671">						break;</span>
+					case 'r' :
+<span class="nc" id="L673">						token += '\r';</span>
+<span class="nc" id="L674">						break;</span>
+					case 'n' :
+<span class="nc" id="L676">						token += '\n';</span>
+<span class="nc" id="L677">						break;</span>
+					case 't' :
+<span class="nc" id="L679">						token += '\t';</span>
+<span class="nc" id="L680">						break;</span>
+					default :
+<span class="nc" id="L682">						token += c;</span>
+						break;
+				}
+			}
+<span class="nc" id="L686">			next();</span>
+<span class="nc" id="L687">		}</span>
+<span class="fc" id="L688">		token += getChar();</span>
+<span class="fc" id="L689">		gotoNextChar();</span>
+<span class="fc" id="L690">		token = token.substring(1, token.length() - 1);</span>
+<span class="pc bpc" id="L691" title="1 of 2 branches missed.">		if (mark == '\'') {</span>
+<span class="nc" id="L692">			return new InstanceBytecode(char.class, token.charAt(0));</span>
+		}
+<span class="fc" id="L694">		return new InstanceBytecode(String.class, token);</span>
+	}
+	
+	public ScriptException illegalCharacterError() {
+<span class="fc" id="L698">		int line = 1, col = 1;</span>
+<span class="fc bfc" id="L699" title="All 2 branches covered.">		for (int i = 0; i &lt; index; i++) {</span>
+<span class="fc" id="L700">			final char ch = getChar(i);</span>
+<span class="fc" id="L701">			col++;</span>
+<span class="pc bpc" id="L702" title="1 of 2 branches missed.">			if (ch == '\n') {</span>
+<span class="nc" id="L703">				line++;</span>
+<span class="nc" id="L704">				col = 0;</span>
+			}
+		}
+<span class="fc" id="L707">		String stack = &quot;&quot;;</span>
+<span class="fc bfc" id="L708" title="All 2 branches covered.">		for (int i = 0; i &lt; FileSystem.Config.VIEW_STACK_SIZE; i++) {</span>
+<span class="fc" id="L709">			stack += getChar(index + i);</span>
+		}
+<span class="fc" id="L711">		return ScriptException.illegalStateException(&quot;Error &quot; + getChar() + &quot; at(line: &quot; + line + &quot;, col: &quot; + col + &quot;)&quot;</span>
+		        + stack);
+	}
+	
+	private String getLabel() throws ScriptException {
+<span class="fc" id="L716">		final StringBuilder builder = new StringBuilder();</span>
+<span class="fc" id="L717">		skip();</span>
+<span class="pc bpc" id="L718" title="3 of 4 branches missed.">		if (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar())) {</span>
+			do {
+<span class="fc" id="L720">				builder.append(getChar());</span>
+<span class="fc" id="L721">				next();</span>
+			}
+<span class="pc bpc" id="L723" title="1 of 6 branches missed.">			while (hasRemaining() &amp;&amp; (UtilityCharacter.isAlpha(getChar()) || UtilityCharacter.isNumeric(getChar())));</span>
+		}
+<span class="nc bnc" id="L725" title="All 4 branches missed.">		else if ((getChar() == '&quot;') || (getChar() == '\'')) {</span>
+<span class="nc" id="L726">			builder.append(string(getChar()).execute(null).get().toString());</span>
+		}
+<span class="fc" id="L728">		skip();</span>
+<span class="fc" id="L729">		return builder.toString();</span>
+	}
+	
+	public boolean startToken(final String string) {
+<span class="fc" id="L733">		String s = &quot;&quot;;</span>
+<span class="fc bfc" id="L734" title="All 2 branches covered.">		for (int i = 0; i &lt; string.length(); i++) {</span>
+<span class="fc" id="L735">			s += getChar(index + i);</span>
+		}
+<span class="fc bfc" id="L737" title="All 2 branches covered.">		if (s.equals(string)) {</span>
+<span class="fc" id="L738">			index += string.length();</span>
+<span class="pc bpc" id="L739" title="2 of 8 branches missed.">			if (hasRemaining()</span>
+			        &amp;&amp; (UtilityCharacter.isWhitespace(getChar()) || !(UtilityCharacter.isAlpha(getChar()) || UtilityCharacter
+			                .isNumeric(getChar())))) {
+<span class="fc" id="L742">				skip();</span>
+<span class="fc" id="L743">				return true;</span>
+			}
+<span class="fc" id="L745">			index -= string.length();</span>
+		}
+<span class="fc" id="L747">		return false;</span>
+	}
+	
+	public void execute(final Scope scope) throws ScriptException {
+<span class="fc bfc" id="L751" title="All 2 branches covered.">		while (hasRemaining()) {</span>
+<span class="fc" id="L752">			final Script script = getSyntaxToken();</span>
+<span class="fc bfc" id="L753" title="All 2 branches covered.">			switch ( script.create(this) ) {</span>
+				case ';' :
+				case '}' :
+<span class="fc" id="L756">					gotoNextChar();</span>
+<span class="fc" id="L757">					break;</span>
+				default :
+					break;
+			}
+<span class="fc" id="L761">			script.execute(scope);</span>
+<span class="fc" id="L762">		}</span>
+<span class="fc" id="L763">	}</span>
+	
+	//	public char[] dump() {
+	//		// TODO 自動生成されたメソッド・スタブ
+	//		return new char[] {
+	//		        getChar(index), getChar(index + 1), getChar(index + 2), getChar(index + 3), getChar(index + 4)
+	//		};
+	//	}
+	
+	//	final
+	//	return
+	
+	//	abstract
+	//	assert
+	//	catch
+	//	class
+	//	const
+	//	enum
+	//	extends
+	//	finally
+	//	goto
+	//	implements
+	//	import
+	//	instanceof
+	//	interface
+	//	native
+	//	package
+	//	private
+	//	protected
+	//	public
+	//	static
+	//	strictfp
+	//	super
+	//	switch
+	//	synchrnized
+	//	this
+	//	throw
+	//	throws
+	//	transient
+	//	try
+	//	void
+	//	volatile
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

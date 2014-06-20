@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DisposableConnectionFacade.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.database.connector.pool</a> &gt; <span class="el_source">DisposableConnectionFacade.java</span></div><h1>DisposableConnectionFacade.java</h1><pre class="source lang-java linenums">package frameWork.base.database.connector.pool;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.SQLException;
+
+import javax.sql.XAConnection;
+
+class DisposableConnectionFacade implements InvocationHandler {
+<span class="nc" id="L11">	private volatile Handler handler = null;</span>
+	
+<span class="nc" id="L13">	DisposableConnectionFacade(final Handler handler) {</span>
+<span class="nc" id="L14">		this.handler = (handler);</span>
+<span class="nc" id="L15">	}</span>
+	
+	@Override
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+<span class="nc bnc" id="L19" title="All 2 branches missed.">		if (&quot;equals&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L20">			return Boolean.valueOf(this.equals(Proxy.getInvocationHandler(args[0])));</span>
+		}
+<span class="nc bnc" id="L22" title="All 2 branches missed.">		else if (&quot;hashCode&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L23">			return Integer.valueOf(this.hashCode());</span>
+		}
+<span class="nc bnc" id="L25" title="All 2 branches missed.">		else if (handler == null) {</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">			if (&quot;isClosed&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L27">				return Boolean.TRUE;</span>
+			}
+<span class="nc bnc" id="L29" title="All 2 branches missed.">			else if (&quot;close&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L30">				return null;</span>
+			}
+<span class="nc bnc" id="L32" title="All 2 branches missed.">			else if (&quot;isValid&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L33">				return Boolean.FALSE;</span>
+			}
+		}
+		try {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">			if (&quot;isClosed&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L38">				return isClose();</span>
+			}
+<span class="nc bnc" id="L40" title="All 2 branches missed.">			if (&quot;close&quot;.equals(method.getName())) {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">				if (!isClose()) {</span>
+<span class="nc" id="L42">					handler.close();</span>
+				}
+<span class="nc" id="L44">				return null;</span>
+			}
+<span class="nc bnc" id="L46" title="All 2 branches missed.">			else if (&quot;toString&quot;.equals(method.getName())) {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">				return &quot;[&quot; + (isClose() ? &quot;null&quot; : handler.toString()) + &quot;]&quot;;</span>
+			}
+<span class="nc bnc" id="L49" title="All 2 branches missed.">			if (isClose()) {</span>
+<span class="nc" id="L50">				throw new SQLException(&quot;Connection has already been closed.&quot;);</span>
+			}
+<span class="nc bnc" id="L52" title="All 2 branches missed.">			if (&quot;unwrap&quot;.equals(method.getName())) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">				if (args[0] == PooledConnection.class) {</span>
+<span class="nc" id="L54">					return handler.getPooledConnection();</span>
+				}
+<span class="nc bnc" id="L56" title="All 2 branches missed.">				else if (args[0] == XAConnection.class) {</span>
+<span class="nc" id="L57">					return null;</span>
+				}
+<span class="nc bnc" id="L59" title="All 2 branches missed.">				else if (((Class&lt;?&gt;) args[0]).isInstance(handler.getPooledConnection().innerConnection)) {</span>
+<span class="nc" id="L60">					return handler.getPooledConnection().innerConnection;</span>
+				}
+				else {
+<span class="nc" id="L63">					throw new SQLException(&quot;Not a wrapper of &quot; + ((Class&lt;?&gt;) args[0]).getName());</span>
+				}
+			}
+<span class="nc bnc" id="L66" title="All 2 branches missed.">			else if (&quot;isWrapperFor&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L67">				return Boolean</span>
+				        .valueOf((((Class&lt;?&gt;) args[0]).isInstance(handler.getPooledConnection().innerConnection)));
+			}
+<span class="nc" id="L70">			final PooledConnection pooledConnection = handler.getPooledConnection();</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">			if (pooledConnection != null) {</span>
+<span class="nc" id="L72">				return method.invoke(pooledConnection.innerConnection, args);</span>
+			}
+<span class="nc" id="L74">			throw new SQLException(&quot;Connection has already been closed.&quot;);</span>
+		}
+		finally {
+<span class="nc bnc" id="L77" title="All 18 branches missed.">			if (&quot;close&quot;.equals(method.getName())) {</span>
+<span class="nc" id="L78">				handler = null;</span>
+			}
+		}
+	}
+	
+	private boolean isClose() {
+<span class="nc bnc" id="L84" title="All 4 branches missed.">		return (handler == null) || handler.isClose();</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CallChainScript.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.viewCompiler.script.expression</a> &gt; <span class="el_source">CallChainScript.java</span></div><h1>CallChainScript.java</h1><pre class="source lang-java linenums">package frameWork.base.core.viewCompiler.script.expression;
+
+import java.util.Deque;
+
+import frameWork.base.core.viewCompiler.Scope;
+import frameWork.base.core.viewCompiler.ScriptException;
+import frameWork.base.core.viewCompiler.script.Script;
+import frameWork.base.core.viewCompiler.script.bytecode.InstanceBytecode;
+import frameWork.base.core.viewCompiler.script.syntax.ExpressionScript;
+
+public class CallChainScript extends ExpressionScript {
+	private final Deque&lt;ExpressionScript&gt; expressionScripts;
+	
+<span class="fc" id="L14">	public CallChainScript(final Deque&lt;ExpressionScript&gt; expressionScripts) {</span>
+<span class="fc" id="L15">		this.expressionScripts = expressionScripts;</span>
+<span class="fc" id="L16">	}</span>
+	
+	@Override
+	public InstanceBytecode execute(final Scope scope) throws ScriptException {
+<span class="fc" id="L20">		InstanceBytecode bytecode = null;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">		for (final ExpressionScript expressionScript : expressionScripts) {</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">			if (bytecode == null) {</span>
+<span class="fc" id="L23">				bytecode = expressionScript.execute(null, null, scope);</span>
+			}
+			else {
+<span class="nc" id="L26">				bytecode = expressionScript.execute(bytecode.type(), bytecode.get(), scope);</span>
+			}
+<span class="fc" id="L28">		}</span>
+<span class="fc" id="L29">		return bytecode;</span>
+	}
+	
+	@Override
+	public String toNameString() {
+<span class="fc" id="L34">		String s = &quot;&quot;;</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		for (final ExpressionScript callChain : expressionScripts) {</span>
+<span class="fc" id="L36">			s += &quot;.&quot; + callChain.toNameString();</span>
+<span class="fc" id="L37">		}</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">		if (!s.isEmpty()) {</span>
+<span class="fc" id="L39">			s = s.substring(1);</span>
+		}
+<span class="fc" id="L41">		return s;</span>
+	}
+	
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	@Override
+	public void callDefine(final Scope scope) throws ScriptException {
+<span class="fc" id="L47">		super.callDefine(scope);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		for (final Script script : expressionScripts) {</span>
+<span class="fc" id="L49">			script.callDefine(scope);</span>
+<span class="fc" id="L50">		}</span>
+<span class="fc" id="L51">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Row.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.database.connector.pool</a> &gt; <span class="el_source">Row.java</span></div><h1>Row.java</h1><pre class="source lang-java linenums">package frameWork.base.database.connector.pool;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Iterator;
+
+class Row implements Iterable&lt;String&gt;, Iterator&lt;String&gt; {
+	private final ResultSet resultSet;
+	private int index;
+	
+<span class="nc" id="L11">	Row(final ResultSet resultSet) {</span>
+<span class="nc" id="L12">		this.resultSet = resultSet;</span>
+<span class="nc" id="L13">		this.index = 1;</span>
+<span class="nc" id="L14">	}</span>
+	
+	@Override
+	public boolean hasNext() {
+		try {
+<span class="nc bnc" id="L19" title="All 4 branches missed.">			return !((resultSet == null) || (resultSet.getMetaData().getColumnCount() &lt; index));</span>
+		}
+<span class="nc" id="L21">		catch (final SQLException e) {</span>
+<span class="nc" id="L22">			return false;</span>
+		}
+	}
+	
+	@Override
+	public String next() {
+		try {
+<span class="nc bnc" id="L29" title="All 4 branches missed.">			if (!((resultSet == null) || (resultSet.getMetaData().getColumnCount() &lt; index))) {</span>
+<span class="nc" id="L30">				return resultSet.getString(index++);</span>
+			}
+<span class="nc" id="L32">			return null;</span>
+		}
+<span class="nc" id="L34">		catch (final SQLException e) {</span>
+<span class="nc" id="L35">			return null;</span>
+		}
+	}
+	
+	@Override
+	public void remove() {
+		// NOOP
+<span class="nc" id="L42">	}</span>
+	
+	@Override
+	public Iterator&lt;String&gt; iterator() {
+<span class="nc" id="L46">		return this;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

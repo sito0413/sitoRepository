@@ -10,7 +10,7 @@ import frameWork.architect.Literal;
 import frameWork.base.core.authority.Role;
 
 public class Config extends FileElement {
-	private final Properties properties;
+	public final int PORT_NO = 8800;
 	public final String DATABASE_DRIVER_CLASS;
 	public final String DATABASE_URL;
 	public final int MAX_UPLOADFILE_SIZE;
@@ -45,6 +45,8 @@ public class Config extends FileElement {
 	public final String MAIL_SMTP_USER = "sito0413";
 	public final String MAIL_SMTP_PASSWORD = "inates0820";
 	public final File Routing;
+	
+	private final Properties properties;
 	
 	public Config(final File root) {
 		super(root, Literal.config);
@@ -108,32 +110,31 @@ public class Config extends FileElement {
 			return defaultValue;
 		}
 	}
-	/*
+	
 	private long getLong(final String key, final long defaultValue) {
-	try {
-		return Long.parseLong(get(key));
+		try {
+			return Long.parseLong(get(key));
+		}
+		catch (final MissingResourceException | NumberFormatException e) {
+			return defaultValue;
+		}
 	}
-	catch (final MissingResourceException | NumberFormatException e) {
-		return defaultValue;
-	}
-	}
-
+	
 	private double getDouble(final String key, final double defaultValue) {
-	try {
-		return Double.parseDouble(get(key));
+		try {
+			return Double.parseDouble(get(key));
+		}
+		catch (final MissingResourceException | NumberFormatException e) {
+			return defaultValue;
+		}
 	}
-	catch (final MissingResourceException | NumberFormatException e) {
-		return defaultValue;
-	}
-	}
-
+	
 	private boolean getBoolean(final String key, final boolean defaultValue) {
-	try {
-		return Boolean.parseBoolean(get(key));
+		try {
+			return Boolean.parseBoolean(get(key));
+		}
+		catch (final MissingResourceException | NumberFormatException e) {
+			return defaultValue;
+		}
 	}
-	catch (final MissingResourceException | NumberFormatException e) {
-		return defaultValue;
-	}
-	}
-	*/
 }

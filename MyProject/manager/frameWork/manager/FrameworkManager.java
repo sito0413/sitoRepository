@@ -110,7 +110,7 @@ public class FrameworkManager {
 					if (connection != null) {
 						final Properties properties = new Properties();
 						properties.loadFromXML(connection.getInputStream());
-						ver.setText(properties.getProperty("Ver", "--------------"));
+						ver.setText(properties.getProperty(Literal.Ver, "--------------"));
 					}
 					else {
 						ver.setText("NOT CONNECT");

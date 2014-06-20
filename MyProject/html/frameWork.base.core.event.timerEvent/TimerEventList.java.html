@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TimerEventList.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core.event.timerEvent</a> &gt; <span class="el_source">TimerEventList.java</span></div><h1>TimerEventList.java</h1><pre class="source lang-java linenums">package frameWork.base.core.event.timerEvent;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import frameWork.base.core.event.TimerEvent;
+
+public class TimerEventList implements Iterable&lt;TimerEvent&gt; {
+	private transient TimerEventNode head;
+	private transient TimerEventNode last;
+	
+<span class="fc" id="L12">	public TimerEventList() {</span>
+<span class="fc" id="L13">		this.last = this.head = new TimerEventNode(null);</span>
+<span class="fc" id="L14">	}</span>
+	
+	public synchronized void add(final TimerEvent e) {
+<span class="fc" id="L17">		final TimerEventNode node = new TimerEventNode(e);</span>
+<span class="fc" id="L18">		last.next = node;</span>
+<span class="fc" id="L19">		last = node;</span>
+<span class="fc" id="L20">		return;</span>
+	}
+	
+	public void remove(final TimerEvent o) {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">		if (o == null) {</span>
+<span class="fc" id="L25">			return;</span>
+		}
+<span class="fc" id="L27">		TimerEventNode preNode = head;</span>
+<span class="fc" id="L28">		TimerEventNode node = head.next;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">		while (node != null) {</span>
+<span class="fc" id="L30">			synchronized (this) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">				if (o.equals(node.item)) {</span>
+<span class="fc" id="L32">					preNode.next = node.next;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">					if (last == node) {</span>
+<span class="fc" id="L34">						last = preNode;</span>
+					}
+<span class="fc" id="L36">					return;</span>
+				}
+<span class="pc" id="L38">			}</span>
+<span class="fc" id="L39">			preNode = node;</span>
+<span class="fc" id="L40">			node = node.next;</span>
+		}
+<span class="fc" id="L42">	}</span>
+	
+	@Override
+	public Iterator&lt;TimerEvent&gt; iterator() {
+<span class="fc" id="L46">		return new TimerEventListIterator(head);</span>
+	}
+	
+	private static class TimerEventListIterator implements Iterator&lt;TimerEvent&gt; {
+		private TimerEventNode cursor;
+		
+<span class="fc" id="L52">		TimerEventListIterator(final TimerEventNode head) {</span>
+<span class="fc" id="L53">			cursor = head;</span>
+<span class="fc" id="L54">		}</span>
+		
+		@Override
+		public boolean hasNext() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">			return (cursor.next != null);</span>
+		}
+		
+		@Override
+		public TimerEvent next() {
+<span class="fc bfc" id="L63" title="All 2 branches covered.">			if (!hasNext()) {</span>
+<span class="fc" id="L64">				throw new NoSuchElementException();</span>
+			}
+<span class="fc" id="L66">			cursor = cursor.next;</span>
+<span class="fc" id="L67">			return cursor.item;</span>
+		}
+		
+		@Override
+		public void remove() {
+<span class="fc" id="L72">			throw new UnsupportedOperationException();</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

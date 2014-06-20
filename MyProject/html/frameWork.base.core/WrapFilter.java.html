@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>WrapFilter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base.core</a> &gt; <span class="el_source">WrapFilter.java</span></div><h1>WrapFilter.java</h1><pre class="source lang-java linenums">package frameWork.base.core;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import frameWork.base.HttpStatus;
+import frameWork.base.core.authority.Role;
+import frameWork.base.core.fileSystem.FileSystem;
+import frameWork.base.core.routing.Router;
+import frameWork.base.core.state.ContextAttributeMap;
+import frameWork.base.core.state.ImpOfState;
+import frameWork.base.core.state.RequestAttributeMap;
+import frameWork.base.core.state.Response;
+import frameWork.base.core.state.SessionAttributeMap;
+
+@WebFilter(&quot;/*&quot;)
+<span class="nc" id="L33">public class WrapFilter implements Filter {</span>
+	
+	@Override
+	public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse,
+	        final FilterChain chain) throws IOException, ServletException {
+<span class="nc" id="L38">		final HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;</span>
+		try {
+<span class="nc" id="L40">			final Map&lt;String, List&lt;String&gt;&gt; parameters = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="nc" id="L41">			final Map&lt;String, File&gt; fileMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="nc" id="L42">			createParameters(parameters, fileMap, httpServletRequest);</span>
+<span class="nc" id="L43">			final ImpOfState state = new ImpOfState(new ContextAttributeMap(httpServletRequest.getServletContext()),</span>
+			        new SessionAttributeMap(httpServletRequest.getSession(true)), new RequestAttributeMap(
+			                httpServletRequest), parameters, fileMap);
+<span class="nc" id="L46">			state.setLogin((Role[]) httpServletRequest.getSession(true).getAttribute(FileSystem.Config.CALL_AUTH));</span>
+<span class="nc" id="L47">			((HttpServletResponse) servletResponse).setStatus(Router.routing(httpServletRequest.getRequestURI(),</span>
+			        httpServletRequest.getMethod().toLowerCase(),
+			        new Response(servletResponse, servletResponse.getOutputStream()), state));
+		}
+<span class="nc" id="L51">		catch (final Exception e) {</span>
+<span class="nc" id="L52">			FileSystem.Log.logging(e);</span>
+<span class="nc" id="L53">			((HttpServletResponse) servletResponse).setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);</span>
+<span class="nc" id="L54">			chain.doFilter(servletRequest, servletResponse);</span>
+<span class="nc" id="L55">		}</span>
+<span class="nc" id="L56">	}</span>
+	
+	private void createParameters(final Map&lt;String, List&lt;String&gt;&gt; parameters, final Map&lt;String, File&gt; fileMap,
+	        final HttpServletRequest request) {
+		try {
+<span class="nc" id="L61">			Class.forName(&quot;org.apache.commons.fileupload.FileItem&quot;);</span>
+<span class="nc" id="L62">			Class.forName(&quot;org.apache.commons.fileupload.disk.DiskFileItemFactory&quot;);</span>
+<span class="nc" id="L63">			Class.forName(&quot;org.apache.commons.fileupload.servlet.ServletFileUpload&quot;);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">			if (org.apache.commons.fileupload.servlet.ServletFileUpload.isMultipartContent(request)) {</span>
+<span class="nc" id="L65">				final org.apache.commons.fileupload.servlet.ServletFileUpload upload = new org.apache.commons.fileupload.servlet.ServletFileUpload(</span>
+				        new org.apache.commons.fileupload.disk.DiskFileItemFactory(
+				                FileSystem.Config.MAX_UPLOADFILE_SIZE, FileSystem.Temp.UploadDir));
+<span class="nc" id="L68">				final List&lt;org.apache.commons.fileupload.FileItem&gt; items = upload.parseRequest(request);</span>
+<span class="nc" id="L69">				final Iterator&lt;org.apache.commons.fileupload.FileItem&gt; iter = items.iterator();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">				while (iter.hasNext()) {</span>
+<span class="nc" id="L71">					final org.apache.commons.fileupload.FileItem item = iter.next();</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">					if (item.isFormField()) {</span>
+<span class="nc" id="L73">						final String name = item.getFieldName();</span>
+<span class="nc" id="L74">						final String value = item.getString();</span>
+<span class="nc" id="L75">						final List&lt;String&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L76">						list.add(value);</span>
+<span class="nc" id="L77">						parameters.put(name, list);</span>
+<span class="nc" id="L78">					}</span>
+					else {
+<span class="nc" id="L80">						final String fieldName = item.getFieldName();</span>
+<span class="nc" id="L81">						final File uploadedFile = FileSystem.Temp.UploadDir.getUploadfile(item.getName());</span>
+<span class="nc" id="L82">						item.write(uploadedFile);</span>
+<span class="nc" id="L83">						fileMap.put(fieldName, uploadedFile);</span>
+					}
+<span class="nc" id="L85">				}</span>
+			}
+		}
+<span class="nc" id="L88">		catch (final Exception e) {</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">			for (final Entry&lt;String, String[]&gt; entry : request.getParameterMap().entrySet()) {</span>
+<span class="nc" id="L90">				final List&lt;String&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L91">				parameters.put(entry.getKey(), list);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">				for (final String string : entry.getValue()) {</span>
+<span class="nc" id="L93">					list.add(string);</span>
+				}
+<span class="nc" id="L95">			}</span>
+<span class="nc" id="L96">		}</span>
+<span class="nc" id="L97">	}</span>
+	
+	@Override
+	public void destroy() {
+		// NOOP
+<span class="nc" id="L102">	}</span>
+	
+	@Override
+	public void init(final FilterConfig fConfig) throws ServletException {
+		// NOOP
+<span class="nc" id="L107">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

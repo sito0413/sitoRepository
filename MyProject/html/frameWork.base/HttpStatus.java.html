@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>HttpStatus.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">カバレッジレポート</a> &gt; <a href="index.source.html" class="el_package">frameWork.base</a> &gt; <span class="el_source">HttpStatus.java</span></div><h1>HttpStatus.java</h1><pre class="source lang-java linenums">package frameWork.base;
+
+<span class="nc" id="L3">public class HttpStatus {</span>
+	public final static int NOT_SET_000 = 0;
+	public final static int CONTINUE_100 = 100;
+	public final static int SWITCHING_PROTOCOLS_101 = 101;
+	public final static int PROCESSING_102 = 102;
+	
+	public final static int OK_200 = 200;
+	public final static int CREATED_201 = 201;
+	public final static int ACCEPTED_202 = 202;
+	public final static int NON_AUTHORITATIVE_INFORMATION_203 = 203;
+	public final static int NO_CONTENT_204 = 204;
+	public final static int RESET_CONTENT_205 = 205;
+	public final static int PARTIAL_CONTENT_206 = 206;
+	public final static int MULTI_STATUS_207 = 207;
+	
+	public final static int MULTIPLE_CHOICES_300 = 300;
+	public final static int MOVED_PERMANENTLY_301 = 301;
+	public final static int MOVED_TEMPORARILY_302 = 302;
+	public final static int FOUND_302 = 302;
+	public final static int SEE_OTHER_303 = 303;
+	public final static int NOT_MODIFIED_304 = 304;
+	public final static int USE_PROXY_305 = 305;
+	public final static int TEMPORARY_REDIRECT_307 = 307;
+	
+	public final static int BAD_REQUEST_400 = 400;
+	public final static int UNAUTHORIZED_401 = 401;
+	public final static int PAYMENT_REQUIRED_402 = 402;
+	public final static int FORBIDDEN_403 = 403;
+	public final static int NOT_FOUND_404 = 404;
+	public final static int METHOD_NOT_ALLOWED_405 = 405;
+	public final static int NOT_ACCEPTABLE_406 = 406;
+	public final static int PROXY_AUTHENTICATION_REQUIRED_407 = 407;
+	public final static int REQUEST_TIMEOUT_408 = 408;
+	public final static int CONFLICT_409 = 409;
+	public final static int GONE_410 = 410;
+	public final static int LENGTH_REQUIRED_411 = 411;
+	public final static int PRECONDITION_FAILED_412 = 412;
+	public final static int REQUEST_ENTITY_TOO_LARGE_413 = 413;
+	public final static int REQUEST_URI_TOO_LONG_414 = 414;
+	public final static int UNSUPPORTED_MEDIA_TYPE_415 = 415;
+	public final static int REQUESTED_RANGE_NOT_SATISFIABLE_416 = 416;
+	public final static int EXPECTATION_FAILED_417 = 417;
+	public final static int UNPROCESSABLE_ENTITY_422 = 422;
+	public final static int LOCKED_423 = 423;
+	public final static int FAILED_DEPENDENCY_424 = 424;
+	
+	public final static int INTERNAL_SERVER_ERROR_500 = 500;
+	public final static int NOT_IMPLEMENTED_501 = 501;
+	public final static int BAD_GATEWAY_502 = 502;
+	public final static int SERVICE_UNAVAILABLE_503 = 503;
+	public final static int GATEWAY_TIMEOUT_504 = 504;
+	public final static int HTTP_VERSION_NOT_SUPPORTED_505 = 505;
+	public final static int INSUFFICIENT_STORAGE_507 = 507;
+	
+	public static final int MAX_CODE = 507;
+	
+	public static String getMessage(final int code) {
+<span class="fc bfc" id="L60" title="All 47 branches covered.">		switch ( code ) {</span>
+			case CONTINUE_100 :
+<span class="fc" id="L62">				return &quot;Continue&quot;;</span>
+			case SWITCHING_PROTOCOLS_101 :
+<span class="fc" id="L64">				return &quot;Switching Protocols&quot;;</span>
+			case PROCESSING_102 :
+<span class="fc" id="L66">				return &quot;Processing&quot;;</span>
+			case OK_200 :
+<span class="fc" id="L68">				return &quot;OK&quot;;</span>
+			case CREATED_201 :
+<span class="fc" id="L70">				return &quot;Created&quot;;</span>
+			case ACCEPTED_202 :
+<span class="fc" id="L72">				return &quot;Accepted&quot;;</span>
+			case NON_AUTHORITATIVE_INFORMATION_203 :
+<span class="fc" id="L74">				return &quot;Non Authoritative Information&quot;;</span>
+			case NO_CONTENT_204 :
+<span class="fc" id="L76">				return &quot;No Content&quot;;</span>
+			case RESET_CONTENT_205 :
+<span class="fc" id="L78">				return &quot;Reset Content&quot;;</span>
+			case PARTIAL_CONTENT_206 :
+<span class="fc" id="L80">				return &quot;Partial Content&quot;;</span>
+			case MULTI_STATUS_207 :
+<span class="fc" id="L82">				return &quot;Multi-Status&quot;;</span>
+			case MULTIPLE_CHOICES_300 :
+<span class="fc" id="L84">				return &quot;Multiple Choices&quot;;</span>
+			case MOVED_PERMANENTLY_301 :
+<span class="fc" id="L86">				return &quot;Moved Permanently&quot;;</span>
+			case FOUND_302 :
+<span class="fc" id="L88">				return &quot;Found&quot;;</span>
+			case SEE_OTHER_303 :
+<span class="fc" id="L90">				return &quot;See Other&quot;;</span>
+			case NOT_MODIFIED_304 :
+<span class="fc" id="L92">				return &quot;Not Modified&quot;;</span>
+			case USE_PROXY_305 :
+<span class="fc" id="L94">				return &quot;Use Proxy&quot;;</span>
+			case TEMPORARY_REDIRECT_307 :
+<span class="fc" id="L96">				return &quot;Temporary Redirect&quot;;</span>
+			case BAD_REQUEST_400 :
+<span class="fc" id="L98">				return &quot;Bad Request&quot;;</span>
+			case UNAUTHORIZED_401 :
+<span class="fc" id="L100">				return &quot;Unauthorized&quot;;</span>
+			case PAYMENT_REQUIRED_402 :
+<span class="fc" id="L102">				return &quot;Payment Required&quot;;</span>
+			case FORBIDDEN_403 :
+<span class="fc" id="L104">				return &quot;Forbidden&quot;;</span>
+			case NOT_FOUND_404 :
+<span class="fc" id="L106">				return &quot;Not Found&quot;;</span>
+			case METHOD_NOT_ALLOWED_405 :
+<span class="fc" id="L108">				return &quot;Method Not Allowed&quot;;</span>
+			case NOT_ACCEPTABLE_406 :
+<span class="fc" id="L110">				return &quot;Not Acceptable&quot;;</span>
+			case PROXY_AUTHENTICATION_REQUIRED_407 :
+<span class="fc" id="L112">				return &quot;Proxy Authentication Required&quot;;</span>
+			case REQUEST_TIMEOUT_408 :
+<span class="fc" id="L114">				return &quot;Request Timeout&quot;;</span>
+			case CONFLICT_409 :
+<span class="fc" id="L116">				return &quot;Conflict&quot;;</span>
+			case GONE_410 :
+<span class="fc" id="L118">				return &quot;Gone&quot;;</span>
+			case LENGTH_REQUIRED_411 :
+<span class="fc" id="L120">				return &quot;Length Required&quot;;</span>
+			case PRECONDITION_FAILED_412 :
+<span class="fc" id="L122">				return &quot;Precondition Failed&quot;;</span>
+			case REQUEST_ENTITY_TOO_LARGE_413 :
+<span class="fc" id="L124">				return &quot;Request Entity Too Large&quot;;</span>
+			case REQUEST_URI_TOO_LONG_414 :
+<span class="fc" id="L126">				return &quot;Request-URI Too Long&quot;;</span>
+			case UNSUPPORTED_MEDIA_TYPE_415 :
+<span class="fc" id="L128">				return &quot;Unsupported Media Type&quot;;</span>
+			case REQUESTED_RANGE_NOT_SATISFIABLE_416 :
+<span class="fc" id="L130">				return &quot;Requested Range Not Satisfiable&quot;;</span>
+			case EXPECTATION_FAILED_417 :
+<span class="fc" id="L132">				return &quot;Expectation Failed&quot;;</span>
+			case UNPROCESSABLE_ENTITY_422 :
+<span class="fc" id="L134">				return &quot;Unprocessable Entity&quot;;</span>
+			case LOCKED_423 :
+<span class="fc" id="L136">				return &quot;Locked&quot;;</span>
+			case FAILED_DEPENDENCY_424 :
+<span class="fc" id="L138">				return &quot;Failed Dependency&quot;;</span>
+			case INTERNAL_SERVER_ERROR_500 :
+<span class="fc" id="L140">				return &quot;Server Error&quot;;</span>
+			case NOT_IMPLEMENTED_501 :
+<span class="fc" id="L142">				return &quot;Not Implemented&quot;;</span>
+			case BAD_GATEWAY_502 :
+<span class="fc" id="L144">				return &quot;Bad Gateway&quot;;</span>
+			case SERVICE_UNAVAILABLE_503 :
+<span class="fc" id="L146">				return &quot;Service Unavailable&quot;;</span>
+			case GATEWAY_TIMEOUT_504 :
+<span class="fc" id="L148">				return &quot;Gateway Timeout&quot;;</span>
+			case HTTP_VERSION_NOT_SUPPORTED_505 :
+<span class="fc" id="L150">				return &quot;HTTP Version Not Supported&quot;;</span>
+			case INSUFFICIENT_STORAGE_507 :
+<span class="fc" id="L152">				return &quot;Insufficient Storage&quot;;</span>
+			default :
+<span class="fc" id="L154">				return Integer.toString(code);</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

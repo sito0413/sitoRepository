@@ -13,7 +13,6 @@ class Pages {
 	private final Component[] pages;
 	private int currentPage;
 	private final ChooseDirectory chooseDirectory;
-	private final SelectComponents selectComponents;
 	private final SwingProgress progress;
 	
 	public Pages(final InstallerGUI installerGUI, final Installer installer, final int w, final int h) {
@@ -21,12 +20,10 @@ class Pages {
 		this.installer = installer;
 		this.progress = new SwingProgress(this);
 		this.chooseDirectory = new ChooseDirectory(this.installerGUI, installer.getInstallDirectory());
-		this.selectComponents = new SelectComponents(installer.getInstallComponents());
 		this.chooseDirectory.setName("インストール先を選択してください。");
-		this.selectComponents.setName("インストールのオプションを選択してください。");
 		this.progress.setName(installer.getAppName() + "をインストール中です。");
 		this.pages = new Component[] {
-		        chooseDirectory, selectComponents, progress, new EndPanel(installer.getReadme(), w, h)
+		        chooseDirectory, progress, new EndPanel(installer.getReadme(), w, h)
 		};
 		
 	}
@@ -39,7 +36,7 @@ class Pages {
 		this.installerGUI.cancelButton.setEnabled(!(currentPage == (pages.length - 1)));
 		this.installerGUI.caption.setText(pages[currentPage].getName());
 		if (currentPage == (pages.length - 2)) {
-			installer.install(progress, chooseDirectory.getInstallDirectory(), selectComponents.getInstallComponents());
+			installer.install(progress, chooseDirectory.getInstallDirectory());
 		}
 		rootPane.invalidate();
 		rootPane.validate();
