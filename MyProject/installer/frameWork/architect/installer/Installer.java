@@ -162,7 +162,6 @@ public class Installer implements Runnable {
 	
 	private void unzip(final File file, final File zip, final int size) throws IOException {
 		file.mkdirs();
-		progress.error(zip.toString());
 		final byte[] buf = new byte[1024];
 		try (final ZipFile zf = new ZipFile(zip)) {
 			int i = 0;
